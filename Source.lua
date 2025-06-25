@@ -3745,7 +3745,7 @@ StarlightUI.Enabled = true
 --// ENDSUBSECTION
 
 --// SUBSECTION : Debugging Script
-local win = Starlight:CreateWindow({
+--[[local win = Starlight:CreateWindow({
 	Name = "Starlight Example Window",
 	Subtitle = "Alpha Release 1",
 	Icon = nil,
@@ -3884,7 +3884,7 @@ g2:CreateInput({
 	Name = "numeric input",
 	Numeric = true,
 	Callback = function() end
-})
+})]]
 --// ENDSUBSECTION
 
 --// ENDSECTION
