@@ -1,12 +1,3 @@
---!nocheck
-local syn = nil
-local getgenv = nil
-local gethui = nil
-local fluxus = nil
-local http = nil
-local http_request = nil
-local request = nil
-
 --[[
 
 Starlight Interface Suite
