@@ -2138,7 +2138,7 @@ local buildAttempts = 0
 local correctBuild = false
 local warned
 
-StarlightUI.Name = getgenv and getgenv().InterfaceName or StarlightUI.Name or "Starlight Interface Suite"
+StarlightUI.Name = (((getgenv and getgenv().InterfaceName) or StarlightUI.Name) or "Starlight Interface Suite")
 Starlight.Instance = StarlightUI
 
 repeat
@@ -3745,7 +3745,6 @@ StarlightUI.Enabled = true
 --// ENDSUBSECTION
 
 --// SUBSECTION : Debugging Script
---[[
 local win = Starlight:CreateWindow({
 	Name = "Starlight Example Window",
 	Subtitle = "Alpha Release 1",
@@ -3886,7 +3885,6 @@ g2:CreateInput({
 	Numeric = true,
 	Callback = function() end
 })
-]]
 --// ENDSUBSECTION
 
 --// ENDSECTION
