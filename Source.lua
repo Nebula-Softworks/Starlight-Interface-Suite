@@ -15,6 +15,7 @@ Inori | Configuration and Layout Concept and **CONCEPT OF** Config And Theming A
 
 Extra Credits
 
+Sirius | Build Warnings
 Latte Softworks and qweery | Lucide Icons And Material Icons
 Deity/dp4pv/x64x70/btg/j24 | Certain Scripting and Testing 
 The Nebula Softworks Community | Bug Testers And Suggestions For The Project
@@ -27,7 +28,7 @@ If you see our logo used anywhere else, please report it to us as I made this lo
 stealing my logos and claiming it as their own, like bloody hell cryptic stole Luna's logo and called it their own, fk you reaper. Besides the credits provided, everything
 else was scripted by Me and JustHey from SCRATCH, meaning our brains only and no online references with a minor exception of Luna's Original Code.
 The nature of Starlight is a GUI Model based library (and not drawing), meaning the interface is designed in studio as a Roblox game asset, before being published to roblox
-and coded via a script. Sirius' Rayfield uses this too, BUT ITS NOT A COPY. Im putting this here because Luna did this as well and while parts were taken from
+and coded via a script. Sirius' Rayfield uses this too, BUT ITS NOT A COPY. Im putting this here because Luna did this as well and while alot of parts were taken from
 Rayfield so I could tolerate some of that bs, this was not and I am not tolerating that skidding bs. I dont get how using the same type of library nature is considered skidding.
 It Just Happens to be the same. If you're wondering why the model's interface is called Starlight V2, its because i was working on a previous discontinued UI library project in the past and
 it was also called Starlight. Some members of the Nebula Softworks Community should know about that, and it was discontinued due to my lack of motivation
@@ -67,21 +68,21 @@ by Nebula Softworks
 
 --// SECTION : Core Variables
 
-local Release = "Testing Prerelease Alpha 1"
+local Release = "Prerelease Alpha 1"
 
 local Starlight = {
-	Folder = "Starlight UI",
-	InterfaceBuild = "ATR1", -- Alpha Testing Release 1
-	
+	Folder = "Starlight Interface Suite",
+	InterfaceBuild = "APR1", -- Alpha Testing Release 2
+
 	Options = {},
 	CurrentTheme = "Dark",
 	BlurEnabled = false,
 	DialogOpen = false,
-	
+
 	WindowKeybind = "K",
 	Minimized = false,
 	Maximized = false,
-	
+
 	Window = nil,
 	Instance = nil
 }
@@ -106,9 +107,7 @@ local CoreGui = game:GetService("CoreGui")
 local isStudio = RunService:IsStudio() or false
 local website = "github.com/Nebula-Softworks"
 
-local IconModule = nil -- This has been replaced by Nebula Icon Library
-
-local Request = (syn and syn.request) or (fluxus and fluxus.request) or (http and http.request) or http_request or request or nil
+local Request = (syn and syn.request) or (fluxus and fluxus.request) or (http and http.request) or http_request or request
 
 local function tweenInfo(style : string?, direction : string?, time : number?) 
 	style = style or "Exponential"
@@ -117,8 +116,2269 @@ local function tweenInfo(style : string?, direction : string?, time : number?)
 	return TweenInfo.new(time, Enum.EasingStyle[style], Enum.EasingDirection[direction])
 end
 
-local IconModule = {
-	Lucide = nil,
+local IconModule = { -- will be replace by Nebula Icon Library Soon
+	Lucide = {
+		["accessibility"] = "rbxassetid://10709751939",
+		["activity"] = "rbxassetid://10709752035",
+		["air-vent"] = "rbxassetid://10709752131",
+		["airplay"] = "rbxassetid://10709752254",
+		["alarm-check"] = "rbxassetid://10709752405",
+		["alarm-clock"] = "rbxassetid://10709752630",
+		["alarm-clock-off"] = "rbxassetid://10709752508",
+		["alarm-minus"] = "rbxassetid://10709752732",
+		["alarm-plus"] = "rbxassetid://10709752825",
+		["album"] = "rbxassetid://10709752906",
+		["alert-circle"] = "rbxassetid://10709752996",
+		["alert-octagon"] = "rbxassetid://10709753064",
+		["alert-triangle"] = "rbxassetid://10709753149",
+		["align-center"] = "rbxassetid://10709753570",
+		["align-center-horizontal"] = "rbxassetid://10709753272",
+		["align-center-vertical"] = "rbxassetid://10709753421",
+		["align-end-horizontal"] = "rbxassetid://10709753692",
+		["align-end-vertical"] = "rbxassetid://10709753808",
+		["align-horizontal-distribute-center"] = "rbxassetid://10747779791",
+		["align-horizontal-distribute-end"] = "rbxassetid://10747784534",
+		["align-horizontal-distribute-start"] = "rbxassetid://10709754118",
+		["align-horizontal-justify-center"] = "rbxassetid://10709754204",
+		["align-horizontal-justify-end"] = "rbxassetid://10709754317",
+		["align-horizontal-justify-start"] = "rbxassetid://10709754436",
+		["align-horizontal-space-around"] = "rbxassetid://10709754590",
+		["align-horizontal-space-between"] = "rbxassetid://10709754749",
+		["align-justify"] = "rbxassetid://10709759610",
+		["align-left"] = "rbxassetid://10709759764",
+		["align-right"] = "rbxassetid://10709759895",
+		["align-start-horizontal"] = "rbxassetid://10709760051",
+		["align-start-vertical"] = "rbxassetid://10709760244",
+		["align-vertical-distribute-center"] = "rbxassetid://10709760351",
+		["align-vertical-distribute-end"] = "rbxassetid://10709760434",
+		["align-vertical-distribute-start"] = "rbxassetid://10709760612",
+
+
+		["align-vertical-justify-center"] = "rbxassetid://10709760814",
+
+
+		["align-vertical-justify-end"] = "rbxassetid://10709761003",
+
+
+		["align-vertical-justify-start"] = "rbxassetid://10709761176",
+
+
+		["align-vertical-space-around"] = "rbxassetid://10709761324",
+
+
+		["align-vertical-space-between"] = "rbxassetid://10709761434",
+
+
+		["anchor"] = "rbxassetid://10709761530",
+
+
+		["angry"] = "rbxassetid://10709761629",
+
+
+		["annoyed"] = "rbxassetid://10709761722",
+
+
+		["aperture"] = "rbxassetid://10709761813",
+
+
+		["apple"] = "rbxassetid://10709761889",
+
+
+		["archive"] = "rbxassetid://10709762233",
+
+
+		["archive-restore"] = "rbxassetid://10709762058",
+
+
+		["armchair"] = "rbxassetid://10709762327",
+
+
+		["arrow-big-down"] = "rbxassetid://10747796644",
+
+
+		["arrow-big-left"] = "rbxassetid://10709762574",
+
+
+		["arrow-big-right"] = "rbxassetid://10709762727",
+
+
+		["arrow-big-up"] = "rbxassetid://10709762879",
+
+
+		["arrow-down"] = "rbxassetid://10709767827",
+
+
+		["arrow-down-circle"] = "rbxassetid://10709763034",
+
+
+		["arrow-down-left"] = "rbxassetid://10709767656",
+
+
+		["arrow-down-right"] = "rbxassetid://10709767750",
+
+
+		["arrow-left"] = "rbxassetid://10709768114",
+
+
+		["arrow-left-circle"] = "rbxassetid://10709767936",
+
+
+		["arrow-left-right"] = "rbxassetid://10709768019",
+
+
+		["arrow-right"] = "rbxassetid://10709768347",
+
+
+		["arrow-right-circle"] = "rbxassetid://10709768226",
+
+
+		["arrow-up"] = "rbxassetid://10709768939",
+
+
+		["arrow-up-circle"] = "rbxassetid://10709768432",
+
+
+		["arrow-up-down"] = "rbxassetid://10709768538",
+
+
+		["arrow-up-left"] = "rbxassetid://10709768661",
+
+
+		["arrow-up-right"] = "rbxassetid://10709768787",
+
+
+		["asterisk"] = "rbxassetid://10709769095",
+
+
+		["at-sign"] = "rbxassetid://10709769286",
+
+
+		["award"] = "rbxassetid://10709769406",
+
+
+		["axe"] = "rbxassetid://10709769508",
+
+
+		["axis-3d"] = "rbxassetid://10709769598",
+
+
+		["baby"] = "rbxassetid://10709769732",
+
+
+		["backpack"] = "rbxassetid://10709769841",
+
+
+		["baggage-claim"] = "rbxassetid://10709769935",
+
+
+		["banana"] = "rbxassetid://10709770005",
+
+
+		["banknote"] = "rbxassetid://10709770178",
+
+
+		["bar-chart"] = "rbxassetid://10709773755",
+
+
+		["bar-chart-2"] = "rbxassetid://10709770317",
+
+
+		["bar-chart-3"] = "rbxassetid://10709770431",
+
+
+		["bar-chart-4"] = "rbxassetid://10709770560",
+
+
+		["bar-chart-horizontal"] = "rbxassetid://10709773669",
+
+
+		["barcode"] = "rbxassetid://10747360675",
+
+
+		["baseline"] = "rbxassetid://10709773863",
+
+
+		["bath"] = "rbxassetid://10709773963",
+
+
+		["battery"] = "rbxassetid://10709774640",
+
+
+		["battery-charging"] = "rbxassetid://10709774068",
+
+
+		["battery-full"] = "rbxassetid://10709774206",
+
+
+		["battery-low"] = "rbxassetid://10709774370",
+
+
+		["battery-medium"] = "rbxassetid://10709774513",
+
+
+		["beaker"] = "rbxassetid://10709774756",
+
+
+		["bed"] = "rbxassetid://10709775036",
+
+
+		["bed-double"] = "rbxassetid://10709774864",
+
+
+		["bed-single"] = "rbxassetid://10709774968",
+
+
+		["beer"] = "rbxassetid://10709775167",
+
+
+		["bell"] = "rbxassetid://10709775704",
+
+
+		["bell-minus"] = "rbxassetid://10709775241",
+
+
+		["bell-off"] = "rbxassetid://10709775320",
+
+
+		["bell-plus"] = "rbxassetid://10709775448",
+
+
+		["bell-ring"] = "rbxassetid://10709775560",
+
+
+		["bike"] = "rbxassetid://10709775894",
+
+
+		["binary"] = "rbxassetid://10709776050",
+
+
+		["bitcoin"] = "rbxassetid://10709776126",
+
+
+		["bluetooth"] = "rbxassetid://10709776655",
+
+
+		["bluetooth-connected"] = "rbxassetid://10709776240",
+
+
+		["bluetooth-off"] = "rbxassetid://10709776344",
+
+
+		["bluetooth-searching"] = "rbxassetid://10709776501",
+
+
+		["bold"] = "rbxassetid://10747813908",
+
+
+		["bomb"] = "rbxassetid://10709781460",
+
+
+		["bone"] = "rbxassetid://10709781605",
+
+
+		["book"] = "rbxassetid://10709781824",
+
+
+		["book-open"] = "rbxassetid://10709781717",
+
+
+		["bookmark"] = "rbxassetid://10709782154",
+
+
+		["bookmark-minus"] = "rbxassetid://10709781919",
+
+
+		["bookmark-plus"] = "rbxassetid://10709782044",
+
+
+		["bot"] = "rbxassetid://10709782230",
+
+
+		["box"] = "rbxassetid://10709782497",
+
+
+		["box-select"] = "rbxassetid://10709782342",
+
+
+		["boxes"] = "rbxassetid://10709782582",
+
+
+		["briefcase"] = "rbxassetid://10709782662",
+
+
+		["brush"] = "rbxassetid://10709782758",
+
+
+		["bug"] = "rbxassetid://10709782845",
+
+
+		["building"] = "rbxassetid://10709783051",
+
+
+		["building-2"] = "rbxassetid://10709782939",
+
+
+		["bus"] = "rbxassetid://10709783137",
+
+
+		["cake"] = "rbxassetid://10709783217",
+
+
+		["calculator"] = "rbxassetid://10709783311",
+
+
+		["calendar"] = "rbxassetid://10709789505",
+
+
+		["calendar-check"] = "rbxassetid://10709783474",
+
+
+		["calendar-check-2"] = "rbxassetid://10709783392",
+
+
+		["calendar-clock"] = "rbxassetid://10709783577",
+
+
+		["calendar-days"] = "rbxassetid://10709783673",
+
+
+		["calendar-heart"] = "rbxassetid://10709783835",
+
+
+		["calendar-minus"] = "rbxassetid://10709783959",
+
+
+		["calendar-off"] = "rbxassetid://10709788784",
+
+
+		["calendar-plus"] = "rbxassetid://10709788937",
+
+
+		["calendar-range"] = "rbxassetid://10709789053",
+
+
+		["calendar-search"] = "rbxassetid://10709789200",
+
+
+		["calendar-x"] = "rbxassetid://10709789407",
+
+
+		["calendar-x-2"] = "rbxassetid://10709789329",
+
+
+		["camera"] = "rbxassetid://10709789686",
+
+
+		["camera-off"] = "rbxassetid://10747822677",
+
+
+		["car"] = "rbxassetid://10709789810",
+
+
+		["carrot"] = "rbxassetid://10709789960",
+
+
+		["cast"] = "rbxassetid://10709790097",
+
+
+		["charge"] = "rbxassetid://10709790202",
+
+
+		["check"] = "rbxassetid://10709790644",
+
+
+		["check-circle"] = "rbxassetid://10709790387",
+
+
+		["check-circle-2"] = "rbxassetid://10709790298",
+
+
+		["check-square"] = "rbxassetid://10709790537",
+
+
+		["chef-hat"] = "rbxassetid://10709790757",
+
+
+		["cherry"] = "rbxassetid://10709790875",
+
+
+		["chevron-down"] = "rbxassetid://17122285956",
+
+
+		["chevron-first"] = "rbxassetid://10709791015",
+
+
+		["chevron-last"] = "rbxassetid://10709791130",
+
+
+		["chevron-left"] = "rbxassetid://10709791281",
+
+
+		["chevron-right"] = "rbxassetid://10709791437",
+
+
+		["chevron-up"] = "rbxassetid://10709791523",
+
+
+		["chevrons-down"] = "rbxassetid://10709796864",
+
+
+		["chevrons-down-up"] = "rbxassetid://10709791632",
+
+
+		["chevrons-left"] = "rbxassetid://10709797151",
+
+
+		["chevrons-left-right"] = "rbxassetid://10709797006",
+
+
+		["chevrons-right"] = "rbxassetid://10709797382",
+
+
+		["chevrons-right-left"] = "rbxassetid://10709797274",
+
+
+		["chevrons-up"] = "rbxassetid://10709797622",
+
+
+		["chevrons-up-down"] = "rbxassetid://10709797508",
+
+
+		["chrome"] = "rbxassetid://10709797725",
+
+
+		["circle"] = "rbxassetid://10709798174",
+
+
+		["circle-dot"] = "rbxassetid://10709797837",
+
+
+		["circle-ellipsis"] = "rbxassetid://10709797985",
+
+
+		["circle-slashed"] = "rbxassetid://10709798100",
+
+
+		["citrus"] = "rbxassetid://10709798276",
+
+
+		["clapperboard"] = "rbxassetid://10709798350",
+
+
+		["clipboard"] = "rbxassetid://10709799288",
+
+
+		["clipboard-check"] = "rbxassetid://10709798443",
+
+
+		["clipboard-copy"] = "rbxassetid://10709798574",
+
+
+		["clipboard-edit"] = "rbxassetid://10709798682",
+
+
+		["clipboard-list"] = "rbxassetid://10709798792",
+
+
+		["clipboard-signature"] = "rbxassetid://10709798890",
+
+
+		["clipboard-type"] = "rbxassetid://10709798999",
+
+
+		["clipboard-x"] = "rbxassetid://10709799124",
+
+
+		["clock"] = "rbxassetid://10709805144",
+
+
+		["clock-1"] = "rbxassetid://10709799535",
+
+
+		["clock-10"] = "rbxassetid://10709799718",
+
+
+		["clock-11"] = "rbxassetid://10709799818",
+
+
+		["clock-12"] = "rbxassetid://10709799962",
+
+
+		["clock-2"] = "rbxassetid://10709803876",
+
+
+		["clock-3"] = "rbxassetid://10709803989",
+
+
+		["clock-4"] = "rbxassetid://10709804164",
+
+
+		["clock-5"] = "rbxassetid://10709804291",
+
+
+		["clock-6"] = "rbxassetid://10709804435",
+
+
+		["clock-7"] = "rbxassetid://10709804599",
+
+
+		["clock-8"] = "rbxassetid://10709804784",
+
+
+		["clock-9"] = "rbxassetid://10709804996",
+
+
+		["cloud"] = "rbxassetid://10709806740",
+
+
+		["cloud-cog"] = "rbxassetid://10709805262",
+
+
+		["cloud-drizzle"] = "rbxassetid://10709805371",
+
+
+		["cloud-fog"] = "rbxassetid://10709805477",
+
+
+		["cloud-hail"] = "rbxassetid://10709805596",
+
+
+		["cloud-lightning"] = "rbxassetid://10709805727",
+
+
+		["cloud-moon"] = "rbxassetid://10709805942",
+
+
+		["cloud-moon-rain"] = "rbxassetid://10709805838",
+
+
+		["cloud-off"] = "rbxassetid://10709806060",
+
+
+		["cloud-rain"] = "rbxassetid://10709806277",
+
+
+		["cloud-rain-wind"] = "rbxassetid://10709806166",
+
+
+		["cloud-snow"] = "rbxassetid://10709806374",
+
+
+		["cloud-sun"] = "rbxassetid://10709806631",
+
+
+		["cloud-sun-rain"] = "rbxassetid://10709806475",
+
+
+		["cloudy"] = "rbxassetid://10709806859",
+
+
+		["clover"] = "rbxassetid://10709806995",
+
+
+		["code"] = "rbxassetid://10709810463",
+
+
+		["code-2"] = "rbxassetid://10709807111",
+
+
+		["codepen"] = "rbxassetid://10709810534",
+
+
+		["codesandbox"] = "rbxassetid://10709810676",
+
+
+		["coffee"] = "rbxassetid://10709810814",
+
+
+		["cog"] = "rbxassetid://10709810948",
+
+
+		["coins"] = "rbxassetid://10709811110",
+
+
+		["columns"] = "rbxassetid://10709811261",
+
+
+		["command"] = "rbxassetid://10709811365",
+
+
+		["compass"] = "rbxassetid://10709811445",
+
+
+		["component"] = "rbxassetid://10709811595",
+
+
+		["concierge-bell"] = "rbxassetid://10709811706",
+
+
+		["connection"] = "rbxassetid://10747361219",
+
+
+		["contact"] = "rbxassetid://10709811834",
+
+
+		["contrast"] = "rbxassetid://10709811939",
+
+
+		["cookie"] = "rbxassetid://10709812067",
+
+
+		["copy"] = "rbxassetid://10709812159",
+
+
+		["copyleft"] = "rbxassetid://10709812251",
+
+
+		["copyright"] = "rbxassetid://10709812311",
+
+
+		["corner-down-left"] = "rbxassetid://10709812396",
+
+
+		["corner-down-right"] = "rbxassetid://10709812485",
+
+
+		["corner-left-down"] = "rbxassetid://10709812632",
+
+
+		["corner-left-up"] = "rbxassetid://10709812784",
+
+
+		["corner-right-down"] = "rbxassetid://10709812939",
+
+
+		["corner-right-up"] = "rbxassetid://10709813094",
+
+
+		["corner-up-left"] = "rbxassetid://10709813185",
+
+
+		["corner-up-right"] = "rbxassetid://10709813281",
+
+
+		["cpu"] = "rbxassetid://10709813383",
+
+
+		["croissant"] = "rbxassetid://10709818125",
+
+
+		["crop"] = "rbxassetid://10709818245",
+
+
+		["cross"] = "rbxassetid://10709818399",
+
+
+		["crosshair"] = "rbxassetid://10709818534",
+
+
+		["crown"] = "rbxassetid://10709818626",
+
+
+		["cup-soda"] = "rbxassetid://10709818763",
+
+
+		["curly-braces"] = "rbxassetid://10709818847",
+
+
+		["currency"] = "rbxassetid://10709818931",
+
+
+		["database"] = "rbxassetid://10709818996",
+
+
+		["delete"] = "rbxassetid://10709819059",
+
+
+		["diamond"] = "rbxassetid://10709819149",
+
+
+		["dice-1"] = "rbxassetid://10709819266",
+
+
+		["dice-2"] = "rbxassetid://10709819361",
+
+
+		["dice-3"] = "rbxassetid://10709819508",
+
+
+		["dice-4"] = "rbxassetid://10709819670",
+
+
+		["dice-5"] = "rbxassetid://10709819801",
+
+
+		["dice-6"] = "rbxassetid://10709819896",
+
+
+		["dices"] = "rbxassetid://10723343321",
+
+
+		["diff"] = "rbxassetid://10723343416",
+
+
+		["disc"] = "rbxassetid://10723343537",
+
+
+		["divide"] = "rbxassetid://10723343805",
+
+
+		["divide-circle"] = "rbxassetid://10723343636",
+
+
+		["divide-square"] = "rbxassetid://10723343737",
+
+
+		["dollar-sign"] = "rbxassetid://10723343958",
+
+
+		["download"] = "rbxassetid://10723344270",
+
+
+		["download-cloud"] = "rbxassetid://10723344088",
+
+
+		["droplet"] = "rbxassetid://10723344432",
+
+
+		["droplets"] = "rbxassetid://10734883356",
+
+
+		["drumstick"] = "rbxassetid://10723344737",
+
+
+		["edit"] = "rbxassetid://10734883598",
+
+
+		["edit-2"] = "rbxassetid://10723344885",
+
+
+		["edit-3"] = "rbxassetid://10723345088",
+
+
+		["egg"] = "rbxassetid://10723345518",
+
+
+		["egg-fried"] = "rbxassetid://10723345347",
+
+
+		["electricity"] = "rbxassetid://10723345749",
+
+
+		["electricity-off"] = "rbxassetid://10723345643",
+
+
+		["equal"] = "rbxassetid://10723345990",
+
+
+		["equal-not"] = "rbxassetid://10723345866",
+
+
+		["eraser"] = "rbxassetid://10723346158",
+
+
+		["euro"] = "rbxassetid://10723346372",
+
+
+		["expand"] = "rbxassetid://10723346553",
+
+
+		["external-link"] = "rbxassetid://10723346684",
+
+
+		["eye"] = "rbxassetid://10723346959",
+
+
+		["eye-off"] = "rbxassetid://10723346871",
+
+
+		["factory"] = "rbxassetid://10723347051",
+
+
+		["fan"] = "rbxassetid://10723354359",
+
+
+		["fast-forward"] = "rbxassetid://10723354521",
+
+
+		["feather"] = "rbxassetid://10723354671",
+
+
+		["figma"] = "rbxassetid://10723354801",
+
+
+		["file"] = "rbxassetid://10723374641",
+
+
+		["file-archive"] = "rbxassetid://10723354921",
+
+
+		["file-audio"] = "rbxassetid://10723355148",
+
+
+		["file-audio-2"] = "rbxassetid://10723355026",
+
+
+		["file-axis-3d"] = "rbxassetid://10723355272",
+
+
+		["file-badge"] = "rbxassetid://10723355622",
+
+
+		["file-badge-2"] = "rbxassetid://10723355451",
+
+
+		["file-bar-chart"] = "rbxassetid://10723355887",
+
+
+		["file-bar-chart-2"] = "rbxassetid://10723355746",
+
+
+		["file-box"] = "rbxassetid://10723355989",
+
+
+		["file-check"] = "rbxassetid://10723356210",
+
+
+		["file-check-2"] = "rbxassetid://10723356100",
+
+
+		["file-clock"] = "rbxassetid://10723356329",
+
+
+		["file-code"] = "rbxassetid://10723356507",
+
+
+		["file-cog"] = "rbxassetid://10723356830",
+
+
+		["file-cog-2"] = "rbxassetid://10723356676",
+
+
+		["file-diff"] = "rbxassetid://10723357039",
+
+
+		["file-digit"] = "rbxassetid://10723357151",
+
+
+		["file-down"] = "rbxassetid://10723357322",
+
+
+		["file-edit"] = "rbxassetid://10723357495",
+
+
+		["file-heart"] = "rbxassetid://10723357637",
+
+
+		["file-image"] = "rbxassetid://10723357790",
+
+
+		["file-input"] = "rbxassetid://10723357933",
+
+
+		["file-json"] = "rbxassetid://10723364435",
+
+
+		["file-json-2"] = "rbxassetid://10723364361",
+
+
+		["file-key"] = "rbxassetid://10723364605",
+
+
+		["file-key-2"] = "rbxassetid://10723364515",
+
+
+		["file-line-chart"] = "rbxassetid://10723364725",
+
+
+		["file-lock"] = "rbxassetid://10723364957",
+
+
+		["file-lock-2"] = "rbxassetid://10723364861",
+
+
+		["file-minus"] = "rbxassetid://10723365254",
+
+
+		["file-minus-2"] = "rbxassetid://10723365086",
+
+
+		["file-output"] = "rbxassetid://10723365457",
+
+
+		["file-pie-chart"] = "rbxassetid://10723365598",
+
+
+		["file-plus"] = "rbxassetid://10723365877",
+
+
+		["file-plus-2"] = "rbxassetid://10723365766",
+
+
+		["file-question"] = "rbxassetid://10723365987",
+
+
+		["file-scan"] = "rbxassetid://10723366167",
+
+
+		["file-search"] = "rbxassetid://10723366550",
+
+
+		["file-search-2"] = "rbxassetid://10723366340",
+
+
+		["file-signature"] = "rbxassetid://10723366741",
+
+
+		["file-spreadsheet"] = "rbxassetid://10723366962",
+
+
+		["file-symlink"] = "rbxassetid://10723367098",
+
+
+		["file-terminal"] = "rbxassetid://10723367244",
+
+
+		["file-text"] = "rbxassetid://10723367380",
+
+
+		["file-type"] = "rbxassetid://10723367606",
+
+
+		["file-type-2"] = "rbxassetid://10723367509",
+
+
+		["file-up"] = "rbxassetid://10723367734",
+
+
+		["file-video"] = "rbxassetid://10723373884",
+
+
+		["file-video-2"] = "rbxassetid://10723367834",
+
+
+		["file-volume"] = "rbxassetid://10723374172",
+
+
+		["file-volume-2"] = "rbxassetid://10723374030",
+
+
+		["file-warning"] = "rbxassetid://10723374276",
+
+
+		["file-x"] = "rbxassetid://10723374544",
+
+
+		["file-x-2"] = "rbxassetid://10723374378",
+
+
+		["files"] = "rbxassetid://10723374759",
+
+
+		["film"] = "rbxassetid://10723374981",
+
+
+		["filter"] = "rbxassetid://10723375128",
+
+
+		["fingerprint"] = "rbxassetid://3944703587",
+
+
+		["flag"] = "rbxassetid://10723375890",
+
+
+		["flag-off"] = "rbxassetid://10723375443",
+
+
+		["flag-triangle-left"] = "rbxassetid://10723375608",
+
+
+		["flag-triangle-right"] = "rbxassetid://10723375727",
+
+
+		["flame"] = "rbxassetid://10723376114",
+
+
+		["flashlight"] = "rbxassetid://10723376471",
+
+
+		["flashlight-off"] = "rbxassetid://10723376365",
+
+
+		["flask-conical"] = "rbxassetid://10734883986",
+
+
+		["flask-round"] = "rbxassetid://10723376614",
+
+
+		["flip-horizontal"] = "rbxassetid://10723376884",
+
+
+		["flip-horizontal-2"] = "rbxassetid://10723376745",
+
+
+		["flip-vertical"] = "rbxassetid://10723377138",
+
+
+		["flip-vertical-2"] = "rbxassetid://10723377026",
+
+
+		["flower"] = "rbxassetid://10747830374",
+
+
+		["flower-2"] = "rbxassetid://10723377305",
+
+
+		["focus"] = "rbxassetid://10723377537",
+
+
+		["folder"] = "rbxassetid://10723387563",
+
+
+		["folder-archive"] = "rbxassetid://10723384478",
+
+
+		["folder-check"] = "rbxassetid://10723384605",
+
+
+		["folder-clock"] = "rbxassetid://10723384731",
+
+
+		["folder-closed"] = "rbxassetid://10723384893",
+
+
+		["folder-cog"] = "rbxassetid://10723385213",
+
+
+		["folder-cog-2"] = "rbxassetid://10723385036",
+
+
+		["folder-down"] = "rbxassetid://10723385338",
+
+
+		["folder-edit"] = "rbxassetid://10723385445",
+
+
+		["folder-heart"] = "rbxassetid://10723385545",
+
+
+		["folder-input"] = "rbxassetid://10723385721",
+
+
+		["folder-key"] = "rbxassetid://10723385848",
+
+
+		["folder-lock"] = "rbxassetid://10723386005",
+
+
+		["folder-minus"] = "rbxassetid://10723386127",
+
+
+		["folder-open"] = "rbxassetid://10723386277",
+
+
+		["folder-output"] = "rbxassetid://10723386386",
+
+
+		["folder-plus"] = "rbxassetid://10723386531",
+
+
+		["folder-search"] = "rbxassetid://10723386787",
+
+
+		["folder-search-2"] = "rbxassetid://10723386674",
+
+
+		["folder-symlink"] = "rbxassetid://10723386930",
+
+
+		["folder-tree"] = "rbxassetid://10723387085",
+
+
+		["folder-up"] = "rbxassetid://10723387265",
+
+
+		["folder-x"] = "rbxassetid://10723387448",
+
+
+		["folders"] = "rbxassetid://10723387721",
+
+
+		["form-input"] = "rbxassetid://10723387841",
+
+
+		["forward"] = "rbxassetid://10723388016",
+
+
+		["frame"] = "rbxassetid://10723394389",
+
+
+		["framer"] = "rbxassetid://10723394565",
+
+
+		["frown"] = "rbxassetid://10723394681",
+
+
+		["fuel"] = "rbxassetid://10723394846",
+
+
+		["function-square"] = "rbxassetid://10723395041",
+
+
+		["gamepad"] = "rbxassetid://10723395457",
+
+
+		["gamepad-2"] = "rbxassetid://10723395215",
+
+
+		["gauge"] = "rbxassetid://10723395708",
+
+
+		["gavel"] = "rbxassetid://10723395896",
+
+
+		["gem"] = "rbxassetid://10723396000",
+
+
+		["ghost"] = "rbxassetid://10723396107",
+
+
+		["gift"] = "rbxassetid://10723396402",
+
+
+		["gift-card"] = "rbxassetid://10723396225",
+
+
+		["git-branch"] = "rbxassetid://10723396676",
+
+
+		["git-branch-plus"] = "rbxassetid://10723396542",
+
+
+		["git-commit"] = "rbxassetid://10723396812",
+
+
+		["git-compare"] = "rbxassetid://10723396954",
+
+
+		["git-fork"] = "rbxassetid://10723397049",
+
+
+		["git-merge"] = "rbxassetid://10723397165",
+
+
+		["git-pull-request"] = "rbxassetid://10723397431",
+
+
+		["git-pull-request-closed"] = "rbxassetid://10723397268",
+
+
+		["git-pull-request-draft"] = "rbxassetid://10734884302",
+
+
+		["glass"] = "rbxassetid://10723397788",
+
+
+		["glass-2"] = "rbxassetid://10723397529",
+
+
+		["glass-water"] = "rbxassetid://10723397678",
+
+
+		["glasses"] = "rbxassetid://10723397895",
+
+
+		["globe"] = "rbxassetid://10723404337",
+
+
+		["globe-2"] = "rbxassetid://10723398002",
+
+
+		["grab"] = "rbxassetid://10723404472",
+
+
+		["graduation-cap"] = "rbxassetid://10723404691",
+
+
+		["grape"] = "rbxassetid://10723404822",
+
+
+		["grid"] = "rbxassetid://10723404936",
+
+
+		["grip-horizontal"] = "rbxassetid://10723405089",
+
+
+		["grip-vertical"] = "rbxassetid://10723405236",
+
+
+		["hammer"] = "rbxassetid://10723405360",
+
+
+		["hand"] = "rbxassetid://10723405649",
+
+
+		["hand-metal"] = "rbxassetid://10723405508",
+
+
+		["hard-drive"] = "rbxassetid://10723405749",
+
+
+		["hard-hat"] = "rbxassetid://10723405859",
+
+
+		["hash"] = "rbxassetid://10723405975",
+
+
+		["haze"] = "rbxassetid://10723406078",
+
+
+		["headphones"] = "rbxassetid://10723406165",
+
+
+		["heart"] = "rbxassetid://10723406885",
+
+
+		["heart-crack"] = "rbxassetid://10723406299",
+
+
+		["heart-handshake"] = "rbxassetid://10723406480",
+
+
+		["heart-off"] = "rbxassetid://10723406662",
+
+
+		["heart-pulse"] = "rbxassetid://10723406795",
+
+
+		["help-circle"] = "rbxassetid://10723406988",
+
+
+		["hexagon"] = "rbxassetid://10723407092",
+
+
+		["highlighter"] = "rbxassetid://10723407192",
+
+
+		["history"] = "rbxassetid://10723407335",
+
+
+		["home"] = "rbxassetid://10723407389",
+
+
+		["hourglass"] = "rbxassetid://10723407498",
+
+
+		["ice-cream"] = "rbxassetid://10723414308",
+
+
+		["image"] = "rbxassetid://10723415040",
+
+
+		["image-minus"] = "rbxassetid://10723414487",
+
+
+		["image-off"] = "rbxassetid://10723414677",
+
+
+		["image-plus"] = "rbxassetid://10723414827",
+
+
+		["import"] = "rbxassetid://10723415205",
+
+
+		["inbox"] = "rbxassetid://10723415335",
+
+
+		["indent"] = "rbxassetid://10723415494",
+
+
+		["indian-rupee"] = "rbxassetid://10723415642",
+
+
+		["infinity"] = "rbxassetid://10723415766",
+
+
+		["info"] = "rbxassetid://10723415903",
+
+
+		["inspect"] = "rbxassetid://10723416057",
+
+
+		["italic"] = "rbxassetid://10723416195",
+
+
+		["japanese-yen"] = "rbxassetid://10723416363",
+
+
+		["joystick"] = "rbxassetid://10723416527",
+
+
+		["key"] = "rbxassetid://10723416652",
+
+
+		["keyboard"] = "rbxassetid://10723416765",
+
+
+		["lamp"] = "rbxassetid://10723417513",
+
+
+		["lamp-ceiling"] = "rbxassetid://10723416922",
+
+
+		["lamp-desk"] = "rbxassetid://10723417016",
+
+
+		["lamp-floor"] = "rbxassetid://10723417131",
+
+
+		["lamp-wall-down"] = "rbxassetid://10723417240",
+
+
+		["lamp-wall-up"] = "rbxassetid://10723417356",
+
+
+		["landmark"] = "rbxassetid://10723417608",
+
+
+		["languages"] = "rbxassetid://10723417703",
+
+
+		["laptop"] = "rbxassetid://10723423881",
+
+
+		["laptop-2"] = "rbxassetid://10723417797",
+
+
+		["lasso"] = "rbxassetid://10723424235",
+
+
+		["lasso-select"] = "rbxassetid://10723424058",
+
+
+		["laugh"] = "rbxassetid://10723424372",
+
+
+		["layers"] = "rbxassetid://10723424505",
+
+
+		["layout"] = "rbxassetid://10723425376",
+
+
+		["layout-dashboard"] = "rbxassetid://10723424646",
+
+
+		["layout-grid"] = "rbxassetid://10723424838",
+
+
+		["layout-list"] = "rbxassetid://10723424963",
+
+
+		["layout-template"] = "rbxassetid://10723425187",
+
+
+		["leaf"] = "rbxassetid://10723425539",
+
+
+		["library"] = "rbxassetid://10723425615",
+
+
+		["life-buoy"] = "rbxassetid://10723425685",
+
+
+		["lightbulb"] = "rbxassetid://10723425852",
+
+
+		["lightbulb-off"] = "rbxassetid://10723425762",
+
+
+		["line-chart"] = "rbxassetid://10723426393",
+
+
+		["link"] = "rbxassetid://10723426722",
+
+
+		["link-2"] = "rbxassetid://10723426595",
+
+
+		["link-2-off"] = "rbxassetid://10723426513",
+
+
+		["list"] = "rbxassetid://10723433811",
+
+
+		["list-checks"] = "rbxassetid://10734884548",
+
+
+		["list-end"] = "rbxassetid://10723426886",
+
+
+		["list-minus"] = "rbxassetid://10723426986",
+
+
+		["list-music"] = "rbxassetid://10723427081",
+
+
+		["list-ordered"] = "rbxassetid://10723427199",
+
+
+		["list-plus"] = "rbxassetid://10723427334",
+
+
+		["list-start"] = "rbxassetid://10723427494",
+
+
+		["list-video"] = "rbxassetid://10723427619",
+
+
+		["list-x"] = "rbxassetid://10723433655",
+
+
+		["loader"] = "rbxassetid://10723434070",
+
+
+		["loader-2"] = "rbxassetid://10723433935",
+
+
+		["locate"] = "rbxassetid://10723434557",
+
+
+		["locate-fixed"] = "rbxassetid://10723434236",
+
+
+		["locate-off"] = "rbxassetid://10723434379",
+
+
+		["lock"] = "rbxassetid://10723434711",
+
+
+		["log-in"] = "rbxassetid://10723434830",
+
+
+		["log-out"] = "rbxassetid://10723434906",
+
+
+		["luggage"] = "rbxassetid://10723434993",
+
+
+		["magnet"] = "rbxassetid://10723435069",
+
+
+		["mail"] = "rbxassetid://10734885430",
+
+
+		["mail-check"] = "rbxassetid://10723435182",
+
+
+		["mail-minus"] = "rbxassetid://10723435261",
+
+
+		["mail-open"] = "rbxassetid://10723435342",
+
+
+		["mail-plus"] = "rbxassetid://10723435443",
+
+
+		["mail-question"] = "rbxassetid://10723435515",
+
+
+		["mail-search"] = "rbxassetid://10734884739",
+
+
+		["mail-warning"] = "rbxassetid://10734885015",
+
+
+		["mail-x"] = "rbxassetid://10734885247",
+
+
+		["mails"] = "rbxassetid://10734885614",
+
+
+		["map"] = "rbxassetid://10734886202",
+
+
+		["map-pin"] = "rbxassetid://10734886004",
+
+
+		["map-pin-off"] = "rbxassetid://10734885803",
+
+
+		["maximize"] = "rbxassetid://10734886735",
+
+
+		["maximize-2"] = "rbxassetid://10734886496",
+
+
+		["medal"] = "rbxassetid://10734887072",
+
+
+		["megaphone"] = "rbxassetid://10734887454",
+
+
+		["megaphone-off"] = "rbxassetid://10734887311",
+
+
+		["meh"] = "rbxassetid://10734887603",
+
+
+		["menu"] = "rbxassetid://10734887784",
+
+
+		["message-circle"] = "rbxassetid://10734888000",
+
+
+		["message-square"] = "rbxassetid://10734888228",
+
+
+		["mic"] = "rbxassetid://10734888864",
+
+
+		["mic-2"] = "rbxassetid://10734888430",
+
+
+		["mic-off"] = "rbxassetid://10734888646",
+
+
+		["microscope"] = "rbxassetid://10734889106",
+
+
+		["microwave"] = "rbxassetid://10734895076",
+
+
+		["milestone"] = "rbxassetid://10734895310",
+
+
+		["minimize"] = "rbxassetid://10734895698",
+
+
+		["minimize-2"] = "rbxassetid://10734895530",
+
+
+		["minus"] = "rbxassetid://10734896206",
+
+
+		["minus-circle"] = "rbxassetid://10734895856",
+
+
+		["minus-square"] = "rbxassetid://10734896029",
+
+
+		["monitor"] = "rbxassetid://10734896881",
+
+
+		["monitor-off"] = "rbxassetid://10734896360",
+
+
+		["monitor-speaker"] = "rbxassetid://10734896512",
+
+
+		["moon"] = "rbxassetid://10734897102",
+
+
+		["more-horizontal"] = "rbxassetid://10734897250",
+
+
+		["more-vertical"] = "rbxassetid://10734897387",
+
+
+		["mountain"] = "rbxassetid://10734897956",
+
+
+		["mountain-snow"] = "rbxassetid://10734897665",
+
+
+		["mouse"] = "rbxassetid://10734898592",
+
+
+		["mouse-pointer"] = "rbxassetid://10734898476",
+
+
+		["mouse-pointer-2"] = "rbxassetid://10734898194",
+
+
+		["mouse-pointer-click"] = "rbxassetid://10734898355",
+
+
+		["move"] = "rbxassetid://10734900011",
+
+
+		["move-3d"] = "rbxassetid://10734898756",
+
+
+		["move-diagonal"] = "rbxassetid://10734899164",
+
+
+		["move-diagonal-2"] = "rbxassetid://10734898934",
+
+
+		["move-horizontal"] = "rbxassetid://10734899414",
+
+
+		["move-vertical"] = "rbxassetid://10734899821",
+
+
+		["music"] = "rbxassetid://10734905958",
+
+
+		["music-2"] = "rbxassetid://10734900215",
+
+
+		["music-3"] = "rbxassetid://10734905665",
+
+
+		["music-4"] = "rbxassetid://10734905823",
+
+
+		["navigation"] = "rbxassetid://10734906744",
+
+
+		["navigation-2"] = "rbxassetid://10734906332",
+
+
+		["navigation-2-off"] = "rbxassetid://10734906144",
+
+
+		["navigation-off"] = "rbxassetid://10734906580",
+
+
+		["network"] = "rbxassetid://10734906975",
+
+
+		["newspaper"] = "rbxassetid://10734907168",
+
+
+		["octagon"] = "rbxassetid://10734907361",
+
+
+		["option"] = "rbxassetid://10734907649",
+
+
+		["outdent"] = "rbxassetid://10734907933",
+
+
+		["package"] = "rbxassetid://10734909540",
+
+
+		["package-2"] = "rbxassetid://10734908151",
+
+
+		["package-check"] = "rbxassetid://10734908384",
+
+
+		["package-minus"] = "rbxassetid://10734908626",
+
+
+		["package-open"] = "rbxassetid://10734908793",
+
+
+		["package-plus"] = "rbxassetid://10734909016",
+
+
+		["package-search"] = "rbxassetid://10734909196",
+
+
+		["package-x"] = "rbxassetid://10734909375",
+
+
+		["paint-bucket"] = "rbxassetid://10734909847",
+
+
+		["paintbrush"] = "rbxassetid://10734910187",
+
+
+		["paintbrush-2"] = "rbxassetid://10734910030",
+
+
+		["palette"] = "rbxassetid://10734910430",
+
+
+		["palmtree"] = "rbxassetid://10734910680",
+
+
+		["paperclip"] = "rbxassetid://10734910927",
+
+
+		["party-popper"] = "rbxassetid://10734918735",
+
+
+		["pause"] = "rbxassetid://10734919336",
+
+
+		["pause-circle"] = "rbxassetid://10735024209",
+
+
+		["pause-octagon"] = "rbxassetid://10734919143",
+
+
+		["pen-tool"] = "rbxassetid://10734919503",
+
+
+		["pencil"] = "rbxassetid://10734919691",
+
+
+		["percent"] = "rbxassetid://10734919919",
+
+
+		["person-standing"] = "rbxassetid://10734920149",
+
+
+		["phone"] = "rbxassetid://10734921524",
+
+
+		["phone-call"] = "rbxassetid://10734920305",
+
+
+		["phone-forwarded"] = "rbxassetid://10734920508",
+
+
+		["phone-incoming"] = "rbxassetid://10734920694",
+
+
+		["phone-missed"] = "rbxassetid://10734920845",
+
+
+		["phone-off"] = "rbxassetid://10734921077",
+
+
+		["phone-outgoing"] = "rbxassetid://10734921288",
+
+
+		["pie-chart"] = "rbxassetid://10734921727",
+
+
+		["piggy-bank"] = "rbxassetid://10734921935",
+
+
+		["pin"] = "rbxassetid://10734922324",
+
+
+		["pin-off"] = "rbxassetid://10734922180",
+
+
+		["pipette"] = "rbxassetid://10734922497",
+
+
+		["pizza"] = "rbxassetid://10734922774",
+
+
+		["plane"] = "rbxassetid://10734922971",
+
+
+		["play"] = "rbxassetid://10734923549",
+
+
+		["play-circle"] = "rbxassetid://10734923214",
+
+
+		["plus"] = "rbxassetid://10734924532",
+
+
+		["plus-circle"] = "rbxassetid://10734923868",
+
+
+		["plus-square"] = "rbxassetid://10734924219",
+
+
+		["podcast"] = "rbxassetid://10734929553",
+
+
+		["pointer"] = "rbxassetid://10734929723",
+
+
+		["pound-sterling"] = "rbxassetid://10734929981",
+
+
+		["power"] = "rbxassetid://10734930466",
+
+
+		["power-off"] = "rbxassetid://10734930257",
+
+
+		["printer"] = "rbxassetid://10734930632",
+
+
+		["puzzle"] = "rbxassetid://10734930886",
+
+
+		["quote"] = "rbxassetid://10734931234",
+
+
+		["radio"] = "rbxassetid://10734931596",
+
+
+		["radio-receiver"] = "rbxassetid://10734931402",
+
+
+		["rectangle-horizontal"] = "rbxassetid://10734931777",
+
+
+		["rectangle-vertical"] = "rbxassetid://10734932081",
+
+
+		["recycle"] = "rbxassetid://10734932295",
+
+
+		["redo"] = "rbxassetid://10734932822",
+
+
+		["redo-2"] = "rbxassetid://10734932586",
+
+
+		["refresh-ccw"] = "rbxassetid://10734933056",
+
+
+		["refresh-cw"] = "rbxassetid://10734933222",
+
+
+		["refrigerator"] = "rbxassetid://10734933465",
+
+
+		["regex"] = "rbxassetid://10734933655",
+
+
+		["repeat"] = "rbxassetid://10734933966",
+
+
+		["repeat-1"] = "rbxassetid://10734933826",
+
+
+		["reply"] = "rbxassetid://10734934252",
+
+
+		["reply-all"] = "rbxassetid://10734934132",
+
+
+		["rewind"] = "rbxassetid://10734934347",
+
+
+		["rocket"] = "rbxassetid://10734934585",
+
+
+		["rocking-chair"] = "rbxassetid://10734939942",
+
+
+		["rotate-3d"] = "rbxassetid://10734940107",
+
+
+		["rotate-ccw"] = "rbxassetid://10734940376",
+
+
+		["rotate-cw"] = "rbxassetid://10734940654",
+
+
+		["rss"] = "rbxassetid://10734940825",
+
+
+		["ruler"] = "rbxassetid://10734941018",
+
+
+		["russian-ruble"] = "rbxassetid://10734941199",
+
+
+		["sailboat"] = "rbxassetid://10734941354",
+
+
+		["save"] = "rbxassetid://10734941499",
+
+
+		["scale"] = "rbxassetid://10734941912",
+
+
+		["scale-3d"] = "rbxassetid://10734941739",
+
+
+		["scaling"] = "rbxassetid://10734942072",
+
+
+		["scan"] = "rbxassetid://10734942565",
+
+
+		["scan-face"] = "rbxassetid://10734942198",
+
+
+		["scan-line"] = "rbxassetid://10734942351",
+
+
+		["scissors"] = "rbxassetid://10734942778",
+
+
+		["screen-share"] = "rbxassetid://10734943193",
+
+
+		["screen-share-off"] = "rbxassetid://10734942967",
+
+
+		["scroll"] = "rbxassetid://10734943448",
+
+
+		["search"] = "rbxassetid://10734943674",
+
+
+		["send"] = "rbxassetid://10734943902",
+
+
+		["separator-horizontal"] = "rbxassetid://10734944115",
+
+
+		["separator-vertical"] = "rbxassetid://10734944326",
+
+
+		["server"] = "rbxassetid://10734949856",
+
+
+		["server-cog"] = "rbxassetid://10734944444",
+
+
+		["server-crash"] = "rbxassetid://10734944554",
+
+
+		["server-off"] = "rbxassetid://10734944668",
+
+
+		["settings"] = "rbxassetid://10734950309",
+
+
+		["settings-2"] = "rbxassetid://10734950020",
+
+
+		["share"] = "rbxassetid://10734950813",
+
+
+		["share-2"] = "rbxassetid://10734950553",
+
+
+		["sheet"] = "rbxassetid://10734951038",
+
+
+		["shield"] = "rbxassetid://10734951847",
+
+
+		["shield-alert"] = "rbxassetid://10734951173",
+
+
+		["shield-check"] = "rbxassetid://10734951367",
+
+
+		["shield-close"] = "rbxassetid://10734951535",
+
+
+		["shield-off"] = "rbxassetid://10734951684",
+
+
+		["shirt"] = "rbxassetid://10734952036",
+
+
+		["shopping-bag"] = "rbxassetid://10734952273",
+
+
+		["shopping-cart"] = "rbxassetid://10734952479",
+
+
+		["shovel"] = "rbxassetid://10734952773",
+
+
+		["shower-head"] = "rbxassetid://10734952942",
+
+
+		["shrink"] = "rbxassetid://10734953073",
+
+
+		["shrub"] = "rbxassetid://10734953241",
+
+
+		["shuffle"] = "rbxassetid://10734953451",
+
+
+		["sidebar"] = "rbxassetid://10734954301",
+
+
+		["sidebar-close"] = "rbxassetid://10734953715",
+
+
+		["sidebar-open"] = "rbxassetid://10734954000",
+
+
+		["sigma"] = "rbxassetid://10734954538",
+
+
+		["signal"] = "rbxassetid://10734961133",
+
+
+		["signal-high"] = "rbxassetid://10734954807",
+
+
+		["signal-low"] = "rbxassetid://10734955080",
+
+
+		["signal-medium"] = "rbxassetid://10734955336",
+
+
+		["signal-zero"] = "rbxassetid://10734960878",
+
+
+		["siren"] = "rbxassetid://10734961284",
+
+
+		["skip-back"] = "rbxassetid://10734961526",
+
+
+		["skip-forward"] = "rbxassetid://10734961809",
+
+
+		["skull"] = "rbxassetid://10734962068",
+
+
+		["slack"] = "rbxassetid://10734962339",
+
+
+		["slash"] = "rbxassetid://10734962600",
+
+
+		["slice"] = "rbxassetid://10734963024",
+
+
+		["sliders"] = "rbxassetid://17100475788",
+
+
+		["sliders-horizontal"] = "rbxassetid://10734963191",
+
+
+		["smartphone"] = "rbxassetid://10734963940",
+
+
+		["smartphone-charging"] = "rbxassetid://10734963671",
+
+
+		["smile"] = "rbxassetid://10734964441",
+
+
+		["smile-plus"] = "rbxassetid://10734964188",
+
+
+		["snowflake"] = "rbxassetid://10734964600",
+
+
+		["sofa"] = "rbxassetid://10734964852",
+
+
+		["sort-asc"] = "rbxassetid://10734965115",
+
+
+		["sort-desc"] = "rbxassetid://10734965287",
+
+
+		["speaker"] = "rbxassetid://10734965419",
+
+
+		["sprout"] = "rbxassetid://10734965572",
+
+
+		["square"] = "rbxassetid://10734965702",
+
+
+		["star"] = "rbxassetid://10734966248",
+
+
+		["star-half"] = "rbxassetid://10734965897",
+
+
+		["star-off"] = "rbxassetid://10734966097",
+
+
+		["stethoscope"] = "rbxassetid://10734966384",
+
+
+		["sticker"] = "rbxassetid://10734972234",
+
+
+		["sticky-note"] = "rbxassetid://10734972463",
+
+
+		["stop-circle"] = "rbxassetid://10734972621",
+
+
+		["stretch-horizontal"] = "rbxassetid://10734972862",
+
+
+		["stretch-vertical"] = "rbxassetid://10734973130",
+
+
+		["strikethrough"] = "rbxassetid://10734973290",
+
+
+		["subscript"] = "rbxassetid://10734973457",
+
+
+		["sun"] = "rbxassetid://10734974297",
+
+
+		["sun-dim"] = "rbxassetid://10734973645",
+
+
+		["sun-medium"] = "rbxassetid://10734973778",
+
+
+		["sun-moon"] = "rbxassetid://10734973999",
+
+
+		["sun-snow"] = "rbxassetid://10734974130",
+
+
+		["sunrise"] = "rbxassetid://10734974522",
+
+
+		["sunset"] = "rbxassetid://10734974689",
+
+
+		["superscript"] = "rbxassetid://10734974850",
+
+
+		["swiss-franc"] = "rbxassetid://10734975024",
+
+
+		["switch-camera"] = "rbxassetid://10734975214",
+
+
+		["sword"] = "rbxassetid://10734975486",
+
+
+		["swords"] = "rbxassetid://10734975692",
+
+
+		["syringe"] = "rbxassetid://10734975932",
+
+
+		["table"] = "rbxassetid://10734976230",
+
+
+		["table-2"] = "rbxassetid://10734976097",
+
+
+		["tablet"] = "rbxassetid://10734976394",
+
+
+		["tag"] = "rbxassetid://10734976528",
+
+
+		["tags"] = "rbxassetid://10734976739",
+
+
+		["target"] = "rbxassetid://10734977012",
+
+
+		["tent"] = "rbxassetid://10734981750",
+
+
+		["terminal"] = "rbxassetid://10734982144",
+
+
+		["terminal-square"] = "rbxassetid://10734981995",
+
+
+		["text-cursor"] = "rbxassetid://10734982395",
+
+
+		["text-cursor-input"] = "rbxassetid://10734982297",
+
+
+		["thermometer"] = "rbxassetid://10734983134",
+
+
+		["thermometer-snowflake"] = "rbxassetid://10734982571",
+
+
+		["thermometer-sun"] = "rbxassetid://10734982771",
+
+
+		["thumbs-down"] = "rbxassetid://10734983359",
+
+
+		["thumbs-up"] = "rbxassetid://10734983629",
+
+
+		["ticket"] = "rbxassetid://10734983868",
+
+
+		["timer"] = "rbxassetid://10734984606",
+
+
+		["timer-off"] = "rbxassetid://10734984138",
+
+
+		["timer-reset"] = "rbxassetid://10734984355",
+
+
+		["toggle-left"] = "rbxassetid://10734984834",
+
+
+		["toggle-right"] = "rbxassetid://10734985040",
+
+
+		["tornado"] = "rbxassetid://10734985247",
+		["toy-brick"] = "rbxassetid://10747361919",
+		["train"] = "rbxassetid://10747362105",
+		["trash"] = "rbxassetid://10747362393",
+		["trash-2"] = "rbxassetid://10747362241",
+		["tree-deciduous"] = "rbxassetid://10747362534",
+		["tree-pine"] = "rbxassetid://10747362748",
+		["trees"] = "rbxassetid://10747363016",
+		["trending-down"] = "rbxassetid://10747363205",
+		["trending-up"] = "rbxassetid://10747363465",
+		["triangle"] = "rbxassetid://10747363621",
+		["trophy"] = "rbxassetid://10747363809",
+		["truck"] = "rbxassetid://10747364031",
+		["tv"] = "rbxassetid://10747364593",
+		["tv-2"] = "rbxassetid://10747364302",
+		["type"] = "rbxassetid://10747364761",
+		["umbrella"] = "rbxassetid://10747364971",
+		["underline"] = "rbxassetid://10747365191",
+		["undo"] = "rbxassetid://10747365484",
+		["undo-2"] = "rbxassetid://10747365359",
+		["unlink"] = "rbxassetid://10747365771",
+		["unlink-2"] = "rbxassetid://10747397871",
+		["unlock"] = "rbxassetid://10747366027",
+		["upload"] = "rbxassetid://10747366434",
+		["upload-cloud"] = "rbxassetid://10747366266",
+		["usb"] = "rbxassetid://10747366606",
+		["user"] = "rbxassetid://10747373176",
+		["user-check"] = "rbxassetid://10747371901",
+		["user-cog"] = "rbxassetid://10747372167",
+		["user-minus"] = "rbxassetid://10747372346",
+		["user-plus"] = "rbxassetid://10747372702",
+		["user-x"] = "rbxassetid://10747372992",
+		["users"] = "rbxassetid://10747373426",
+		["utensils"] = "rbxassetid://10747373821",
+		["utensils-crossed"] = "rbxassetid://10747373629",
+		["venetian-mask"] = "rbxassetid://10747374003",
+		["verified"] = "rbxassetid://10747374131",
+		["vibrate"] = "rbxassetid://10747374489",
+		["vibrate-off"] = "rbxassetid://10747374269",
+		["video"] = "rbxassetid://10747374938",
+		["video-off"] = "rbxassetid://10747374721",
+		["view"] = "rbxassetid://10747375132",
+		["voicemail"] = "rbxassetid://10747375281",
+		["volume"] = "rbxassetid://10747376008",
+		["volume-1"] = "rbxassetid://10747375450",
+		["volume-2"] = "rbxassetid://10747375679",
+		["volume-x"] = "rbxassetid://10747375880",
+		["wallet"] = "rbxassetid://10747376205",
+		["wand"] = "rbxassetid://10747376565",
+		["wand-2"] = "rbxassetid://10747376349",
+		["watch"] = "rbxassetid://10747376722",
+		["waves"] = "rbxassetid://10747376931",
+		["webcam"] = "rbxassetid://10747381992",
+		["wifi"] = "rbxassetid://10747382504",
+		["wifi-off"] = "rbxassetid://10747382268",
+		["wind"] = "rbxassetid://10747382750",
+		["wrap-text"] = "rbxassetid://10747383065",
+		["wrench"] = "rbxassetid://10747383470",
+		["x"] = "rbxassetid://10747384394",
+		["x-circle"] = "rbxassetid://10747383819",
+		["x-octagon"] = "rbxassetid://10747384037",
+		["x-square"] = "rbxassetid://10747384217",
+		["zoom-in"] = "rbxassetid://10747384552",
+		["zoom-out"] = "rbxassetid://10747384679",
+	},
 	Material = {
 		["perm_media"] = "http://www.roblox.com/asset/?id=6031215982";
 		["sticky_note_2"] = "http://www.roblox.com/asset/?id=6031265972";
@@ -1622,12 +3882,12 @@ local function RemoveTable(tablre : table, value)
 end
 
 -- Returns a table with RGB Values of the provided Color
-local function PackColor(Color : Color3)
+local function UnpackColor(Color : Color3)
 	return {R = Color.R * 255, G = Color.G * 255, B = Color.B * 255}
 end    
 
 -- Returns a color with the RGB Values of the provided table
-local function UnpackColor(Color : table)
+local function PackColor(Color : table)
 	return Color3.fromRGB(Color.R, Color.G, Color.B)
 end
 
@@ -1638,6 +3898,7 @@ function Tween(object : Instance, goal : table, callback, tweenin)
 	tween:Play()
 end
 
+-- Returns an rbxassetid corresponding to the Icon Name and Source provided
 local function GetIcon(icon, source)
 	if source == "Custom" then
 		return "rbxassetid://" .. icon
@@ -1672,7 +3933,7 @@ local function GetIcon(icon, source)
 
 			return asset
 		else
-			return "rbxassetid://10723434557"
+			return icons[icon]
 		end
 	else	
 		if icon ~= nil and IconModule[source] then
@@ -1686,7 +3947,7 @@ end
 
 -- Creates the BlurBehind Effect for the transparent theme
 local function BlurModule(Frame : Frame)
-	local RunService = game:GetService('RunService')
+	local RunService = RunService
 	local camera = workspace.CurrentCamera
 	local MTREL = "Glass"
 	local binds = {}
@@ -1696,7 +3957,7 @@ local function BlurModule(Frame : Frame)
 	local gTokenMH = 99999999
 	local gToken = math.random(1, gTokenMH)
 
-	local DepthOfField = Instance.new('DepthOfFieldEffect', game:GetService('Lighting'))
+	local DepthOfField = Instance.new('DepthOfFieldEffect', Lighting)
 	DepthOfField.FarIntensity = 0
 	DepthOfField.FocusDistance = 51.6
 	DepthOfField.InFocusRadius = 50
@@ -1875,19 +4136,14 @@ local function BlurModule(Frame : Frame)
 	RunService:BindToRenderStep(uid, 2000, UpdateOrientation)
 end
 
--- Unpacks A Table, Returning it as string containing a list of the values or "Various" if there are more than 3
+-- Unpacks A Table, Returning it as string containing a list of the values
 local function UnpackTable(array : table)
 
 	local val = ""
 	local i = 0
 	for _,v in pairs(array) do
-		if i < 3 then
-			val = val .. v .. ", "
-			i += 1
-		else
-			val = "Various"
-			break
-		end
+		val = val .. v .. ", "
+		i += 1
 	end
 
 	return val
@@ -1910,12 +4166,12 @@ local oldSizeX, oldSizeY, oldPosX, oldPosY
 
 -- Hides the given MainWindow
 local function Hide(Interface : ScreenGui, JustHide : boolean?, Notify : boolean?, Bind : string?)
-	
+
 	JustHide = JustHide or false
-	
+
 	-- Clear Table
 	table.clear(TransparencyValues)
-	
+
 	for i,v in pairs(Interface:GetDescendants()) do
 		if  v.ClassName ~= "Folder" 
 			or v.ClassName ~= "UICorner" 
@@ -1930,35 +4186,35 @@ local function Hide(Interface : ScreenGui, JustHide : boolean?, Notify : boolean
 		then
 			-- Create And Set Subtables
 			if JustHide == false then
-				
-				v:SetAttribute("InstanceID", game:GetService("HttpService"):GenerateGUID(false)) -- we are doing this cus roblox fucking removed/disabled the UniqueId feature, and stuff might have the same name
-				
+
+				v:SetAttribute("InstanceID", HttpService:GenerateGUID(false)) -- we are doing this cus roblox fucking removed/disabled the UniqueId feature, and stuff might have the same name
+
 				TransparencyValues[v:GetAttribute("InstanceID")] = { }
-				
+
 				if v.ClassName == "Frame" then
 					TransparencyValues[v:GetAttribute("InstanceID")].BackgroundTransparency = v.BackgroundTransparency
 				end
-				
+
 				if v.ClassName == "TextLabel" or v.ClassName == "TextBox" or v.ClassName == "TextButton" then
 					TransparencyValues[v:GetAttribute("InstanceID")].BackgroundTransparency = v.BackgroundTransparency
 					TransparencyValues[v:GetAttribute("InstanceID")].TextTransparency = v.TextTransparency
 				end
-				
+
 				if v.ClassName == "ImageLabel" or v.ClassName == "ImageButton" then
 					TransparencyValues[v:GetAttribute("InstanceID")].BackgroundTransparency = v.BackgroundTransparency
 					TransparencyValues[v:GetAttribute("InstanceID")].ImageTransparency = v.ImageTransparency
 				end
-				
+
 				-- do this cus roblox gui stuff have a although deprecated class, its still accesible by scripts
 				-- and sets text and transparency values which is smth we dont want
 				if v.ClassName == "UIStroke" or v.ClassName == "UIGradient" then
 					TransparencyValues[v:GetAttribute("InstanceID")].Transparency = v.Transparency
 				end
-				
+
 				Starlight.Minimized = true
 			end
-			
-			
+
+
 			-- Actually Hide The Stuff
 			if v.ClassName == "Frame" then
 				Tween(v, {BackgroundTransparency = 1})
@@ -1973,7 +4229,7 @@ local function Hide(Interface : ScreenGui, JustHide : boolean?, Notify : boolean
 				Tween(v, {BackgroundTransparency = 1})
 				Tween(v, {ImageTransparency = 1})
 			end
-			
+
 			if v.ClassName == "UIStroke" then
 				Tween(v, {Transparency = 1})
 			end
@@ -1995,7 +4251,7 @@ local function Unhide(Interface : ScreenGui)
 			or v.ClassName ~= "UISizeConstraint"
 			or v.ClassName ~= "UIAspectRatioConstraint"
 		then
-		
+
 			if v.ClassName == "Frame" then
 				Tween(v, {BackgroundTransparency = TransparencyValues[v:GetAttribute("InstanceID")].BackgroundTransparency})
 			end
@@ -2015,7 +4271,7 @@ local function Unhide(Interface : ScreenGui)
 			end
 		end
 	end
-	
+
 	Starlight.Minimized = false
 end
 
@@ -2049,7 +4305,7 @@ end
 local function makeDraggable(Bar, Window : Frame, enableTaptic, tapticOffset)
 	pcall(function()
 		local Dragging, DragInput, MousePos, FramePos
-		
+
 		local dragBar = Window.Parent.Drag
 		local dragInteract = dragBar.Interact
 		local dragBarCosmetic = dragBar.DragCosmetic
@@ -2103,6 +4359,9 @@ local function makeDraggable(Bar, Window : Frame, enableTaptic, tapticOffset)
 
 		UserInputService.InputChanged:Connect(function(Input)
 			if Input == DragInput and Dragging then
+				if Starlight.Maximized then
+					Unmaximize(Window, true)
+				end
 				local Delta = Input.Position - MousePos
 
 				local newMainPosition = UDim2.new(FramePos.X.Scale, FramePos.X.Offset + Delta.X, FramePos.Y.Scale, FramePos.Y.Offset + Delta.Y)
@@ -2133,7 +4392,7 @@ StarlightUI.Name = (((getgenv and getgenv().InterfaceName) or StarlightUI.Name) 
 Starlight.Instance = StarlightUI
 
 repeat
-	
+
 	if StarlightUI:FindFirstChild('Build') and StarlightUI.Build.Value == Starlight.InterfaceBuild then
 		correctBuild = true
 		break
@@ -2152,21 +4411,21 @@ repeat
 	StarlightUI = isStudio and script.Parent:WaitForChild("Starlight V2") or game:GetObjects("rbxassetid://115378917859034")[1]
 
 	buildAttempts += 1
-	
+
 until buildAttempts >= 2
 
 -- Sets The Interface Into Roblox's GUI
 if gethui then
 	StarlightUI.Parent = gethui()
-	
+
 elseif syn and syn.protect_gui then 
 	syn.protect_gui(StarlightUI)
-	
+
 	StarlightUI.Parent = CoreGui
-	
+
 elseif not isStudio and CoreGui:FindFirstChild("RobloxGui") then
 	StarlightUI.Parent = CoreGui:FindFirstChild("RobloxGui")
-	
+
 elseif not isStudio then
 	StarlightUI.Parent = CoreGui
 end
@@ -2222,7 +4481,7 @@ end
 
 -- Create the Window
 function Starlight:CreateWindow(WindowSettings)
-	
+
 	-- The Options Table
 	--[[
 	
@@ -2274,36 +4533,36 @@ function Starlight:CreateWindow(WindowSettings)
 	}
 	
 	]]--
-	
+
 	WindowSettings.LoadingEnabled = true
-	
+
 	Starlight.Window = {
 		Instance = mainWindow,
 		TabSections = {},
 		CurrentTab = nil,
 		Settings = nil,
 		CurrentSize = mainWindow.Size,
-		
+
 		Values = {
 			Title = WindowSettings.Name,
 			Subtitle = WindowSettings.Subtitle,
 			Icon = WindowSettings.Icon or nil,
-			
+
 			BuildWarnings = WindowSettings.BuildWarnings,
 			InterfaceAdvertisingPrompts = WindowSettings.InterfaceAdvertisingPrompts,
-			
+
 			AnalyticsWebHook = WindowSettings.AnalyticsWebHook,
-			
+
 			ConfigurationSettings = {
 				Enabled = WindowSettings.ConfigurationSettings.Enabled,
 				RootFolder = WindowSettings.ConfigurationSettings.RootFolder,
 				FolderName = WindowSettings.ConfigurationSettings.FolderName,
 			},
-			
+
 			Monetization = WindowSettings.Monetization
 		}
 	}
-	
+
 	--// SUBSECTION : Initial Code
 	do
 		local loadingScreenLogoChanged = false
@@ -2384,38 +4643,38 @@ function Starlight:CreateWindow(WindowSettings)
 		mainWindow["Loading Screen"].Visible = false
 	end
 	--// ENDSUBSECTION
-	
+
 	--// SUBSECTION : User Functions (Like Creating Elements)
 
 	local FirstTab = true
-	
+
 	function Starlight.Window:CreateTabSection(Name :string, Visible)
-		
+
 		Visible = Visible or (Name ~= nil and true or false)
 		Name = Name or "Empty Section"
-		
+
 		local TabSection = {
 			Tabs = {},
 			Name = Name
 		}
-		
+
 		TabSection.Instance = navigation.NavigationSectionTemplate:Clone()
 		TabSection.Instance.TabButtonTemplate:Destroy()
 		TabSection.Instance.Visible = true
-		
+
 		TabSection.Instance.Header.Text = Name
 		TabSection.Instance.Name = "TAB_SECTION_"..Name
 		TabSection.Instance.Header.Visible = Visible
-		
+
 		--// SUBSECTION : User Functions
-		
+
 		function TabSection:Set(NewName)
 			Name = NewName
 			TabSection.Instance.Header.Text = Name
 			TabSection.Instance.Name = "TAB_SECTION_"..Name
 			Starlight.Window.TabSections[Name] = TabSection
 		end
-		
+
 		-- uhh not currently added
 		--[[function TabSection:CreateHomeTab(HomeTabSettings)
 
@@ -2433,23 +4692,23 @@ function Starlight:CreateWindow(WindowSettings)
 			}
 			
 			]]
-			
+
 			TabSettings.Icon = TabSettings.Icon or "view_in_ar"
 			TabSettings.ImageSource = TabSettings.ImageSource or "Material"
-			
+
 			local Tab = {
 				Instances = {},
 				Values = TabSettings,
 				Groupboxes = {}
 			}
-			
+
 			Tab.Instances.Button = navigation.NavigationSectionTemplate.TabButtonTemplate:Clone()
 			Tab.Instances.Button.Visible = true
-			
+
 			Tab.Instances.Button.Header.Text = TabSettings.Name
 			Tab.Instances.Button.Name = "TAB_" .. TabSettings.Name
 			Tab.Instances.Button.Icon.Image = GetIcon(TabSettings.Icon, TabSettings.ImageSource)
-			
+
 			Tab.Instances.Page = tabs["Tab_TEMPLATE"]:Clone()
 			for i,v in pairs(Tab.Instances.Page:GetChildren()) do
 				if v.ClassName == "ScrollingFrame" then
@@ -2458,20 +4717,20 @@ function Starlight:CreateWindow(WindowSettings)
 			end
 			Tab.Instances.Page.Visible = true
 			Tab.Instances.Page.Name = "TAB_" .. TabSettings.Name
-			
+
 			Tab.Instances.Page.LayoutOrder = #tabs:GetChildren() - 2
 			Tab.Instances.Page.Parent = tabs
-			
+
 			local function Activate() -- so i dont have to rewrite shit again
-				
+
 				Tween(Tab.Instances.Button, {BackgroundTransparency = 0.65})
 				Tween(Tab.Instances.Button.Icon, {ImageColor3 = Color3.new(1,1,1)})
 				Tween(Tab.Instances.Button.Header, {TextColor3 = Color3.new(1,1,1)})
 				Tab.Instances.Button.Icon.Accent.Enabled = true
 				Tab.Instances.Button.Header.Accent.Enabled = true
-				
+
 				tabs.UIPageLayout:JumpTo(Tab.Instances.Page)
-				
+
 				for _, OtherTabSection in pairs(navigation:GetChildren()) do
 					for _, OtherTab in pairs(OtherTabSection:GetChildren()) do
 						if OtherTab.ClassName == "Frame" and OtherTab ~= Tab.Instances.Button then
@@ -2483,21 +4742,21 @@ function Starlight:CreateWindow(WindowSettings)
 						end
 					end
 				end
-				
+
 				Starlight.Window.CurrentTab = Tab
-				
+
 			end
-			
+
 			Tab.Instances.Button.Interact["MouseButton1Click"]:Connect(function()
 				Activate()
 			end)
-			
+
 			if FirstTab then
 				Activate()
 			end
-			
+
 			FirstTab = false
-			
+
 			for i=1, TabSettings.Columns do
 				local column = tabs["Tab_TEMPLATE"].ScrollingCollumnTemplate:Clone()
 				column.Parent = Tab.Instances.Page
@@ -2509,9 +4768,9 @@ function Starlight:CreateWindow(WindowSettings)
 					end
 				end
 			end
-			
+
 			--// SUBSECTION : User Functions
-			
+
 			function Tab:Set(NewTabSettings)
 				TabSettings = NewTabSettings
 				Tab.Values = TabSettings
@@ -2520,25 +4779,25 @@ function Starlight:CreateWindow(WindowSettings)
 				Tab.Instances.Button.Icon.Image = GetIcon(TabSettings.Icon, TabSettings.ImageSource)
 				Starlight.Window.TabSections[Name].Tabs[TabSettings.Name] = Tab
 			end
-			
+
 			function Tab:Destroy()
 				Tab.Instances.Button:Destroy()
 				Tab.Instances.Page:Destroy()
 			end
-			
+
 			function Tab:CreateDivider(Column) -- will be changed in next update to be other items where its linked back to the library
 				local Divider = {}
-				
+
 				Divider.Instance = tabs["Tab_TEMPLATE"].ScrollingCollumnTemplate.Divider:Clone()
 				Divider.Instance.Parent = Tab.Instances.Page["Column_" .. Column]
-				
+
 				function Divider:Destroy()
 					Divider.Instance:Destroy()
 				end
-				
+
 				return Divider
 			end
-			
+
 			function Tab:CreateGroupbox(GroupboxSettings)
 				--[[
 				GroupboxSettings = {
@@ -2549,18 +4808,18 @@ function Starlight:CreateWindow(WindowSettings)
 					Style = number, ** -- the style cannot be updated after creation
 				}
 				]]
-				
+
 				GroupboxSettings.Icon = GroupboxSettings.Icon or "view_in_ar"
 				GroupboxSettings.ImageSource = GroupboxSettings.ImageSource or "Material"
 				GroupboxSettings.Column = GroupboxSettings.Column or 1
 				GroupboxSettings.Style = GroupboxSettings.Style or 1
-				
+
 				local Groupbox = {
 					Values = GroupboxSettings,
 					Elements = {},
 					ParentingItem = nil
 				}
-				
+
 				Groupbox.Instance = nil
 				if GroupboxSettings.Style == 1 then
 					Groupbox.Instance = tabs["Tab_TEMPLATE"].ScrollingCollumnTemplate["Groupbox_Style1"]:Clone()
@@ -2575,22 +4834,22 @@ function Starlight:CreateWindow(WindowSettings)
 
 				Groupbox.ParentingItem = GroupboxSettings.Style == 2 and
 					Groupbox.Instance.PART_Content 
-				or Groupbox.Instance
-			
+					or Groupbox.Instance
+
 				Groupbox.Instance.Header.Text = GroupboxSettings.Name
 				Groupbox.Instance.Header.Icon.Image = GetIcon(GroupboxSettings.Icon, GroupboxSettings.ImageSource)
 				Groupbox.Instance.Name = "GROUPBOX_" .. GroupboxSettings.Name
-				
+
 				if GroupboxSettings.Style == 2 then
 					Groupbox.Instance["PART_Content"]:GetPropertyChangedSignal("AbsoluteSize"):Connect(function()
 						Groupbox.Instance["PART_Backdrop"].Size = UDim2.new(1,0,0, Groupbox.Instance["PART_Content"].AbsoluteSize.Y)
 					end)
 				end
-				
+
 				--// SUBSECTION : User Functions
 
 				function Groupbox:CreatePrimaryButton(ElementSettings) -- these will be merged in the next update where we allow style changing.
-					
+
 					--[[
 					ElementSettings = {
 						Name = string,
@@ -2600,18 +4859,18 @@ function Starlight:CreateWindow(WindowSettings)
 						Callback = function(nil),
 					}
 					]]
-					
+
 					ElementSettings.ImageSource = ElementSettings.ImageSource or "Material"
-					
+
 					local Element = {
 						Values = ElementSettings
 					}
-					
+
 					Element.Instance = GroupboxTemplateInstance["Button_TEMPLATE_Style1"]:Clone()
 					Element.Instance.Visible = true
 					Element.Instance["PART_Backdrop"].DropShadowHolder.DropShadow.ImageTransparency = 1
 					Element.Instance.Parent = Groupbox.ParentingItem
-					
+
 					Element.Instance.Name = "BUTTON_" .. ElementSettings.Name
 					Element.Instance["PART_Backdrop"].Header.Text = ElementSettings.Name
 					Element.Instance["PART_Backdrop"].Header.Icon.Visible = ElementSettings.Icon ~= nil
@@ -2621,7 +4880,7 @@ function Starlight:CreateWindow(WindowSettings)
 						Element.Instance["PART_Backdrop"].Header.UIPadding.PaddingLeft = UDim.new(0,32)
 					end
 					Element.Instance["PART_Backdrop"].Header.Icon.Image = ElementSettings.Icon ~= nil and GetIcon(ElementSettings.Icon, ElementSettings.ImageSource) or ""
-					
+
 					function Element:Set(NewElementSettings)
 						for i,v in pairs(ElementSettings) do
 							if NewElementSettings[i] == nil then
@@ -2633,7 +4892,7 @@ function Starlight:CreateWindow(WindowSettings)
 
 						Element.Values = ElementSettings
 						Starlight.Window.TabSections[Name].Tabs[TabSettings.Name].Groupboxes[GroupboxSettings.Name].Elements[ElementSettings.Name] = ElementSettings
-						
+
 						Element.Instance.Name = "BUTTON_" .. ElementSettings.Name
 						Element.Instance["PART_Backdrop"].Header.Text = ElementSettings.Name
 						Element.Instance["PART_Backdrop"].Header.Icon.Visible = ElementSettings.Icon ~= nil
@@ -2645,24 +4904,24 @@ function Starlight:CreateWindow(WindowSettings)
 						Element.Instance["PART_Backdrop"].Header.Icon.Image = ElementSettings.Icon ~= nil and GetIcon(ElementSettings.Icon, ElementSettings.ImageSource) or ""
 						Starlight.Window.TabSections[Name].Tabs[TabSettings.Name].Groupboxes[GroupboxSettings.Name].Elements[ElementSettings.Name].Values = ElementSettings
 					end
-					
+
 					function Element:Destroy()
 						Element.Instance:Destroy()
 					end
-					
+
 					Element.Instance.MouseEnter:Connect(function()
 						Tween(Element.Instance["PART_Backdrop"].DropShadowHolder.DropShadow, {ImageTransparency = 0.73})
 					end)
-					
+
 					Element.Instance.MouseLeave:Connect(function()
 						Tween(Element.Instance["PART_Backdrop"].DropShadowHolder.DropShadow, {ImageTransparency = 1})
-						
+
 						if Element.Instance["PART_Backdrop"].AccentBrighter.Enabled == true then
 							Element.Instance["PART_Backdrop"].AccentBrighter.Enabled = false
 							Element.Instance["PART_Backdrop"].Accent.Enabled = true
 						end
 					end)
-					
+
 					Element.Instance.Interact.MouseButton1Click:Connect(function()
 						local Success,Response = pcall(Element.Values.Callback)
 
@@ -2674,25 +4933,25 @@ function Starlight:CreateWindow(WindowSettings)
 							Element.Instance["PART_Backdrop"].Header.Text = ElementSettings.Name
 						end
 					end)
-					
+
 					Element.Instance.Interact.MouseButton1Down:Connect(function()
 						Element.Instance["PART_Backdrop"].AccentBrighter.Enabled = true
 						Element.Instance["PART_Backdrop"].Accent.Enabled = false
 					end)
-					
+
 					Element.Instance.Interact.MouseButton1Up:Connect(function()
 						Element.Instance["PART_Backdrop"].AccentBrighter.Enabled = false
 						Element.Instance["PART_Backdrop"].Accent.Enabled = true
 					end)
-					
+
 					if GroupboxSettings.Style == 2 then
 						Groupbox.Instance["PART_Backdrop"].Size = UDim2.new(1,0,0, Groupbox.Instance["PART_Backdrop"].AbsoluteSize.Y)
 					end
-					
+
 					Starlight.Window.TabSections[Name].Tabs[TabSettings.Name].Groupboxes[GroupboxSettings.Name].Elements[ElementSettings.Name] = Element
 					return Starlight.Window.TabSections[Name].Tabs[TabSettings.Name].Groupboxes[GroupboxSettings.Name].Elements[ElementSettings.Name]
 				end
-				
+
 				function Groupbox:CreateSecondaryButton(ElementSettings) -- these will be merged in the next update where we allow style changing.
 					ElementSettings.ImageSource = ElementSettings.ImageSource or "Material"
 
@@ -2787,11 +5046,11 @@ function Starlight:CreateWindow(WindowSettings)
 					local Element = {
 						Values = ElementSettings,
 					}
-					
+
 					Element.Instance = GroupboxTemplateInstance.Checkbox_TEMPLATE_Disabled:Clone()
 					Element.Instance.Visible = true
 					Element.Instance.Parent = Groupbox.ParentingItem
-					
+
 					Element.Instance.Name = "CHECKBOX_" .. ElementSettings.Name
 					Element.Instance.Header.Text = ElementSettings.Name
 					Element.Instance.Header.Icon.Visible = ElementSettings.Icon ~= nil
@@ -2829,21 +5088,21 @@ function Starlight:CreateWindow(WindowSettings)
 							end
 						end
 					end
-					
+
 					Element.Instance.Checkbox.MouseEnter:Connect(function()
 						Element.Instance.Checkbox.AccentBrighter.Enabled = true
 						Element.Instance.Checkbox.Accent.Enabled = false
 					end)
-					
+
 					Element.Instance.Checkbox.MouseLeave:Connect(function()
 						Element.Instance.Checkbox.AccentBrighter.Enabled = false
 						Element.Instance.Checkbox.Accent.Enabled = true
 					end)
-					
+
 					Element.Instance.Checkbox.Interact.MouseButton1Click:Connect(function()
 						Element.Values.CurrentValue = not Element.Values.CurrentValue
 						Set(Element.Values.CurrentValue)
-						
+
 						local Success,Response = pcall(function()
 							Element.Values.Callback(Element.Values.CurrentValue)
 						end)
@@ -2880,15 +5139,15 @@ function Starlight:CreateWindow(WindowSettings)
 
 						Starlight.Window.TabSections[Name].Tabs[TabSettings.Name].Groupboxes[GroupboxSettings.Name].Elements[ElementSettings.Name].Values = ElementSettings
 					end
-					
+
 					function Element:Destroy()
 						Element.Instance:Destroy()
 					end
-					
+
 					Starlight.Window.TabSections[Name].Tabs[TabSettings.Name].Groupboxes[GroupboxSettings.Name].Elements[ElementSettings.Name] = Element
 					return Starlight.Window.TabSections[Name].Tabs[TabSettings.Name].Groupboxes[GroupboxSettings.Name].Elements[ElementSettings.Name]
 				end
-				
+
 				function Groupbox:CreateSwitch(ElementSettings)
 
 					--[[
@@ -2988,7 +5247,7 @@ function Starlight:CreateWindow(WindowSettings)
 						end
 
 						ElementSettings = NewElementSettings
-						
+
 						Element.Values = ElementSettings
 
 						Element.Instance.Name = "SWITCH_" .. ElementSettings.Name
@@ -3011,7 +5270,7 @@ function Starlight:CreateWindow(WindowSettings)
 					Starlight.Window.TabSections[Name].Tabs[TabSettings.Name].Groupboxes[GroupboxSettings.Name].Elements[ElementSettings.Name] = Element
 					return Starlight.Window.TabSections[Name].Tabs[TabSettings.Name].Groupboxes[GroupboxSettings.Name].Elements[ElementSettings.Name]
 				end
-				
+
 				function Groupbox:CreateDivider()
 					local Divider = {
 						ID = HttpService:GenerateGUID(false)
@@ -3023,11 +5282,11 @@ function Starlight:CreateWindow(WindowSettings)
 					function Divider:Destroy()
 						Divider.Instance:Destroy()
 					end
-					
+
 					Starlight.Window.TabSections[Name].Tabs[TabSettings.Name].Groupboxes[GroupboxSettings.Name].Elements["Divider_" .. Divider.ID] = Divider
 					return Starlight.Window.TabSections[Name].Tabs[TabSettings.Name].Groupboxes[GroupboxSettings.Name].Elements["Divider_" .. Divider.ID]
 				end
-				
+
 				-- uhm so i crashed out here cus the textbox kept making it crash
 				-- SOOO, i got gpt to help :skull:
 				-- pls dont attack me :sob: i spent five hours tryna make it work and i js couldnt take it anymore
@@ -3047,23 +5306,23 @@ function Starlight:CreateWindow(WindowSettings)
 						Callback = function(number),
 					}
 					]]
-					
+
 					ElementSettings.ImageSource = ElementSettings.ImageSource or  "Material"
 					ElementSettings.CurrentValue = ElementSettings.CurrentValue or 0
 					ElementSettings.Increment = ElementSettings.Increment or 1
 					ElementSettings.HideMax = ElementSettings.HideMax or false
-					
+
 					local Element = {
 						Values = ElementSettings,
 						SLDragging = false
 					}
 					local isTyping = false
 					local ignoreNext = false
-					
+
 					Element.Instance = GroupboxTemplateInstance.Slider_TEMPLATE:Clone()
 					Element.Instance.Visible = true
 					Element.Instance.Parent = Groupbox.ParentingItem
-					
+
 					Element.Instance.Name = "SLIDER_" .. ElementSettings.Name
 					Element.Instance.Header.Text = ElementSettings.Name
 					Element.Instance.Header.Icon.Visible = ElementSettings.Icon ~= nil
@@ -3077,7 +5336,7 @@ function Starlight:CreateWindow(WindowSettings)
 					local function Set(Value : number, BLEHHHHHIMTIREDOFNAMINGVARIABLESJSFORSPECIFICFUNCTIONS : boolean?)
 						if Value then
 							Element.Values.CurrentValue = Value
-							
+
 							Element.Instance.PART_Backdrop.PART_Progress.Size =	UDim2.new(0, Element.Instance.PART_Backdrop.AbsoluteSize.X * 
 								((Value + Element.Values.Range[1]) / (Element.Values.Range[2] - Element.Values.Range[1])) > 5
 								and Element.Instance.PART_Backdrop.AbsoluteSize.X * (Value / (Element.Values.Range[2] - Element.Values.Range[1])) or 5,
@@ -3107,9 +5366,9 @@ function Starlight:CreateWindow(WindowSettings)
 							end
 						end				
 
-						
+
 					end
-					
+
 					Element.Instance.PART_Backdrop.Interact.InputBegan:Connect(function(Input)
 						if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then 
 							Element.SLDragging = true 
@@ -3121,7 +5380,7 @@ function Starlight:CreateWindow(WindowSettings)
 							Element.SLDragging = false 
 						end 
 					end)
-					
+
 					local Current = Element.Instance.PART_Backdrop.PART_Progress.AbsolutePosition.X + Element.Instance.PART_Backdrop.PART_Progress.AbsoluteSize.X
 					local Start = Current
 					local Location
@@ -3171,20 +5430,20 @@ function Starlight:CreateWindow(WindowSettings)
 							end
 						end
 					end)
-					
+
 					function Element:Destroy()
 						Element.Instance:Destroy()
 					end
-					
+
 					function Element:Set(NewElementSettings)
-						
+
 						for i,v in pairs(ElementSettings) do
 							if NewElementSettings[i] == nil then
 								NewElementSettings[i] = v
 							end
 						end
 						ElementSettings = NewElementSettings
-						
+
 						Element.Instance.Name = "SLIDER_" .. ElementSettings.Name
 						Element.Instance.Header.Text = ElementSettings.Name
 						Element.Instance.Header.Icon.Visible = ElementSettings.Icon ~= nil
@@ -3194,18 +5453,18 @@ function Starlight:CreateWindow(WindowSettings)
 							Element.Instance.Header.UIPadding.PaddingLeft = UDim.new(0,32)
 						end
 						Element.Instance.Header.Icon.Image = ElementSettings.Icon ~= nil and GetIcon(ElementSettings.Icon, ElementSettings.ImageSource) or ""
-						
+
 						Element.Values = ElementSettings
 						Starlight.Window.TabSections[Name].Tabs[TabSettings.Name].Groupboxes[GroupboxSettings.Name].Elements[ElementSettings.Name].Values = ElementSettings
-						
+
 					end
-					
+
 					Set(Element.Values.CurrentValue)
-					
+
 					local isTyping = false
-					
+
 					local maxSuffix = not Element.Values.HideMax and "/<font color=\"rgb(165,165,165)\">" .. Element.Values.Range[2] .. "</font>" or ""
-					
+
 					Element.Instance.Value.Focused:Connect(function()
 						isTyping = true
 						ignoreNext = true
@@ -3215,7 +5474,7 @@ function Starlight:CreateWindow(WindowSettings)
 						else
 							Element.Instance.Value.Text = "/" .. Element.Values.Range[2]
 						end
-						
+
 					end)
 
 					Element.Instance.Value:GetPropertyChangedSignal("Text"):Connect(function()
@@ -3284,20 +5543,20 @@ function Starlight:CreateWindow(WindowSettings)
 						ChangedCallback = function(string), ** -- Returns the new keybind as a string (See the documentation list for all keybinds to string)
 					}
 					]]
-					
+
 					ElementSettings.ImageSource = ElementSettings.ImageSource or "Material"
 					ElementSettings.HoldToInteract = ElementSettings.HoldToInteract or false
 					ElementSettings.SyncToggleState = ElementSettings.SyncToggleState or true
 					ElementSettings.ChangedCallback = ElementSettings.ChangedCallback or function() end
-					
+
 					local Element = {
 						Values = ElementSettings,
 					}
-					
+
 					Element.Instance = GroupboxTemplateInstance.Bind_TEMPLATE:Clone()
 					Element.Instance.Visible = true
 					Element.Instance.Parent = Groupbox.ParentingItem
-					
+
 					Element.Instance.Name = "BIND_" .. ElementSettings.Name
 					Element.Instance.Header.Text = ElementSettings.Name
 					Element.Instance.Header.Icon.Visible = ElementSettings.Icon ~= nil
@@ -3310,9 +5569,9 @@ function Starlight:CreateWindow(WindowSettings)
 
 					local CheckingForKey = false
 					local Active = false
-					
+
 					Element.Instance.PART_Input.Text = ElementSettings.CurrentValue
-					
+
 					Element.Instance.PART_Input.Focused:Connect(function()
 						task.wait()
 						CheckingForKey = true
@@ -3324,11 +5583,11 @@ function Starlight:CreateWindow(WindowSettings)
 							Element.Instance.PART_Input.Text = ElementSettings.CurrentValue
 						end
 					end)
-					
+
 					UserInputService.InputBegan:Connect(function(input, processed)
 
 						if CheckingForKey then
-							
+
 							if input.UserInputType == Enum.UserInputType.Keyboard then
 								if input.KeyCode ~= Enum.KeyCode.Unknown and input.KeyCode ~= Enum.KeyCode[Starlight.WindowKeybind] then
 									local SplitMessage = string.split(tostring(input.KeyCode), ".")
@@ -3381,9 +5640,9 @@ function Starlight:CreateWindow(WindowSettings)
 									end
 								end
 							end
-							
+
 						elseif Element.Values.CurrentValue ~= nil and not processed then 
-							
+
 							if Element.Values.CurrentValue == "MB1" then
 								if input.UserInputType ~= Enum.UserInputType.MouseButton1 then
 									return
@@ -3397,7 +5656,7 @@ function Starlight:CreateWindow(WindowSettings)
 									return
 								end
 							end
-							
+
 							local Held = true
 							local Connection
 							Connection = input.Changed:Connect(function(prop)
@@ -3455,7 +5714,7 @@ function Starlight:CreateWindow(WindowSettings)
 							end
 						end
 					end)
-					
+
 					function Element:Set(NewElementSettings)
 						for i,v in pairs(ElementSettings) do
 							if NewElementSettings[i] == nil then
@@ -3481,7 +5740,7 @@ function Starlight:CreateWindow(WindowSettings)
 
 						Starlight.Window.TabSections[Name].Tabs[TabSettings.Name].Groupboxes[GroupboxSettings.Name].Elements[ElementSettings.Name].Values = ElementSettings
 					end
-					
+
 					function Element:Destroy()
 						Element.Instance:Destroy()
 					end
@@ -3489,7 +5748,7 @@ function Starlight:CreateWindow(WindowSettings)
 					Starlight.Window.TabSections[Name].Tabs[TabSettings.Name].Groupboxes[GroupboxSettings.Name].Elements[ElementSettings.Name] = Element
 					return Starlight.Window.TabSections[Name].Tabs[TabSettings.Name].Groupboxes[GroupboxSettings.Name].Elements[ElementSettings.Name]
 				end
-				
+
 				function Groupbox:CreateInput(ElementSettings)
 					--[[
 					ElementSettings = {
@@ -3507,7 +5766,7 @@ function Starlight:CreateWindow(WindowSettings)
 						Callback = function(string),
 					}
 					]]
-					
+
 					ElementSettings.ImageSource = ElementSettings.ImageSource or "Material"
 					ElementSettings.CurrentValue = ElementSettings.CurrentValue or ""
 					ElementSettings.PlaceholderText = ElementSettings.PlaceholderText or ""
@@ -3516,16 +5775,16 @@ function Starlight:CreateWindow(WindowSettings)
 					ElementSettings.Enter = ElementSettings.Enter or false
 					ElementSettings.MaxCharacters = ElementSettings.MaxCharacters or 0
 					ElementSettings.RemoveTextOnFocus = ElementSettings.RemoveTextOnFocus or true
-					
+
 					local Element = {
 						Values = ElementSettings
 					}
-					
+
 					Element.Instance = GroupboxTemplateInstance.Input_TEMPLATE:Clone()
 					Element.Instance.Visible = true
 					Element.Instance.Parent = Groupbox.ParentingItem
-					
-					Element.Instance.Name = "BIND_" .. ElementSettings.Name
+
+					Element.Instance.Name = "INPUT_" .. ElementSettings.Name
 					Element.Instance.Header.Text = ElementSettings.Name
 					Element.Instance.Header.Icon.Visible = ElementSettings.Icon ~= nil
 					if Element.Instance.Header.Icon.Visible == false then
@@ -3538,7 +5797,7 @@ function Starlight:CreateWindow(WindowSettings)
 					Element.Instance.PART_Input.Text = ElementSettings.CurrentValue
 
 					Element.Instance.PART_Input.FocusLost:Connect(function(Enter)
-						
+
 						if Element.Values.Enter and Enter then
 							local Success,Response = pcall(function()
 								Element.Values.Callback(Element.Values.CurrentValue)
@@ -3552,14 +5811,14 @@ function Starlight:CreateWindow(WindowSettings)
 								Element.Instance.Header.Text = ElementSettings.Name
 							end
 						end
-						
+
 						if Element.Values.RemoveTextAfterFocusLost then
 							Element.Instance.PART_Input.Text = ""
 							Element.Values.CurrentValue = ""
 						end
-						
+
 					end)
-					
+
 					if Element.Values.Numeric then
 						Element.Instance.PART_Input:GetPropertyChangedSignal("Text"):Connect(function()
 							local text = Element.Instance.PART_Input.Text
@@ -3590,7 +5849,7 @@ function Starlight:CreateWindow(WindowSettings)
 						end
 						Element.Values.CurrentValue = Element.Instance.PART_Input.Text				
 					end)
-					
+
 					function Element:Set(NewElementSettings)
 						for i,v in pairs(ElementSettings) do
 							if NewElementSettings[i] == nil then
@@ -3602,7 +5861,7 @@ function Starlight:CreateWindow(WindowSettings)
 
 						Element.Values = ElementSettings
 
-						Element.Instance.Name = "BIND_" .. ElementSettings.Name
+						Element.Instance.Name = "INPUT_" .. ElementSettings.Name
 						Element.Instance.Header.Text = ElementSettings.Name
 						Element.Instance.Header.Icon.Visible = ElementSettings.Icon ~= nil
 						if Element.Instance.Header.Icon.Visible == false then
@@ -3616,7 +5875,7 @@ function Starlight:CreateWindow(WindowSettings)
 
 						Starlight.Window.TabSections[Name].Tabs[TabSettings.Name].Groupboxes[GroupboxSettings.Name].Elements[ElementSettings.Name].Values = ElementSettings
 					end
-					
+
 					function Element:Destroy()
 						Element.Instance:Destroy()
 					end
@@ -3624,36 +5883,358 @@ function Starlight:CreateWindow(WindowSettings)
 					Starlight.Window.TabSections[Name].Tabs[TabSettings.Name].Groupboxes[GroupboxSettings.Name].Elements[ElementSettings.Name] = Element
 					return Starlight.Window.TabSections[Name].Tabs[TabSettings.Name].Groupboxes[GroupboxSettings.Name].Elements[ElementSettings.Name]
 				end
-				
+
+				-- coded by justhey the goat
 				function Groupbox:CreateDropdown(ElementSettings)
-					
+					--[[
+					ElementSettings = {
+						Name = string,
+						Icon = number, **
+						ImageSource = string, **
+						Options = table, {string ...}
+						CurrentOption = table/string, {string ...} **
+						MultipleOptions = bool, **
+						Special = number, ** -- 0/nil for none, 1 for Player, more hopefully coming soon
+						
+						Callback = function(table)
+					}
+					]]
+
+					ElementSettings.ImageSource = ElementSettings.ImageSource or "Material"
+					ElementSettings.CurrentOption = ElementSettings.CurrentOption or ({ElementSettings.Options[1]})
+					ElementSettings.MultipleOptions = ElementSettings.MultipleOptions or false
+					ElementSettings.Special = ElementSettings.Special or 0
+
+					local Element = {
+						Values = ElementSettings,
+						Instances = {},
+						State = false
+					}
+
+					Element.Instances.Element = GroupboxTemplateInstance.Dropdown_TEMPLATE:Clone()
+					Element.Instances.Element.Parent = Groupbox.ParentingItem
+					Element.Instances.Element.Visible = true
+
+					Element.Instances.Element.Name = "DROPDOWN_" .. ElementSettings.Name
+					Element.Instances.Element.Header.Text = ElementSettings.Name
+
+
+					Element.Instances.Popup = mainWindow["Popup Overlay"].Dropdown_TEMPLATE:Clone()
+					Element.Instances.Popup.Parent = mainWindow["Popup Overlay"]
+					Element.Instances.Popup.Visible = true
+					Element.Instances.Popup.Header.Text = ElementSettings.Name
+
+
+					--// Interaction System \\--
+					Element.Instances.Element.Icon.Interact.MouseButton1Click:Connect(function()
+						mainWindow["Popup Overlay"].Visible = true
+
+						UserInputService.InputBegan:Connect(function(i, g)
+							if g or i.UserInputType ~= Enum.UserInputType.MouseButton1 then return end
+							local p, pos, size = i.Position, Element.Instances.Popup.AbsolutePosition, Element.Instances.Popup.AbsoluteSize
+							if not (p.X >= pos.X and p.X <= pos.X + size.X and p.Y >= pos.Y and p.Y <= pos.Y + size.Y) then
+								mainWindow["Popup Overlay"].Visible = false
+							end
+						end)
+					end)
+
+					local function ActivateColorSingle(name)
+						for _, Option in pairs(Element.Instances.Popup.Content:GetChildren()) do
+							if Option.ClassName == "Frame" and not string.find(Option.Name, "Option_Template") then
+								Tween(Option, {BackgroundTransparency = 1})
+								Tween(Option.Header, {TextColor3 = Color3.fromRGB(100, 100, 100)})
+								Option.Header.Accent.Enabled = false
+								Option.Icon.Accent.Enabled = false
+							end
+						end
+
+
+						Tween(Element.Instances.Popup.Content[name], {BackgroundTransparency = 0.8})
+						Tween(Element.Instances.Popup.Content[name].Header, {TextColor3 = Color3.fromRGB(255,255,255)})
+						Element.Instances.Popup.Content[name].Header.Accent.Enabled = true
+						Element.Instances.Popup.Content[name].Icon.Accent.Enabled = true
+
+					end
+
+					local function CB(Sel, Func)
+						local Success, Response = pcall(function()
+							ElementSettings.Callback(Sel)
+						end)
+
+						if Success and Func then
+							Func()
+						end
+					end
+
+					local function Refresh()
+						for i,v in pairs(ElementSettings.Options) do
+							local Option = Element.Instances.Popup.Content.Option_TEMPLATE:Clone()
+							local OptionHover = false
+
+							Option.Header.Text = v
+							Option.Name = v
+
+							Option.Interact.MouseButton1Click:Connect(function()
+								local Selected
+								if ElementSettings.MultipleOptions then
+									if table.find(ElementSettings.CurrentOption, v) then
+										RemoveTable(ElementSettings.CurrentOption, v)
+
+										if not OptionHover then
+											Tween(Option.Header, {TextColor3 = Color3.fromRGB(100, 100, 100)})
+										end
+										Option.BackgroundTransparency = 1
+										Option.Header.Accent.Enabled = false
+										Option.Icon.Accent.Enabled = false
+									else
+										table.insert(ElementSettings.CurrentOption, v)
+										Tween(Option.Header, {TextColor3 = Color3.fromRGB(255, 255, 255)})
+										Option.BackgroundTransparency = 0.8
+										Option.Header.Accent.Enabled = true
+										Option.Icon.Accent.Enabled = true
+									end
+									Selected = ElementSettings.CurrentOption
+
+								else
+									ElementSettings.CurrentOption = {v}
+									Selected = v
+
+									ActivateColorSingle(v)
+								end
+
+
+
+								CB(Selected, function()
+									if ElementSettings.MultipleOptions then
+										if not ElementSettings.CurrentOption and type(ElementSettings.CurrentOption) == "table" then
+											ElementSettings.CurrentOption = {}
+										end
+									end
+								end)
+							end)
+
+
+							Option.Visible = true
+							Option.Parent = Element.Instances.Popup.Content
+
+							Option.Interact.MouseEnter:Connect(function()
+								OptionHover = true
+								if Option.Header.Accent.Enabled then
+									return
+								else
+									Tween(Option.Header, {TextColor3 = Color3.fromRGB(200,200,200)})
+								end
+							end)
+
+							Option.Interact.MouseLeave:Connect(function()
+								OptionHover = false
+								if Option.Header.Accent.Enabled then
+									return
+								else
+									Tween(Option.Header, {TextColor3 = Color3.fromRGB(100,100,100)})
+								end
+							end)	
+
+						end
+					end
+
+					Refresh()
+
+					if ElementSettings.CurrentOption then
+						if type(ElementSettings.CurrentOption) == "string" then
+							ElementSettings.CurrentOption = {ElementSettings.CurrentOption}
+						end
+						if not ElementSettings.MultipleOptions and type(ElementSettings.CurrentOption) == "table" then
+							ElementSettings.CurrentOption = {ElementSettings.CurrentOption[1]}
+						end
+					else
+						ElementSettings.CurrentOption = {}
+					end
+
+					local Selected, ind = nil,0
+					for i,v in pairs(ElementSettings.CurrentOption) do
+						ind = ind + 1
+					end
+					if ind == 1 then Selected = ElementSettings.CurrentOption[1] else Selected = ElementSettings.CurrentOption end
+					CB(Selected)
+					if type(Selected) == "string" then 
+						Tween(Element.Instances.Popup.Content[Selected], {BackgroundTransparency = 0.8})
+						Tween(Element.Instances.Popup.Content[Selected].Header, {TextColor3 = Color3.fromRGB(255,255,255)})
+						Element.Instances.Popup.Content[Selected].Header.Accent.Enabled = true
+						Element.Instances.Popup.Content[Selected].Icon.Accent.Enabled = true
+					else
+						for i,v in pairs(Selected) do
+							Tween(Element.Instances.Popup.Content[Selected], {BackgroundTransparency = 0.8})
+							Tween(Element.Instances.Popup.Content[Selected].Header, {TextColor3 = Color3.fromRGB(255,255,255)})
+							Element.Instances.Popup.Content[Selected].Header.Accent.Enabled = true
+							Element.Instances.Popup.Content[Selected].Icon.Accent.Enabled = true
+						end
+					end
+
+					if ElementSettings.MultipleOptions then
+						if not ElementSettings.CurrentOption and type(ElementSettings.CurrentOption) == "table" then
+							ElementSettings.CurrentOption = {}
+						end
+					end
+
+					function Element:Destroy()
+						Element.Instance:Destroy()
+					end
+
+					Starlight.Window.TabSections[Name].Tabs[TabSettings.Name].Groupboxes[GroupboxSettings.Name].Elements[ElementSettings.Name] = Element
+					return Starlight.Window.TabSections[Name].Tabs[TabSettings.Name].Groupboxes[GroupboxSettings.Name].Elements[ElementSettings.Name]
 				end
-				
+
+				function Groupbox:CreateLabel(ElementSettings)
+					--[[
+					ElementSettings = {
+						Name = string,
+						Icon = number, **
+						ImageSource = string, **
+					}
+					]]
+
+					ElementSettings.ImageSource = ElementSettings.ImageSource or "Material"
+
+					local Element = {
+						Values = ElementSettings
+					}
+
+					Element.Instance = GroupboxTemplateInstance.Label_TEMPLATE:Clone()
+					Element.Instance.Visible = true
+					Element.Instance.Parent = Groupbox.ParentingItem
+
+					Element.Instance.Name = "LABEL_" .. ElementSettings.Name
+					Element.Instance.Header.Text = ElementSettings.Name
+					Element.Instance.Header.Icon.Visible = ElementSettings.Icon ~= nil
+					if Element.Instance.Header.Icon.Visible == false then
+						Element.Instance.Header.UIPadding.PaddingLeft = UDim.new(0,6)
+					else
+						Element.Instance.Header.UIPadding.PaddingLeft = UDim.new(0,32)
+					end
+					Element.Instance.Header.Icon.Image = ElementSettings.Icon ~= nil and GetIcon(ElementSettings.Icon, ElementSettings.ImageSource) or ""
+
+					function Element:Set(NewElementSettings)
+						for i,v in pairs(ElementSettings) do
+							if NewElementSettings[i] == nil then
+								NewElementSettings[i] = v
+							end
+						end
+
+						ElementSettings = NewElementSettings
+
+						Element.Values = ElementSettings
+
+						Element.Instance.Name = "LABEL_" .. ElementSettings.Name
+						Element.Instance.Header.Text = ElementSettings.Name
+						Element.Instance.Header.Icon.Visible = ElementSettings.Icon ~= nil
+						if Element.Instance.Header.Icon.Visible == false then
+							Element.Instance.Header.UIPadding.PaddingLeft = UDim.new(0,6)
+						else
+							Element.Instance.Header.UIPadding.PaddingLeft = UDim.new(0,32)
+						end
+						Element.Instance.Header.Icon.Image = ElementSettings.Icon ~= nil and GetIcon(ElementSettings.Icon, ElementSettings.ImageSource) or ""
+
+						Starlight.Window.TabSections[Name].Tabs[TabSettings.Name].Groupboxes[GroupboxSettings.Name].Elements[ElementSettings.Name].Values = ElementSettings
+					end
+
+					function Element:Destroy()
+						Element.Instance:Destroy()
+					end
+
+					Starlight.Window.TabSections[Name].Tabs[TabSettings.Name].Groupboxes[GroupboxSettings.Name].Elements[ElementSettings.Name] = Element
+					return Starlight.Window.TabSections[Name].Tabs[TabSettings.Name].Groupboxes[GroupboxSettings.Name].Elements[ElementSettings.Name]
+				end
+
 				function Groupbox:CreateParagraph(ElementSettings)
-					
+					--[[
+					ElementSettings = {
+						Name = string,
+						Icon = number, **
+						ImageSource = string, **
+						Content = string,
+					}
+					]]
+
+					ElementSettings.ImageSource = ElementSettings.ImageSource or "Material"
+
+					local Element = {
+						Values = ElementSettings
+					}
+
+					Element.Instance = GroupboxTemplateInstance.Paragraph_TEMPLATE:Clone()
+					Element.Instance.Visible = true
+					Element.Instance.Parent = Groupbox.ParentingItem
+
+					Element.Instance.Name = "LABEL_" .. ElementSettings.Name
+					Element.Instance.Header.Text = ElementSettings.Name
+					Element.Instance.Header.Icon.Visible = ElementSettings.Icon ~= nil
+					if Element.Instance.Header.Icon.Visible == false then
+						Element.Instance.Header.UIPadding.PaddingLeft = UDim.new(0,6)
+						Element.Instance.Content.UIPadding.PaddingLeft = UDim.new(0,6)
+					else
+						Element.Instance.Header.UIPadding.PaddingLeft = UDim.new(0,32)
+						Element.Instance.Content.UIPadding.PaddingLeft = UDim.new(0,32)
+					end
+					Element.Instance.Header.Icon.Image = ElementSettings.Icon ~= nil and GetIcon(ElementSettings.Icon, ElementSettings.ImageSource) or ""
+					Element.Instance.Content.Text = ElementSettings.Content
+
+					function Element:Set(NewElementSettings)
+						for i,v in pairs(ElementSettings) do
+							if NewElementSettings[i] == nil then
+								NewElementSettings[i] = v
+							end
+						end
+
+						ElementSettings = NewElementSettings
+
+						Element.Values = ElementSettings
+
+						Element.Instance.Name = "LABEL_" .. ElementSettings.Name
+						Element.Instance.Header.Text = ElementSettings.Name
+						Element.Instance.Header.Icon.Visible = ElementSettings.Icon ~= nil
+						if Element.Instance.Header.Icon.Visible == false then
+							Element.Instance.Header.UIPadding.PaddingLeft = UDim.new(0,6)
+							Element.Instance.Content.UIPadding.PaddingLeft = UDim.new(0,6)
+						else
+							Element.Instance.Header.UIPadding.PaddingLeft = UDim.new(0,32)
+							Element.Instance.Content.UIPadding.PaddingLeft = UDim.new(0,32)
+						end
+						Element.Instance.Header.Icon.Image = ElementSettings.Icon ~= nil and GetIcon(ElementSettings.Icon, ElementSettings.ImageSource) or ""
+						Element.Instance.Content.Text = ElementSettings.Content
+
+						Starlight.Window.TabSections[Name].Tabs[TabSettings.Name].Groupboxes[GroupboxSettings.Name].Elements[ElementSettings.Name].Values = ElementSettings
+					end
+
+					function Element:Destroy()
+						Element.Instance:Destroy()
+					end
+
+					Starlight.Window.TabSections[Name].Tabs[TabSettings.Name].Groupboxes[GroupboxSettings.Name].Elements[ElementSettings.Name] = Element
+					return Starlight.Window.TabSections[Name].Tabs[TabSettings.Name].Groupboxes[GroupboxSettings.Name].Elements[ElementSettings.Name]
 				end
-				
+
 				function Groupbox:CreateColorPicker(ElementSettings) -- will be merged with toggles and labels
-					
+
 				end
-				
+
 				-- note for hunt3r, add set and destroy here and everywhere that doesnt have it yet
 				-- and remove all auto sizing for inputs (dynamic inputs and binds), replace with tweening in scripting
 				-- remember that values is read-only
 
 				--// ENDSUBSECTION
-				
+
 				Groupbox.Instance.Parent = Tab.Instances.Page["Column_" .. GroupboxSettings.Column]
 				Starlight.Window.TabSections[Name].Tabs[TabSettings.Name].Groupboxes[GroupboxSettings.Name] = Groupbox
 				return Starlight.Window.TabSections[Name].Tabs[TabSettings.Name].Groupboxes[GroupboxSettings.Name]
 			end
-			
+
 			--function Tab:CreateTabbox(TabboxSettings) -- coming soon
-				
+
 			--end
-			
+
 			--// ENDSUBSECTION
-			
+
 			Tab.Instances.Button.Parent = Starlight.Window.TabSections[Name].Instance
 			Starlight.Window.TabSections[Name].Tabs[TabSettings.Name] = Tab
 			return Starlight.Window.TabSections[Name].Tabs[TabSettings.Name]
@@ -3662,13 +6243,13 @@ function Starlight:CreateWindow(WindowSettings)
 		TabSection.Instance.Parent = navigation
 		Starlight.Window.TabSections[Name] = TabSection
 		return Starlight.Window.TabSections[Name]
-		
+
 		--// ENDSUBSECTION
-		
+
 	end
-	
+
 	--// ENDSUBSECTION
-	
+
 	--// SUBSECTION : Window Functionability
 	do
 		mainWindow.Content.Topbar.NotificationCenterIcon["MouseEnter"]:Connect(function()
@@ -3718,10 +6299,10 @@ function Starlight:CreateWindow(WindowSettings)
 		end)
 	end
 	--// ENDSUBSECTION
-	
+
 	-- Return the window
 	return Starlight.Window
-	
+
 end
 
 StarlightUI.Enabled = true
@@ -3736,11 +6317,11 @@ StarlightUI.Enabled = true
 --// ENDSUBSECTION
 
 --// SUBSECTION : Debugging Script
---[[local win = Starlight:CreateWindow({
+local win = Starlight:CreateWindow({
 	Name = "Starlight Example Window",
 	Subtitle = "Alpha Release 1",
 	Icon = nil,
-	
+
 	LoadingEnabled = false,
 	LoadingSettings = {
 		Style = 1,
@@ -3837,14 +6418,14 @@ g2:CreateSecondaryButton({
 g2:CreateCheckbox({
 	Name = "Checkbox",
 	Callback = function()
-		
+
 	end,
 })
 
 g:CreateSwitch({
 	Name = "Switch",
 	Callback = function()
-		
+
 	end,
 })
 
@@ -3875,7 +6456,41 @@ g2:CreateInput({
 	Name = "numeric input",
 	Numeric = true,
 	Callback = function() end
-})]]
+})
+
+g2:CreateLabel({
+	Name = "Label"
+})
+
+g2:CreateDropdown({
+	Name = "Hello",
+	Options = {"1","2","3"},
+	CurrentOption = {"1"},
+	MultipleOptions = true,
+	Callback = function(v)
+		for i,v in v do
+			print(v)
+		end
+	end,
+})
+
+g:CreateLabel({
+	Name = "Label w Icon",
+	Icon = "aperture",
+	ImageSource = "Lucide"
+})
+g2:CreateParagraph({
+	Name = "paragraph",
+	Content = "Hello!! Im A Paragraph, and i can store bunch of text"
+})
+g:CreateParagraph({
+	Name = "paragraph 2",
+	Icon = "filter_list_alt",
+	Content = [[Hello!! Im A Paragraph, and i can store bunch of text. 
+I also grow bigger or smaller depending on how much text is in my body! 
+Like this, i am a much bigger paragraph than the other one! i also support multi lines]]
+})
+
 --// ENDSUBSECTION
 
 --// ENDSECTION
