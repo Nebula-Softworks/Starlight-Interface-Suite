@@ -66,11 +66,11 @@ by Nebula Softworks
 
 --// SECTION : Core Variables
 
-local Release = "Prerelease Alpha 2"
+local Release = "Prerelease Alpha 2a"
 
 local Starlight = {
 	Folder = "Starlight Interface Suite",
-	InterfaceBuild = "APR2", -- Alpha Pre Release 2
+	InterfaceBuild = "APR21", -- Alpha Pre Release 2.1
 
 	Options = {},
 	CurrentTheme = "Default",
@@ -104,6 +104,7 @@ local Teams = game:GetService("Teams")
 local Player = Players.LocalPlayer
 local Camera = workspace.CurrentCamera
 local CoreGui = game:GetService("CoreGui")
+local Mouse = Player:GetMouse()
 
 local isStudio = RunService:IsStudio() or false
 local website = "github.com/Nebula-Softworks"
@@ -355,6 +356,10 @@ local function UnpackTable(array : table)
 	
 end
 
+function IsEmptyOrNull(str : string)
+	return str == nil or str:match("^%s*$") ~= nil
+end
+
 --// SUBSECTION : Window Functions
 
 -- this is a way to allow for tweening cus roblox doesnt have opacity yet and my lazy ass is not gonna be able to set each and every value without crashing out - also this makes it extremely future/change proof
@@ -510,6 +515,80 @@ local function Unmaximize(Window : Frame, Dragging : boolean?)
 	Starlight.Maximized = false
 end
 
+-- Add a tooltip to the element
+local function AddToolTip(InfoStr, HoverInstance)
+	local label = Instance.new("TextLabel")
+	label.Text = InfoStr or ""
+	label.AnchorPoint = Vector2.new(0,0.5)
+	label.Position = UDim2.new(0,4,0.5, 0)
+	label.TextSize = 15
+	label.TextXAlignment = Enum.TextXAlignment.Left
+	label.FontFace = Font.fromId(12187365364, Enum.FontWeight.Regular) 
+	label.TextWrapped = false
+	label.BackgroundTransparency=1
+	label.TextColor3 = Color3.new(1,1,1)
+	
+	local tooltip = Instance.new("Frame")
+	tooltip.BackgroundColor3 = Color3.fromRGB(27, 29, 33)
+	tooltip.ZIndex = 90
+	tooltip.Parent = Starlight.Instance.Tooltips
+	
+	label.ZIndex = tooltip.ZIndex + 1
+	label.Parent = tooltip
+	label.Size = UDim2.fromOffset(label.TextBounds.X, label.TextBounds.Y)
+	tooltip.Size = UDim2.fromOffset(label.TextBounds.X + 8, label.TextBounds.Y + 6)
+	
+	tooltip.Visible = false
+	
+	local corner = Instance.new("UICorner")
+	corner.CornerRadius = UDim.new(0,3)
+	corner.Parent = tooltip
+	
+	local stroke = Instance.new("UIStroke")
+	stroke.Color = Color3.fromRGB(65,66,77)
+	stroke.Parent = tooltip
+
+	local tracking = nil
+	local IsHovering = false
+
+	local function updateTooltipPos()
+		local mousePos = UserInputService:GetMouseLocation()
+		tooltip.Position = UDim2.fromOffset(mousePos.X + 15, mousePos.Y + 12)
+	end
+
+	if HoverInstance then
+		HoverInstance.MouseEnter:Connect(function()
+			IsHovering = true
+
+			task.delay(0.6, function()
+				if IsHovering then
+					if not IsEmptyOrNull(label.Text) then
+						tooltip.Visible = true
+					end
+
+					if not tracking then
+						tracking = RunService.RenderStepped:Connect(function()
+							updateTooltipPos()
+						end)
+					end
+				end
+			end)
+		end)
+
+		HoverInstance.MouseLeave:Connect(function()
+			IsHovering = false
+			tooltip.Visible = false
+
+			if tracking then
+				tracking:Disconnect()
+				tracking = nil
+			end
+		end)
+	end
+	
+	return label
+end
+
 -- A Function to make an object movable via dragging another object
 -- Taken From Luna Interface Suite, A Nebula Softworks Product
 local function makeDraggable(Bar, Window : Frame, enableTaptic, tapticOffset)
@@ -613,7 +692,7 @@ repeat
 	if not warned then
 		-- notification-fy this once notifs are done
 		warn('Starlight | Build Mismatch')
-		print('Starlight may run into issues as it seems you are running an incompatible interface version ('.. (StarlightUI:FindFirstChild('Build') and StarlightUI.Build.Value or 'No Build') ..'). of Starlight\n\nThis version of Starlight is intended for interface build '..Starlight.InterfaceBuild..'.')
+		warn('Starlight may run into issues as it seems you are running an incompatible interface version ('.. (StarlightUI:FindFirstChild('Build') and StarlightUI.Build.Value or 'No Build') ..'). of Starlight\n\nThis version of Starlight is intended for interface build '..Starlight.InterfaceBuild..'.')
 		warned = true
 	end
 
@@ -623,6 +702,10 @@ repeat
 	buildAttempts += 1
 
 until buildAttempts >= 2
+if correctBuild and warned then
+	print('Starlight | Correct Build Found')
+	print('Starlight has managed to load the intended build ('.. (StarlightUI:FindFirstChild('Build').Value) ..') for this version of the library ('.. Release ..'). You may ignore the warning above')
+end
 
 -- Sets The Interface Into Roblox's GUI
 if gethui then
@@ -829,7 +912,7 @@ function Starlight:CreateWindow(WindowSettings)
 			
 			]]
 
-			TabSettings.Icon = TabSettings.Icon or NebulaIcons:GetIcon("view_in_ar")
+			TabSettings.Icon = TabSettings.Icon or (isStudio and NebulaIcons:GetIcon("view_in_ar"))
 			local Tab = {
 				Instances = {},
 				Values = TabSettings,
@@ -934,7 +1017,7 @@ function Starlight:CreateWindow(WindowSettings)
 				Tab.Instances.Button.Header.Text = TabSettings.Name
 				Tab.Instances.Button.Name = "TAB_" .. TabIndex
 				Tab.Instances.Page.Name = "TAB_" .. TabIndex
-				Tab.Instances.Button.Icon.Image = NebulaIcons:GetIcon(TabSettings.Icon, TabSettings.ImageSource)
+				Tab.Instances.Button.Icon.Image = "rbxassetid://" .. TabSettings.Icon
 				Starlight.Window.TabSections[Name].Tabs[TabIndex].Values = Tab.Values
 			end
 
@@ -967,7 +1050,7 @@ function Starlight:CreateWindow(WindowSettings)
 				}
 				]]
 
-				GroupboxSettings.Icon = GroupboxSettings.Icon or NebulaIcons:GetIcon("view_in_ar")
+				GroupboxSettings.Icon = GroupboxSettings.Icon or (isStudio and NebulaIcons:GetIcon("view_in_ar"))
 				GroupboxSettings.Column = GroupboxSettings.Column or 1
 				GroupboxSettings.Style = GroupboxSettings.Style or 1
 
@@ -1925,6 +2008,8 @@ function Starlight:CreateWindow(WindowSettings)
 						Style1 = GroupboxTemplateInstance["Button_TEMPLATE_Style1"]:Clone(),
 						Style2 = GroupboxTemplateInstance["Button_TEMPLATE_Style2"]:Clone()
 					}
+					
+					local tooltip
 
 					for _, ElementInstance in pairs(Instances) do
 
@@ -1985,6 +2070,8 @@ function Starlight:CreateWindow(WindowSettings)
 								ElementInstance["PART_Backdrop"].Header.Text = ElementSettings.Name
 							end
 						end)
+
+						tooltip = AddToolTip(Element.Values.Tooltip, ElementInstance)
 
 						Element.Instance = ElementInstance.Visible and ElementInstance or Element.Instance
 
@@ -2052,6 +2139,8 @@ function Starlight:CreateWindow(WindowSettings)
 								ElementInstance["PART_Backdrop"].AccentBrighter.Enabled = false
 								ElementInstance["PART_Backdrop"].Accent.Enabled = true
 							end)
+							
+							tooltip.Text = Element.Values.Tooltip
 
 							Element.Instance = ElementInstance.Visible and ElementInstance or Element.Instance
 
@@ -2129,6 +2218,8 @@ function Starlight:CreateWindow(WindowSettings)
 							end
 						end
 					end
+
+					local tooltip
 
 					for _, ElementInstance in pairs(Instances) do
 
@@ -2281,6 +2372,8 @@ function Starlight:CreateWindow(WindowSettings)
 							end)
 						end
 
+						tooltip = AddToolTip(Element.Values.Tooltip, ElementInstance)
+
 						Element.Instance = ElementInstance.Visible and ElementInstance or Element.Instance
 
 					end
@@ -2430,6 +2523,8 @@ function Starlight:CreateWindow(WindowSettings)
 								end)
 							end
 
+							tooltip.Text = Element.Values.Tooltip
+
 							Element.Instance = ElementInstance.Visible and ElementInstance or Element.Instance
 
 						end
@@ -2547,6 +2642,8 @@ function Starlight:CreateWindow(WindowSettings)
 					local isTyping = false
 					local ignoreNext = false
 
+					local tooltip
+
 					Element.Instance = GroupboxTemplateInstance.Slider_TEMPLATE:Clone()
 					Element.Instance.Visible = true
 					Element.Instance.Parent = Groupbox.ParentingItem
@@ -2560,6 +2657,8 @@ function Starlight:CreateWindow(WindowSettings)
 						Element.Instance.Header.UIPadding.PaddingLeft = UDim.new(0,32)
 					end
 					Element.Instance.Header.Icon.Image = Element.Values.Icon ~= nil and "rbxassetid://" .. Element.Values.Icon or ""
+
+					tooltip = AddToolTip(Element.Values.Tooltip, Element.Instance)
 
 					local function Set(Value : number, BLEHHHHHIMTIREDOFNAMINGVARIABLESJSFORSPECIFICFUNCTIONS : boolean?)
 						if Value then
@@ -2701,7 +2800,8 @@ function Starlight:CreateWindow(WindowSettings)
 						end
 						Element.Instance.Header.Icon.Image = Element.Values.Icon ~= nil and "rbxassetid://" .. Element.Values.Icon or ""
 
-
+						tooltip.Text = Element.Values.Tooltip
+						
 						Set(Element.Values.CurrentValue)
 
 						Starlight.Window.TabSections[Name].Tabs[TabIndex].Groupboxes[GroupIndex].Elements[ElementSettings.Name].Values = Element.Values
@@ -2819,6 +2919,8 @@ function Starlight:CreateWindow(WindowSettings)
 						Class = "Input"
 					}
 
+					local tooltip
+
 					Element.Instance = GroupboxTemplateInstance.Input_TEMPLATE:Clone()
 					Element.Instance.Visible = true
 					Element.Instance.Parent = Groupbox.ParentingItem
@@ -2892,6 +2994,8 @@ function Starlight:CreateWindow(WindowSettings)
 					Element.Instance.PART_Input.PlaceholderText = Element.Values.PlaceholderText
 					Element.Instance.PART_Input.Text = Element.Values.CurrentValue
 
+					tooltip = AddToolTip(Element.Values.Tooltip, Element.Instance)
+
 					Tween(Element.Instance.PART_Input, {Size = UDim2.new(0, Element.Instance.PART_Input.TextBounds.X + 30, 0, Element.Instance.PART_Input.Size.Y.Offset)})
 
 					function Element:Set(NewElementSettings, NewIndex)
@@ -2920,6 +3024,8 @@ function Starlight:CreateWindow(WindowSettings)
 						Element.Instance.PART_Input.Text = Element.Values.CurrentValue
 						Tween(Element.Instance.PART_Input, {Size = UDim2.new(0, Element.Instance.PART_Input.TextBounds.X + 30, 0, Element.Instance.PART_Input.Size.Y.Offset)})
 
+						tooltip.Text = Element.Values.Tooltip
+						
 						Starlight.Window.TabSections[Name].Tabs[TabIndex].Groupboxes[GroupIndex].Elements[Index].Values = Element.Values
 					end
 
@@ -2958,6 +3064,8 @@ function Starlight:CreateWindow(WindowSettings)
 						NestedElements = {},
 					}
 
+					local tooltip
+
 					Element.Instance = GroupboxTemplateInstance.Label_TEMPLATE:Clone()
 					Element.Instance.Visible = true
 					Element.Instance.Parent = Groupbox.ParentingItem
@@ -2971,6 +3079,8 @@ function Starlight:CreateWindow(WindowSettings)
 						Element.Instance.Header.UIPadding.PaddingLeft = UDim.new(0,32)
 					end
 					Element.Instance.Header.Icon.Image = Element.Values.Icon ~= nil and "rbxassetid://" .. Element.Values.Icon or ""
+
+					tooltip = AddToolTip(Element.Values.Tooltip, Element.Instance)
 
 					function Element:Set(NewElementSettings , NewIndex)
 						NewIndex = NewIndex or Index
@@ -2995,6 +3105,8 @@ function Starlight:CreateWindow(WindowSettings)
 							Element.Instance.Header.UIPadding.PaddingLeft = UDim.new(0,32)
 						end
 						Element.Instance.Header.Icon.Image = Element.Values.Icon ~= nil and "rbxassetid://" .. Element.Values.Icon or ""
+
+						tooltip.Text = Element.Values.Tooltip
 
 						Starlight.Window.TabSections[Name].Tabs[TabIndex].Groupboxes[GroupIndex].Elements[Index].Values = Element.Values
 					end
@@ -3160,18 +3272,10 @@ function Starlight:CreateWindow(WindowSettings)
 									end
 								end
 
-								local Held = true
-								local Connection
-								Connection = input.Changed:Connect(function(prop)
-									if prop == "UserInputState" then
-										Connection:Disconnect()
-										Held = false
-									end
-								end)
-
 								if not NestedElement.Values.HoldToInteract then
 									NestedElement.Active = not NestedElement.Active
-									local Success,Response = pcall(function()
+									
+									local success, response = pcall(function()
 										NestedElement.Values.Callback(NestedElement.Active)
 										if isToggle and NestedElement.Values.SyncToggleState then
 											Parent:Set({ CurrentValue = NestedElement.Active })
@@ -3180,58 +3284,62 @@ function Starlight:CreateWindow(WindowSettings)
 										end
 									end)
 
-									if not Success then
+									if not success then
 										Parent.Instance.Header.Text = "Callback Error"
-										warn("Starlight Interface Suite | "..Parent.Values.Name.." Callback Error")
-										print(tostring(Response))
-										wait(0.5)
+										warn("Starlight Interface Suite | " .. Parent.Values.Name .. " Callback Error")
+										print(tostring(response))
+										task.wait(0.5)
 										Parent.Instance.Header.Text = Parent.Values.Name
 									end
+
 								else
-									wait(0.1)
-									if Held then
-										local Loop; Loop = RunService.Stepped:Connect(function()
-											if not Held then
-												NestedElement.Active = false
-												local Success,Response = pcall(function()
-													NestedElement.Values.Callback(false)
-													if isToggle and NestedElement.Values.SyncToggleState then
-														if Parent.Values.CurrentValue ~= false then Parent:Set({ CurrentValue = false }) end
-													elseif isToggle then
-														Parent.Values.Callback(false)
-													end
-												end)
+									local Held = true
 
-												if not Success then
-													Parent.Instance.Header.Text = "Callback Error"
-													warn("Starlight Interface Suite | "..Parent.Values.Name.." Callback Error")
-													print(tostring(Response))
-													wait(0.5)
-													Parent.Instance.Header.Text = Parent.Values.Name
-												end
-												Loop:Disconnect()
-											else
-												NestedElement.Active = true
-												local Success,Response = pcall(function()
-													NestedElement.Values.Callback(true)
-													if isToggle and NestedElement.Values.SyncToggleState then
-														if Parent.Values.CurrentValue ~= true then Parent:Set({ CurrentValue = true }) end
-													elseif isToggle then
-														Parent.Values.Callback(true)
-													end
-												end)
+									NestedElement.Active = true
+									local success, response = pcall(function()
+										NestedElement.Values.Callback(true)
+										if isToggle and NestedElement.Values.SyncToggleState then
+											if Parent.Values.CurrentValue ~= true then Parent:Set({ CurrentValue = true }) end
+										elseif isToggle then
+											Parent.Values.Callback(true)
+										end
+									end)
 
-												if not Success then
-													Parent.Instance.Header.Text = "Callback Error"
-													warn("Starlight Interface Suite | "..Parent.Values.Name.." Callback Error")
-													print(tostring(Response))
-													wait(0.5)
-													Parent.Instance.Header.Text = Parent.Values.Name
-												end
-											end
-										end)	
+									if not success then
+										Parent.Instance.Header.Text = "Callback Error"
+										warn("Starlight Interface Suite | " .. Parent.Values.Name .. " Callback Error")
+										print(tostring(response))
+										task.wait(0.5)
+										Parent.Instance.Header.Text = Parent.Values.Name
 									end
+
+									local connection
+									connection = input.Changed:Connect(function(prop)
+										if prop == "UserInputState" then
+											connection:Disconnect()
+											Held = false
+											NestedElement.Active = false
+
+											local success2, response2 = pcall(function()
+												NestedElement.Values.Callback(false)
+												if isToggle and NestedElement.Values.SyncToggleState then
+													if Parent.Values.CurrentValue ~= false then Parent:Set({ CurrentValue = false }) end
+												elseif isToggle then
+													Parent.Values.Callback(false)
+												end
+											end)
+
+											if not success2 then
+												Parent.Instance.Header.Text = "Callback Error"
+												warn("Starlight Interface Suite | " .. Parent.Values.Name .. " Callback Error")
+												print(tostring(response2))
+												task.wait(0.5)
+												Parent.Instance.Header.Text = Parent.Values.Name
+											end
+										end
+									end)
 								end
+
 							end
 						end)
 						
@@ -3827,7 +3935,7 @@ StarlightUI.Enabled = true
 
 local win = Starlight:CreateWindow({
 	Name = "",
-	Subtitle = "Alpha Release 2",
+	Subtitle = Release,
 	Icon = 92936499827985,
 
 	LoadingEnabled = false,
@@ -3914,6 +4022,7 @@ local hi = g2:CreateButton({
 		print("hi")
 	end,
 	Style = 1,
+	Tooltip = "Hi"
 }, "btn")
 
 g2:CreateButton({
@@ -3934,12 +4043,14 @@ g2:CreateToggle({
 	Callback = function()
 
 	end,
+	Tooltip = "Hi"
 }, "tggle")
 g:CreateToggle({
 	Name = "Toggle without Icon",
 	Callback = function()
 
 	end,
+	Tooltip = "Hi"
 }, "tggle2")
 
 g:CreateToggle({
@@ -3948,6 +4059,7 @@ g:CreateToggle({
 	Callback = function()
 
 	end,
+	Tooltip = "Hi"
 }, "tggle2")
 
 g2:CreateSlider({
@@ -3961,6 +4073,7 @@ g2:CreateSlider({
 	Name = "Slider",
 	Range = {0,100},
 	HideMax = true,
+	Tooltip = "Hi",
 	Callback = function(v) print(v) end
 }, "sldr2")
 
@@ -3971,22 +4084,26 @@ g2:CreateSlider({
 --})
 g:CreateInput({
 	Name = "dynamic input",
+	Tooltip = "Hi",
 	Callback = function() end
 }, "inpt")
 g2:CreateInput({
 	Name = "numeric input",
 	Numeric = true,
 	PlaceholderText = "Numbers Only Hehe",
+	Tooltip = "Hi",
 	Callback = function() end
 }, "nmrcinpt")
 
 local hello = g2:CreateLabel({
+	Tooltip = "Hi",
 	Name = "Label"
 }, "lblbnd")
 
 hello:AddBind({
 	CurrentValue = "Q",
 	HoldToInteract = true,
+	Tooltip = "Hi",
 	Callback = function(v)
 		print(v)
 	end,
@@ -3995,12 +4112,14 @@ hello:AddBind({
 local bind = g2:CreateToggle({
 	Name = "Toggle Bind",
 	CurrentValue = false,
+	Tooltip = "Hi",
 	Callback = function(v)
 		print(v)
 	end,
 }, "bndprnt")
 bind:AddBind({
 	CurrentValue = "C",
+	Tooltip = "Hi",
 	SyncToggleState = true
 }, "bnd2")
 
@@ -4018,6 +4137,7 @@ bind:AddBind({
 
 local dropdown = g:CreateLabel({Name = "Dropdown"}, "lbldrpdwn"):AddDropdown({
 	Options = {"hi","heeh","huh"},
+	Tooltip = "Hi",
 	CurrentOption = {"wsp"},
 	Callback = function(v)
 		print(v)
@@ -4027,6 +4147,7 @@ local dropdown = g:CreateLabel({Name = "Dropdown"}, "lbldrpdwn"):AddDropdown({
 local dropdown2 = g:CreateLabel({Name = "Dropdown MultiOptions"}, "lbldrpdwn2"):AddDropdown({
 	Options = {"smthhhhh veryyyyyyyyyyyy loooooooonggggggg","heeh","huh"},
 	CurrentOption = {"wsp", "huh"},
+	Tooltip = "Hi",
 	MultipleOptions = true,
 	Callback = function(v)
 		print(v)
@@ -4036,6 +4157,7 @@ local dropdown2 = g:CreateLabel({Name = "Dropdown MultiOptions"}, "lbldrpdwn2"):
 local dropdown3 = g2:CreateToggle({Name = "Dropdown On Toggle",CurrentValue = false,Callback = function() end, Style=2}, "tggldrpdwn"):AddDropdown({
 	Options = {"hi","heeh","huh"},
 	CurrentOption = {"wsp", "huh"},
+	Tooltip = "Hi",
 	MultipleOptions = true,
 	Special = 1,
 	Callback = function(v)
@@ -4046,6 +4168,7 @@ local dropdown3 = g2:CreateToggle({Name = "Dropdown On Toggle",CurrentValue = fa
 g:CreateLabel({
 	Name = "Label w Icon",
 	Icon = NebulaIcons:GetIcon("aperture", "Lucide"),
+	Tooltip = "Hi",
 }, "lbl")
 g2:CreateParagraph({
 	Name = "paragraph",
@@ -4058,7 +4181,7 @@ g:CreateParagraph({
 I also grow bigger or smaller depending on how much text is in my body! 
 Like this, i am a much bigger paragraph than the other one! i also support multi lines ]-]
 }, "prgrph2")
-]]
+--]]
 
 --// ENDSUBSECTION
 
