@@ -912,7 +912,7 @@ function Starlight:CreateWindow(WindowSettings)
 			
 			]]
 
-			TabSettings.Icon = TabSettings.Icon or (isStudio and NebulaIcons:GetIcon("view_in_ar"))
+			TabSettings.Icon = TabSettings.Icon or (isStudio and NebulaIcons:GetIcon("view_in_ar") or "")
 			local Tab = {
 				Instances = {},
 				Values = TabSettings,
@@ -1050,7 +1050,7 @@ function Starlight:CreateWindow(WindowSettings)
 				}
 				]]
 
-				GroupboxSettings.Icon = GroupboxSettings.Icon or (isStudio and NebulaIcons:GetIcon("view_in_ar"))
+				GroupboxSettings.Icon = GroupboxSettings.Icon or (isStudio and NebulaIcons:GetIcon("view_in_ar") or "")
 				GroupboxSettings.Column = GroupboxSettings.Column or 1
 				GroupboxSettings.Style = GroupboxSettings.Style or 1
 
