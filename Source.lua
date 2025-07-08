@@ -40,7 +40,6 @@ For that instance, it is so we can return everything in a whole table, with ever
 However, once again I apologise. I have added the meanings of some unorthodox/stylised comments below.
 I kind of gave up/forgot to comment within the Elements too, so another apology :sob:
 
-PLEASE ALSO NOTE THAT UNLIKE OTHER LIBS (temporarily), STARLIGHT'S INDEXING SYSTEM IS BASED ON NAMES!!
 This means please do not use the same name for elements twice as the names are core to the library's system.
  
 
