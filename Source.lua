@@ -66,7 +66,7 @@ by Nebula Softworks
 
 --// SECTION : Core Variables
 
-local Release = "Prerelease Alpha 2a"
+local Release = "Prerelease Alpha 2.1"
 
 local Starlight = {
 	Folder = "Starlight Interface Suite",
@@ -444,6 +444,9 @@ local function Hide(Interface : ScreenGui, JustHide : boolean?, Notify : boolean
 			if v.ClassName == "UIStroke" then
 				Tween(v, {Transparency = 1})
 			end
+			
+			task.wait()
+			Interface.MainWindow.Visible = false
 		end
 	end
 end
@@ -462,6 +465,7 @@ local function Unhide(Interface : ScreenGui)
 			or v.ClassName ~= "UISizeConstraint"
 			or v.ClassName ~= "UIAspectRatioConstraint"
 		then
+			Interface.MainWindow.Visible = false
 
 			if v.ClassName == "Frame" then
 				Tween(v, {BackgroundTransparency = TransparencyValues[v:GetAttribute("InstanceID")].BackgroundTransparency})
