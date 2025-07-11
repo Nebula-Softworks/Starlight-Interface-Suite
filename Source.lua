@@ -77,7 +77,7 @@ by Nebula Softworks
 
 --// SECTION : Core Variables
 
-local Release = "Prerelease Alpha 2.1b"
+local Release = "Prerelease Alpha 2.1c"
 
 local Starlight = {
 	Folder = "Starlight Interface Suite",
