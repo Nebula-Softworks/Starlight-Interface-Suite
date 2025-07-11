@@ -1,3 +1,12 @@
+--!nocheck
+local syn = nil
+local getgenv = nil
+local gethui = nil
+local fluxus = nil
+local http = nil
+local http_request = nil
+local request = nil
+
 --[[
 
 ███████╗████████╗ █████╗ ██████╗ ██╗     ██╗ ██████╗ ██╗  ██╗████████╗    ██╗███╗   ██╗████████╗███████╗██████╗ ███████╗ █████╗  ██████╗███████╗    ███████╗██╗   ██╗██╗████████╗███████╗
@@ -63,7 +72,7 @@ Asterisks in Table Examples mean that the parameter is not required
 However, if there are 4 asterisks, it means that requirement of the parameter depends on another parameter
 Ellipsis means that unlimited parameters of the template provided are accepted within the table
 
-If you see --!nocheck and a few nil variables below before this, that is for the studio environment. It js means I forgot to remove them before publishing the release.
+If you see --!nocheck and a few nil variables above before this, that is for the studio environment. It js means I forgot to remove them before publishing the release.
 
 KNOWN BUGS:
 1. Slider Textbox Not Accepting Periods (and therefore, decimals)
@@ -77,7 +86,7 @@ by Nebula Softworks
 
 --// SECTION : Core Variables
 
-local Release = "Prerelease Alpha 2.1a"
+local Release = "Prerelease Alpha 2.1b"
 
 local Starlight = {
 	Folder = "Starlight Interface Suite",
@@ -94,7 +103,9 @@ local Starlight = {
 
 	Window = nil,
 	Instance = nil,
-	OnDestroy = nil
+	OnDestroy = nil,
+
+	Themes = {}
 }
 
 --// ENDSECTION
@@ -456,7 +467,7 @@ local function Hide(Interface : ScreenGui, JustHide : boolean?, Notify : boolean
 				Tween(v, {Transparency = 1})
 			end
 			
-			task.wait()
+			--task.wait()
 			Interface.MainWindow.Visible = false
 		end
 	end
@@ -743,7 +754,7 @@ if gethui then
 	for _, Interface in ipairs(gethui():GetChildren()) do
 		if Interface.Name == StarlightUI.Name and Interface ~= StarlightUI then
 			Hide(Interface, true)
-			task.wait()
+			--task.wait()
 			Interface:Destroy()
 		end
 	end
@@ -751,7 +762,7 @@ elseif not isStudio then
 	for _, Interface in ipairs(CoreGui:GetChildren()) do
 		if Interface.Name == StarlightUI.Name and Interface ~= StarlightUI then
 			Hide(Interface, true)
-			task.wait()
+			--task.wait()
 			Interface:Destroy()
 		end
 	end
@@ -879,6 +890,94 @@ function Starlight:CreateWindow(WindowSettings)
 		}
 	}
 
+
+	--// SUBSECTION : Initial Code
+	do
+		mainWindow.Content.ContentMain.Elements.Tab_TEMPLATE.Visible = false
+		local loadingScreenLogoChanged = false
+
+		Hide(StarlightUI)
+
+		mainWindow.Size = WindowSettings.DefaultSize ~= nil and WindowSettings.DefaultSize or mainWindow.Size
+
+		mainWindow.Sidebar.Icon.Image = WindowSettings.Icon ~= nil and "rbxassetid://" .. WindowSettings.Icon or ""
+		mainWindow.Sidebar.Header.Text = WindowSettings.Name
+		mainWindow.Content.Topbar.Headers.Subheader.Text = WindowSettings.Subtitle
+		
+		mainWindow.Visible = true
+		mainWindow.Size = WindowSettings.LoadingEnabled and UDim2.fromOffset(mainWindow.Size.X.Offset - 65, mainWindow.Size.Y.Offset - 55) or mainWindow.Size
+		StarlightUI.MainWindow.Position = UDim2.fromOffset(
+			Camera.ViewportSize.X / 2 - StarlightUI.MainWindow.Size.X.Offset / 2,
+			Camera.ViewportSize.Y / 2 - StarlightUI.MainWindow.Size.Y.Offset / 2
+		)
+		StarlightUI.Drag.Position = WindowSettings.LoadingEnabled and UDim2.new(0.5,0,0.5,270) or UDim2.new(0.5,0,0.5,290)
+
+		mainWindow["Loading Screen"].Version.Text = WindowSettings.LoadingSettings.Title == "Starlight Interface Suite" and Release or "Starlight Interface Suite " .. Release
+		mainWindow["Loading Screen"].Frame.SubFrame.Title.Text = WindowSettings.LoadingSettings.Title or ""
+		mainWindow["Loading Screen"].Frame.SubFrame.Subtitle.Text = WindowSettings.LoadingSettings.Subtitle or ""
+		if WindowSettings.LoadingSettings.Logo then
+			mainWindow["Loading Screen"].Frame.ImageLabel.Image = "rbxassetid://" .. WindowSettings.LoadingSettings.Logo
+			loadingScreenLogoChanged = true
+		end
+
+		mainWindow.Sidebar.Player.PlayerIcon.Image = Players:GetUserThumbnailAsync(Player.UserId, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size48x48)
+		mainWindow.Sidebar.Player.Header.Text = Player.DisplayName
+		mainWindow.Sidebar.Player.subheader.Text = Player.Name
+
+		--[[if Starlight.BlurEnabled then
+			mainWindow.Sidebar.BackgroundTransparency = 1
+			mainWindow.Sidebar.CornerRepair.BackgroundTransparency = 1
+
+			mainWindow.Content.Topbar.BackgroundTransparency = 1
+			mainWindow.Content.Topbar.CornerRepairHorizontal.BackgroundTransparency = 1
+			mainWindow.Content.Topbar.CornerRepairVertical.BackgroundTransparency = 1
+
+			mainWindow.BackgroundTransparency = 1
+
+			mainWindow.Content.ContentMain.CornerRepairHorizontal.BackgroundTransparency = 0.8
+			mainWindow.Content.ContentMain.CornerRepairVertical.BackgroundTransparency = 0.8
+			mainWindow.Content.ContentMain.BackgroundTransaprency = 0.8
+
+			BlurModule(mainWindow)
+		end]]
+
+		mainWindow["Loading Screen"].Visible = true
+		task.wait(1)
+		Unhide(StarlightUI)
+
+		makeDraggable(mainWindow.Content.Topbar, mainWindow)
+		makeDraggable(mainWindow.Sidebar, mainWindow)
+		if StarlightUI.Drag then makeDraggable(StarlightUI.Drag.Interact, mainWindow, true, 295, StarlightUI.Drag) end
+
+		if WindowSettings.LoadingEnabled then
+
+			-- like this cus uhh tween method dont got all the properties
+			if not loadingScreenLogoChanged then
+				TweenService:Create(mainWindow["Loading Screen"].Frame.ImageLabel, TweenInfo.new(1.7, Enum.EasingStyle.Back, Enum.EasingDirection.Out, 2, false, 0.2), {Rotation = 450}):Play()
+			end
+
+			task.wait(3)
+
+			Hide(mainWindow["Loading Screen"], true, false, false)
+
+			task.wait()
+
+			Tween(mainWindow, {
+				Size = UDim2.fromOffset(mainWindow.Size.X.Offset + 65, mainWindow.Size.Y.Offset + 55),
+				Position = UDim2.fromOffset(
+					Camera.ViewportSize.X / 2 - (mainWindow.Size.X.Offset + 65) / 2,
+					Camera.ViewportSize.Y / 2 - (mainWindow.Size.Y.Offset + 55) / 2
+				)
+			})
+			Tween(StarlightUI.Drag, {
+				Position = UDim2.new(0.5, 0, 0.5, 290)
+			})
+		end
+		
+		mainWindow["Loading Screen"].Visible = false
+		if not WindowSettings.LoadingEnabled then task.wait(1) end
+	end
+	--// ENDSUBSECTION
 	--// SUBSECTION : User Functions (Like Creating Elements)
 
 	local FirstTab = true
@@ -2023,7 +2122,7 @@ function Starlight:CreateWindow(WindowSettings)
 						Style1 = GroupboxTemplateInstance["Button_TEMPLATE_Style1"]:Clone(),
 						Style2 = GroupboxTemplateInstance["Button_TEMPLATE_Style2"]:Clone()
 					}
-					
+
 					local tooltip
 
 					for _, ElementInstance in pairs(Instances) do
@@ -2154,7 +2253,7 @@ function Starlight:CreateWindow(WindowSettings)
 								ElementInstance["PART_Backdrop"].AccentBrighter.Enabled = false
 								ElementInstance["PART_Backdrop"].Accent.Enabled = true
 							end)
-							
+
 							tooltip.Text = Element.Values.Tooltip
 
 							Element.Instance = ElementInstance.Visible and ElementInstance or Element.Instance
@@ -2285,17 +2384,17 @@ function Starlight:CreateWindow(WindowSettings)
 
 							do
 								Set(Element.Values.CurrentValue)
-									local Success,Response = pcall(function()
-										Element.Values.Callback(Element.Values.CurrentValue)
-									end)
+								local Success,Response = pcall(function()
+									Element.Values.Callback(Element.Values.CurrentValue)
+								end)
 
-									if not Success then
-										ElementInstance.Header.Text = "Callback Error"
-										warn("Starlight Interface Suite | "..Element.Values.Name.." Callback Error")
-										print(tostring(Response))
-										wait(0.5)
-										ElementInstance.Header.Text = Element.Values.Name
-									end
+								if not Success then
+									ElementInstance.Header.Text = "Callback Error"
+									warn("Starlight Interface Suite | "..Element.Values.Name.." Callback Error")
+									print(tostring(Response))
+									wait(0.5)
+									ElementInstance.Header.Text = Element.Values.Name
+								end
 							end
 
 							ElementInstance.Checkbox.MouseEnter:Connect(function()
@@ -2356,17 +2455,17 @@ function Starlight:CreateWindow(WindowSettings)
 
 							do
 								Set(Element.Values.CurrentValue)
-									local Success,Response = pcall(function()
-										Element.Values.Callback(Element.Values.CurrentValue)
-									end)
+								local Success,Response = pcall(function()
+									Element.Values.Callback(Element.Values.CurrentValue)
+								end)
 
-									if not Success then
-										ElementInstance.Header.Text = "Callback Error"
-										warn("Starlight Interface Suite | "..Element.Values.Name.." Callback Error")
-										print(tostring(Response))
-										wait(0.5)
-										ElementInstance.Header.Text = Element.Values.Name
-									end
+								if not Success then
+									ElementInstance.Header.Text = "Callback Error"
+									warn("Starlight Interface Suite | "..Element.Values.Name.." Callback Error")
+									print(tostring(Response))
+									wait(0.5)
+									ElementInstance.Header.Text = Element.Values.Name
+								end
 							end
 
 							connection2 = ElementInstance.Switch.Interact.MouseButton1Click:Connect(function()
@@ -2451,13 +2550,13 @@ function Starlight:CreateWindow(WindowSettings)
 								do
 									Set(Element.Values.CurrentValue)
 
-										if not Success then
-											ElementInstance.Header.Text = "Callback Error"
-											warn("Starlight Interface Suite | "..Element.Values.Name.." Callback Error")
-											print(tostring(Response))
-											wait(0.5)
-											ElementInstance.Header.Text = Element.Values.Name
-										end
+									if not Success then
+										ElementInstance.Header.Text = "Callback Error"
+										warn("Starlight Interface Suite | "..Element.Values.Name.." Callback Error")
+										print(tostring(Response))
+										wait(0.5)
+										ElementInstance.Header.Text = Element.Values.Name
+									end
 								end
 
 								connection:Disconnect()
@@ -2509,14 +2608,14 @@ function Starlight:CreateWindow(WindowSettings)
 
 								do
 									Set(Element.Values.CurrentValue)
-									
-										if not Success then
-											ElementInstance.Header.Text = "Callback Error"
-											warn("Starlight Interface Suite | "..Element.Values.Name.." Callback Error")
-											print(tostring(Response))
-											wait(0.5)
-											ElementInstance.Header.Text = Element.Values.Name
-										end
+
+									if not Success then
+										ElementInstance.Header.Text = "Callback Error"
+										warn("Starlight Interface Suite | "..Element.Values.Name.." Callback Error")
+										print(tostring(Response))
+										wait(0.5)
+										ElementInstance.Header.Text = Element.Values.Name
+									end
 								end
 
 								connection2:Disconnect()
@@ -2573,24 +2672,24 @@ function Starlight:CreateWindow(WindowSettings)
 						end
 
 					end
-					
+
 					function Element:AddBind(NestedSettings, NestedIndex)
 						local Inheritor = Groupbox:CreateLabel({Name = ""}, HttpService:GenerateGUID())
 						local NestedElement = Inheritor:AddBind(NestedSettings, NestedIndex, Element, Index)
-						
+
 						local module = {}
 						function module:Set(NewNestedSettings, NewNestedIndex)
 							NestedElement:Set(NewNestedSettings, NewNestedIndex)
 						end
-						
+
 						Inheritor:Destroy()
 						return module
 					end
-					
+
 					function Element:AddColorPicker(NestedSettings, NestedIndex)
-						
+
 					end
-					
+
 					function Element:AddDropdown(NestedSettings, NestedIndex)
 						local Inheritor = Groupbox:CreateLabel({Name = ""}, HttpService:GenerateGUID())
 						local NestedElement = Inheritor:AddDropdown(NestedSettings, NestedIndex, Element, Index)
@@ -2816,19 +2915,19 @@ function Starlight:CreateWindow(WindowSettings)
 						Element.Instance.Header.Icon.Image = Element.Values.Icon ~= nil and "rbxassetid://" .. Element.Values.Icon or ""
 
 						tooltip.Text = Element.Values.Tooltip
-						
+
 						Set(Element.Values.CurrentValue)
 
 						Starlight.Window.TabSections[Name].Tabs[TabIndex].Groupboxes[GroupIndex].Elements[ElementSettings.Name].Values = Element.Values
 
 					end
-					
+
 					function Element:Lock(Reason)
 						Element.Instance.Lock_Overlay.Visible = true
 						Element.Instance.Interactable = false
 						Element.Instance.Lock_Overlay.Header.Text = Reason or ""
 					end
-					
+
 					function Element:Unlock()
 						Element.Instance.Lock_Overlay.Visible = false
 						Element.Instance.Interactable = true
@@ -3015,7 +3114,7 @@ function Starlight:CreateWindow(WindowSettings)
 
 					function Element:Set(NewElementSettings, NewIndex)
 						NewIndex = NewIndex or Index
-						
+
 						for i,v in pairs(ElementSettings) do
 							if NewElementSettings[i] == nil then
 								NewElementSettings[i] = v
@@ -3040,7 +3139,7 @@ function Starlight:CreateWindow(WindowSettings)
 						Tween(Element.Instance.PART_Input, {Size = UDim2.new(0, Element.Instance.PART_Input.TextBounds.X + 30, 0, Element.Instance.PART_Input.Size.Y.Offset)})
 
 						tooltip.Text = Element.Values.Tooltip
-						
+
 						Starlight.Window.TabSections[Name].Tabs[TabIndex].Groupboxes[GroupIndex].Elements[Index].Values = Element.Values
 					end
 
@@ -3099,7 +3198,7 @@ function Starlight:CreateWindow(WindowSettings)
 
 					function Element:Set(NewElementSettings , NewIndex)
 						NewIndex = NewIndex or Index
-						
+
 						for i,v in pairs(Element.Values) do
 							if NewElementSettings[i] == nil then
 								NewElementSettings[i] = v
@@ -3141,18 +3240,18 @@ function Starlight:CreateWindow(WindowSettings)
 						Element.Instance.Interactable = true
 						Element.Instance.Lock_Overlay.Header.Text = ""
 					end
-					
-					
+
+
 					--// SUBSECTION : User Elements
 
 					function Element:AddBind(NestedSettings, NestedIndex, Parent, ParentIndex)
-						
+
 						local isToggle = false
 						if Parent ~= Element then isToggle = true end
 						Parent = Parent or Element
-						
+
 						ParentIndex = ParentIndex or Index
-						
+
 						--[[
 						NestedSettings = {
 							HoldToInteract = bool, **
@@ -3163,7 +3262,7 @@ function Starlight:CreateWindow(WindowSettings)
 							OnChangedCallback = function(string), **
 						}
 						]]
-						
+
 						NestedSettings.HoldToInteract = NestedSettings.HoldToInteract or false
 						NestedSettings.SyncToggleState = NestedSettings.SyncToggleState or true
 						NestedSettings.OnChangedCallback = NestedSettings.OnChangedCallback or function() end
@@ -3171,32 +3270,32 @@ function Starlight:CreateWindow(WindowSettings)
 							NestedSettings.Callback = NestedSettings.Callback or function() end
 						end
 						NestedSettings.CurrentValue = string.upper(NestedSettings.CurrentValue)
-						
+
 						local NestedElement = {
 							Values = NestedSettings,
 							Active = false,
 							Class = "Bind"
 						}
-						
+
 						NestedElement.Instance = Element.Instance.ElementContainer.Bind:Clone()
 						NestedElement.Instance.Visible = true
 						NestedElement.Instance.Parent = Parent.Instance.ElementContainer
-						
+
 						NestedElement.Instance.Name = "BIND_" .. NestedIndex
-						
+
 						local CheckingForKey = false
-						
+
 						NestedElement.Instance:GetPropertyChangedSignal("Text"):Connect(function()
 							task.wait()
-							
+
 							if NestedElement.Instance.Text == "" then
 								Tween(NestedElement.Instance, {Size = UDim2.new(0, NestedElement.Instance.TextBounds.X + 30, 0, 25)})			
 							else
 								Tween(NestedElement.Instance, {Size = UDim2.new(0, NestedElement.Instance.TextBounds.X + 16, 0, 25)})
 							end
-	
+
 						end)
-						
+
 						NestedElement.Instance.Text = NestedElement.Values.CurrentValue
 
 						NestedElement.Instance.Focused:Connect(function()
@@ -3212,7 +3311,7 @@ function Starlight:CreateWindow(WindowSettings)
 								end
 							end
 						end)
-						
+
 						local connection = UserInputService.InputBegan:Connect(function(input, processed)
 
 							if CheckingForKey then
@@ -3289,7 +3388,7 @@ function Starlight:CreateWindow(WindowSettings)
 
 								if not NestedElement.Values.HoldToInteract then
 									NestedElement.Active = not NestedElement.Active
-									
+
 									local success, response = pcall(function()
 										NestedElement.Values.Callback(NestedElement.Active)
 										if isToggle and NestedElement.Values.SyncToggleState then
@@ -3357,12 +3456,12 @@ function Starlight:CreateWindow(WindowSettings)
 
 							end
 						end)
-						
+
 						function NestedElement:Destroy()
 							NestedElement.Instance:Destroy()
 							connection:Disconnect()
 						end
-						
+
 						function NestedElement:Set(NewNestedSettings, NewNestedIndex)
 
 							NewNestedIndex = NewNestedIndex or NestedIndex
@@ -3380,24 +3479,24 @@ function Starlight:CreateWindow(WindowSettings)
 
 							NestedElement.Instances[1].Name = "BIND_" .. NestedIndex
 							NestedElement.Instances[2].Name = "BIND_" .. NestedIndex
-							
+
 							NestedElement.Instance.Text = NestedElement.Values.CurrentValue
 							Starlight.Window.TabSections[Name].Tabs[TabIndex].Groupboxes[GroupIndex].Elements[ParentIndex].NestedElements[NestedIndex].Values = NestedElement.Values
 						end
-						
+
 						Starlight.Window.TabSections[Name].Tabs[TabIndex].Groupboxes[GroupIndex].Elements[ParentIndex].NestedElements[NestedIndex] = NestedElement
 						return Starlight.Window.TabSections[Name].Tabs[TabIndex].Groupboxes[GroupIndex].Elements[ParentIndex].NestedElements[NestedIndex]
 					end
 
 					function Element:AddColorPicker(NestedSettings, NestedIndex, Parent, ParentIndex)
-						
+
 					end
-					
+
 					function Element:AddDropdown(NestedSettings, NestedIndex, Parent, ParentIndex)
-						
+
 						Parent = Parent or Element
 						ParentIndex = ParentIndex or Index
-						
+
 						--[[
 						NestedSettings = {
 							Options = table,
@@ -3408,43 +3507,43 @@ function Starlight:CreateWindow(WindowSettings)
 							Callback = function(table),
 						}
 						]]
-						
+
 						NestedSettings.MultipleOptions = NestedSettings.MultipleOptions or false
 						NestedSettings.Special = NestedSettings.Special or 0
-						
+
 						local NestedElement = {
 							Values = NestedSettings,
 							Class = "Dropdown",
 							Instances = {}
 						}
-						
+
 						NestedElement.Instances[1] = Element.Instance.Dropdown:Clone()
 						NestedElement.Instances[1].Visible = true
 						NestedElement.Instances[1].Parent = Parent.Instance
 						Parent.Instance.Size = UDim2.fromOffset(0, 70)
-						
+
 						NestedElement.Instances[2] = StarlightUI.DropdownOverlay.Dropdown_TEMPLATE:Clone()
 						NestedElement.Instances[2].Parent = StarlightUI.DropdownOverlay
-						
+
 						NestedElement.Instances[1].Name = "DROPDOWN_" .. NestedIndex
 						NestedElement.Instances[2].Name = "DROPDOWN_" .. NestedIndex
-						
+
 						for _, option in pairs(NestedElement.Instances[2].List:GetChildren()) do
 							if option.ClassName == "TextButton" then
 								option:Destroy()
 							end
 						end
-						
+
 						-- propert/method checking for me since theres autofill like this
 						--local bleh :TextLabel = nil
 						--bleh:GetPropertyChangedSignal("Text"):Connect()
-						
+
 						-- It is done this way instead of GetPropertyChangedSignal because for some reason, that does not support read-only properties while this does
 						NestedElement.Instances[1].Changed:Connect(function(property)
 							RunService.RenderStepped:Wait()
 							if property == "AbsolutePosition" then
 								NestedElement.Instances[2].Position = UDim2.fromOffset(math.ceil(NestedElement.Instances[1].AbsolutePosition.X), math.ceil(NestedElement.Instances[1].AbsolutePosition.Y)+ (135/2) + 30)
-								
+
 								Tween(NestedElement.Instances[2], {Size = UDim2.fromOffset(NestedElement.Instances[2].Size.X.Offset, 0)}, function()
 									NestedElement.Instances[2].Visible = false
 									Tween(NestedElement.Instances[1].Icon, {Rotation = 0})
@@ -3455,7 +3554,7 @@ function Starlight:CreateWindow(WindowSettings)
 								NestedElement.Instances[1].Header.Text = NestedElement:truncate()
 							end
 						end)
-						
+
 						NestedElement.Instances[1].Interact.MouseButton1Click:Connect(function()
 							if NestedElement.Instances[2].Visible then
 								Tween(NestedElement.Instances[2], {Size = UDim2.fromOffset(NestedElement.Instances[2].Size.X.Offset, 0)}, function()
@@ -3468,7 +3567,7 @@ function Starlight:CreateWindow(WindowSettings)
 								Tween(NestedElement.Instances[1].Icon, {Rotation = 180})
 							end
 						end)
-						
+
 						if NestedElement.Values.CurrentOption then
 							if typeof(NestedElement.Values.CurrentOption) == "string" then
 								NestedElement.Values.CurrentOption = {NestedElement.Values.CurrentOption}
@@ -3482,40 +3581,40 @@ function Starlight:CreateWindow(WindowSettings)
 						else
 							NestedElement.Values.CurrentOption = {}
 						end
-						
+
 						--// SUBSECTION : display updation and methods
-						
+
 						function NestedElement:truncate()
 							if TextService:GetTextSize(NestedElement.Instances[1].Header.Text, NestedElement.Instances[1].Header.TextSize, 
 								NestedElement.Instances[1].Header.Font, Vector2.new(math.huge, math.huge)).X <= NestedElement.Instances[1].Header.AbsoluteSize.X then
 								return NestedElement.Instances[1].Header.Text
 							end
-							
+
 							local result = NestedElement.Instances[1].Header.Text
 							while TextService:GetTextSize(result .. "...", NestedElement.Instances[1].Header.TextSize, 
 								NestedElement.Instances[1].Header.Font, Vector2.new(math.huge, math.huge)).X > NestedElement.Instances[1].Header.AbsoluteSize.X-9 and #result > 0 do
 								result = string.sub(result, 1, -2)
 							end
-							
+
 							return result .. "..."
 						end
-						
+
 						NestedElement.Instances[1].Header:GetPropertyChangedSignal("Text"):Connect(function()
 							NestedElement.Instances[1].Header.Text = NestedElement:truncate()
 						end)
-						
+
 						--// ENDSUBSECTION
-						
+
 						local function Activate(option)
 							option.TextColor3 = Color3.new(1,1,1)
 							--print("debug - activated option")
 						end
-						
+
 						local function Deactivate(option)
 							option.TextColor3 = Color3.fromRGB(165,165,165)
 							--print("debug - deactivated option")
 						end
-						
+
 						local function ToggleOption(option)
 							if not NestedElement.Values.MultipleOptions then
 								--print("debug - fired not multi options")
@@ -3528,7 +3627,7 @@ function Starlight:CreateWindow(WindowSettings)
 								end
 								task.wait()
 								Activate(option)
-								
+
 								local Success,Response = pcall(function()
 									NestedElement.Values.CurrentOption = {option.Text}
 									NestedElement.Values.Callback(NestedElement.Values.CurrentOption)
@@ -3562,7 +3661,7 @@ function Starlight:CreateWindow(WindowSettings)
 								end
 							end
 						end
-						
+
 						local function Refresh()
 							if NestedElement.Values.Special == 1 then
 								NestedElement.Values.Options = {}
@@ -3576,24 +3675,24 @@ function Starlight:CreateWindow(WindowSettings)
 									table.insert(NestedElement.Values.Options, v.Name)
 								end
 							end
-							
+
 							-- ipairs so it actually lines up correctly
 							for _, option in ipairs(NestedElement.Values.Options) do
 								local optioninstance = StarlightUI.DropdownOverlay.Dropdown_TEMPLATE.List.Option_TEMPLATE:Clone()
 								optioninstance.Parent = NestedElement.Instances[2].List
 								optioninstance.Name = "OPTION_" .. option
 								optioninstance.Text = option
-								
+
 								optioninstance.MouseButton1Click:Connect(function()
 									ToggleOption(optioninstance)
 									--print("debug - click")
 								end)
 							end
 						end
-						
+
 						Refresh()
 						NestedElement.Instances[2].Position = UDim2.fromOffset(math.ceil(NestedElement.Instances[1].AbsolutePosition.X), math.ceil(NestedElement.Instances[1].AbsolutePosition.Y)+ (135/2) + 30)
-						
+
 						local preoptions = NestedElement.Values.CurrentOption
 						NestedElement.Values.CurrentOption = {}
 						for i,v in pairs(preoptions) do
@@ -3606,13 +3705,13 @@ function Starlight:CreateWindow(WindowSettings)
 								end
 							end
 						end
-						
-						
+
+
 						function NestedElement:Destroy()
 							NestedElement.Instance:Destroy()
 							Parent.Instance.Size = UDim2.fromOffset(0, 36)
 						end
-						
+
 						function NestedElement:Set(NewNestedSettings, NewNestedIndex)
 							NewNestedIndex = NewNestedIndex or NestedIndex
 
@@ -3629,7 +3728,7 @@ function Starlight:CreateWindow(WindowSettings)
 
 							NestedElement.Instances[1].Name = "DROPDOWN_" .. NestedIndex
 							NestedElement.Instances[2].Name = "DROPDOWN_" .. NestedIndex
-							
+
 							Refresh()
 							local preoptions = NestedElement.Values.CurrentOption
 							NestedElement.Values.CurrentOption = {}
@@ -3643,17 +3742,17 @@ function Starlight:CreateWindow(WindowSettings)
 									end
 								end
 							end
-							
+
 							Starlight.Window.TabSections[Name].Tabs[TabIndex].Groupboxes[GroupIndex].Elements[ParentIndex].NestedElements[NestedIndex].Values = NestedElement.Values
 						end
 
 						Starlight.Window.TabSections[Name].Tabs[TabIndex].Groupboxes[GroupIndex].Elements[ParentIndex].NestedElements[NestedIndex] = NestedElement
 						return Starlight.Window.TabSections[Name].Tabs[TabIndex].Groupboxes[GroupIndex].Elements[ParentIndex].NestedElements[NestedIndex]
-						
+
 					end
 
 					--// ENDSUBSECTION
-					
+
 
 					Starlight.Window.TabSections[Name].Tabs[TabIndex].Groupboxes[GroupIndex].Elements[Index] = Element
 					return Starlight.Window.TabSections[Name].Tabs[TabIndex].Groupboxes[GroupIndex].Elements[Index]
@@ -3695,7 +3794,7 @@ function Starlight:CreateWindow(WindowSettings)
 
 					function Element:Set(NewElementSettings , NewIndex)
 						NewIndex = NewIndex or Index
-						
+
 						for i,v in pairs(Element.Values) do
 							if NewElementSettings[i] == nil then
 								NewElementSettings[i] = v
@@ -3769,94 +3868,6 @@ function Starlight:CreateWindow(WindowSettings)
 
 	end
 
-	--// ENDSUBSECTION
-
-	--// SUBSECTION : Initial Code
-	do
-		mainWindow.Content.ContentMain.Elements.Tab_TEMPLATE.Visible = false
-		local loadingScreenLogoChanged = false
-
-		Hide(StarlightUI)
-
-		mainWindow.Size = WindowSettings.DefaultSize ~= nil and WindowSettings.DefaultSize or mainWindow.Size
-
-		mainWindow.Sidebar.Icon.Image = WindowSettings.Icon ~= nil and "rbxassetid://" .. WindowSettings.Icon or ""
-		mainWindow.Sidebar.Header.Text = WindowSettings.Name
-		mainWindow.Content.Topbar.Headers.Subheader.Text = WindowSettings.Subtitle
-		
-		mainWindow.Visible = true
-		mainWindow.Size = WindowSettings.LoadingEnabled and UDim2.fromOffset(mainWindow.Size.X.Offset - 65, mainWindow.Size.Y.Offset - 55) or mainWindow.Size
-		StarlightUI.MainWindow.Position = UDim2.fromOffset(
-			Camera.ViewportSize.X / 2 - StarlightUI.MainWindow.Size.X.Offset / 2,
-			Camera.ViewportSize.Y / 2 - StarlightUI.MainWindow.Size.Y.Offset / 2
-		)
-		StarlightUI.Drag.Position = WindowSettings.LoadingEnabled and UDim2.new(0.5,0,0.5,270) or UDim2.new(0.5,0,0.5,290)
-
-		mainWindow["Loading Screen"].Version.Text = WindowSettings.LoadingSettings.Title == "Starlight Interface Suite" and Release or "Starlight Interface Suite " .. Release
-		mainWindow["Loading Screen"].Frame.SubFrame.Title.Text = WindowSettings.LoadingSettings.Title or ""
-		mainWindow["Loading Screen"].Frame.SubFrame.Subtitle.Text = WindowSettings.LoadingSettings.Subtitle or ""
-		if WindowSettings.LoadingSettings.Logo then
-			mainWindow["Loading Screen"].Frame.ImageLabel.Image = "rbxassetid://" .. WindowSettings.LoadingSettings.Logo
-			loadingScreenLogoChanged = true
-		end
-
-		mainWindow.Sidebar.Player.PlayerIcon.Image = Players:GetUserThumbnailAsync(Player.UserId, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size48x48)
-		mainWindow.Sidebar.Player.Header.Text = Player.DisplayName
-		mainWindow.Sidebar.Player.subheader.Text = Player.Name
-
-		--[[if Starlight.BlurEnabled then
-			mainWindow.Sidebar.BackgroundTransparency = 1
-			mainWindow.Sidebar.CornerRepair.BackgroundTransparency = 1
-
-			mainWindow.Content.Topbar.BackgroundTransparency = 1
-			mainWindow.Content.Topbar.CornerRepairHorizontal.BackgroundTransparency = 1
-			mainWindow.Content.Topbar.CornerRepairVertical.BackgroundTransparency = 1
-
-			mainWindow.BackgroundTransparency = 1
-
-			mainWindow.Content.ContentMain.CornerRepairHorizontal.BackgroundTransparency = 0.8
-			mainWindow.Content.ContentMain.CornerRepairVertical.BackgroundTransparency = 0.8
-			mainWindow.Content.ContentMain.BackgroundTransaprency = 0.8
-
-			BlurModule(mainWindow)
-		end]]
-
-		mainWindow["Loading Screen"].Visible = true
-		task.wait(1)
-		Unhide(StarlightUI)
-
-		makeDraggable(mainWindow.Content.Topbar, mainWindow)
-		makeDraggable(mainWindow.Sidebar, mainWindow)
-		if StarlightUI.Drag then makeDraggable(StarlightUI.Drag.Interact, mainWindow, true, 295, StarlightUI.Drag) end
-
-		if WindowSettings.LoadingEnabled then
-
-			-- like this cus uhh tween method dont got all the properties
-			if not loadingScreenLogoChanged then
-				TweenService:Create(mainWindow["Loading Screen"].Frame.ImageLabel, TweenInfo.new(1.7, Enum.EasingStyle.Back, Enum.EasingDirection.Out, 2, false, 0.2), {Rotation = 450}):Play()
-			end
-
-			task.wait(3)
-
-			Hide(mainWindow["Loading Screen"], true, false, false)
-
-			task.wait()
-
-			Tween(mainWindow, {
-				Size = UDim2.fromOffset(mainWindow.Size.X.Offset + 65, mainWindow.Size.Y.Offset + 55),
-				Position = UDim2.fromOffset(
-					Camera.ViewportSize.X / 2 - (mainWindow.Size.X.Offset + 65) / 2,
-					Camera.ViewportSize.Y / 2 - (mainWindow.Size.Y.Offset + 55) / 2
-				)
-			})
-			Tween(StarlightUI.Drag, {
-				Position = UDim2.new(0.5, 0, 0.5, 290)
-			})
-		end
-		
-		mainWindow["Loading Screen"].Visible = false
-		if not WindowSettings.LoadingEnabled then task.wait(1) end
-	end
 	--// ENDSUBSECTION
 
 	--// SUBSECTION : Window Functionability
@@ -3946,7 +3957,7 @@ StarlightUI.Enabled = true
 --// SUBSECTION : Debugging Script
 
 --[[
-]-]
+]]
 
 local win = Starlight:CreateWindow({
 	Name = "",
@@ -4194,9 +4205,9 @@ g:CreateParagraph({
 	Icon = NebulaIcons:GetIcon("filter_list_alt"),
 	Content = [[Hello!! Im A Paragraph, and i can store bunch of text. 
 I also grow bigger or smaller depending on how much text is in my body! 
-Like this, i am a much bigger paragraph than the other one! i also support multi lines ]-]
+Like this, i am a much bigger paragraph than the other one! i also support multi lines ]]
 }, "prgrph2")
---]]
+--]-]
 
 --// ENDSUBSECTION
 
