@@ -1,12 +1,3 @@
---!nocheck
-local syn = nil
-local getgenv = nil
-local gethui = nil
-local fluxus = nil
-local http = nil
-local http_request = nil
-local request = nil
-
 --[[
 
 ███████╗████████╗ █████╗ ██████╗ ██╗     ██╗ ██████╗ ██╗  ██╗████████╗    ██╗███╗   ██╗████████╗███████╗██████╗ ███████╗ █████╗  ██████╗███████╗    ███████╗██╗   ██╗██╗████████╗███████╗
@@ -3957,7 +3948,7 @@ StarlightUI.Enabled = true
 --// SUBSECTION : Debugging Script
 
 --[[
-]]
+]-]
 
 local win = Starlight:CreateWindow({
 	Name = "",
@@ -4205,9 +4196,9 @@ g:CreateParagraph({
 	Icon = NebulaIcons:GetIcon("filter_list_alt"),
 	Content = [[Hello!! Im A Paragraph, and i can store bunch of text. 
 I also grow bigger or smaller depending on how much text is in my body! 
-Like this, i am a much bigger paragraph than the other one! i also support multi lines ]]
+Like this, i am a much bigger paragraph than the other one! i also support multi lines ]-]
 }, "prgrph2")
---]-]
+--]]
 
 --// ENDSUBSECTION
 
