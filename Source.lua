@@ -4751,7 +4751,7 @@ function Starlight.ConfigSystem:RefreshConfigList(path)
 	
 	if isStudio or (not isfile) then return "Config system unavailable." end
 	
-	local list = listfiles(path)
+	local list = listfiles(path) or {}
 
 	local configs = {}
 	for i = 1, #list do
