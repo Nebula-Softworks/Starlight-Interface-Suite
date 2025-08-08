@@ -3939,7 +3939,7 @@ function Starlight:CreateWindow(WindowSettings)
 							NestedElement.Instances[2].Position = UDim2.fromOffset(math.ceil(NestedElement.Instances[1].AbsolutePosition.X), math.ceil(NestedElement.Instances[1].AbsolutePosition.Y) + 35)
 							
 							Tween(NestedElement.Instances[2], {Size = UDim2.fromOffset(NestedElement.Instances[2].Size.X.Offset, 0)}, function()
-								Tween(NestedElement.Instances[1].Icon, {Rotation = 0})
+								Tween(NestedElement.Instances[1]:WaitForChild("Icon"), {Rotation = 0})
 								NestedElement.Instances[2].Visible = false
 							end, Tween.Info(nil, nil, 0.18))
 						end)
@@ -3952,14 +3952,14 @@ function Starlight:CreateWindow(WindowSettings)
 
 						NestedElement.Instances[1].Interact.MouseButton1Click:Connect(function()
 							if NestedElement.Instances[2].Visible then
-								Tween(NestedElement.Instances[1].Icon, {Rotation = 0})
+								Tween(NestedElement.Instances[1]:WaitForChild("Icon"), {Rotation = 0})
 								Tween(NestedElement.Instances[2], {Size = UDim2.fromOffset(NestedElement.Instances[2].Size.X.Offset, 0)}, function()
 									NestedElement.Instances[2].Visible = false
 								end, Tween.Info(nil, nil, 0.18))
 							else
 								NestedElement.Instances[2].Visible = true
 								Tween(NestedElement.Instances[2], {Size = UDim2.fromOffset(NestedElement.Instances[2].Size.X.Offset, 120)})
-								Tween(NestedElement.Instances[1].Icon, {Rotation = 180})
+								Tween(NestedElement.Instances[1]:WaitForChild("Icon"), {Rotation = 180})
 							end
 						end)
 
@@ -4785,6 +4785,10 @@ end
 
 function Starlight:LoadAutoloadConfig()
 	if isStudio or (not isfile) then return "Config system unavailable." end
+	
+	repeat
+		task.wait()
+	until Starlight.ConfigSystem.AutoloadPath ~= nil
 	
 	if isfile(Starlight.ConfigSystem.AutoloadPath .. "autoload.txt") then
 
