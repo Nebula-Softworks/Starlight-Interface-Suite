@@ -3393,7 +3393,6 @@ function Starlight:CreateWindow(WindowSettings)
 					ElementSettings.RemoveTextAfterFocusLost = ElementSettings.RemoveTextAfterFocusLost or false
 					ElementSettings.Numeric = ElementSettings.Numeric or false
 					ElementSettings.Enter = ElementSettings.Enter or false
-					ElementSettings.MaxCharacters = ElementSettings.MaxCharacters or 0
 					ElementSettings.RemoveTextOnFocus = ElementSettings.RemoveTextOnFocus or true
 
 					local Element = {
