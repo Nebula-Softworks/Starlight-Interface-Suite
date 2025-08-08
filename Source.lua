@@ -1313,6 +1313,7 @@ function Starlight:CreateWindow(WindowSettings)
 	]]--
 
 	WindowSettings.NotifyOnCallbackError = WindowSettings.NotifyOnCallbackError or true
+	Starlight.ConfigSystem.AutoloadPath = `{Starlight.Folder}/Configurations/{folderpath}/`
 
 	Starlight.Window = {
 		Instance = mainWindow,
@@ -4448,7 +4449,7 @@ function Starlight:CreateWindow(WindowSettings)
 					Icon = 6035056483,
 					Tooltip = "Manually refresh the list of configurations incase of any errors.",
 					Callback = function()
-						local success, returned = configSelection:Set({ Options = Starlight.ConfigSystem:RefreshConfigList(`{Starlight.Folder}/Configurations/{folderpath}`) })
+						local success, returned = instance.Elements["__prebuiltConfigSelector_lbl"].NestedElements["__prebuiltConfigSelector_lbl"]:Set({ Options = Starlight.ConfigSystem:RefreshConfigList(`{Starlight.Folder}/Configurations/{folderpath}`) })
 						if not success then
 							Starlight:Notification({
 								Title = "Refreshing Error",
@@ -4460,10 +4461,10 @@ function Starlight:CreateWindow(WindowSettings)
 					end,
 					Style = 2,
 				}, "__prebuiltConfigRefresher")
-
+				
 				local loadlabel = instance:CreateParagraph({
 					Name = "Current Autoload Config:",
-					Content = "None",
+						Content = isfile(`{Starlight.Folder}/Configurations/{folderpath}/autoload.txt`) and readfile(`{Starlight.Folder}/Configurations/{folderpath}/autoload.txt`) or "None",
 				}, "__prebuiltConfigAutoloadLabel")
 
 				instance:CreateButton({
@@ -4482,7 +4483,6 @@ function Starlight:CreateWindow(WindowSettings)
 						local name = selectedConfig
 						pcall(function()
 							writefile(`{Starlight.Folder}/Configurations/{folderpath}/autoload.txt`, name)
-							Starlight.ConfigSystem.AutoloadPath = `{Starlight.Folder}/Configurations/{folderpath}/`
 						end)
 						loadlabel:Set({ Content = name })
 
@@ -4517,8 +4517,10 @@ function Starlight:CreateWindow(WindowSettings)
 							})
 							return
 						end
-						delfile(`{Starlight.Folder}/Configurations/{folderpath}/{selectedConfig}{Starlight.ConfigSystem.FileExtension}`)
-						local success, returned = configSelection:Set({ Options = Starlight.ConfigSystem:RefreshConfigList(`{Starlight.Folder}/Configurations/{folderpath}`) })
+						if isfile(`{Starlight.Folder}/Configurations/{folderpath}/{selectedConfig}{Starlight.ConfigSystem.FileExtension}`) then
+							delfile(`{Starlight.Folder}/Configurations/{folderpath}/{selectedConfig}{Starlight.ConfigSystem.FileExtension}`)
+						end
+						local success, returned = instance.Elements["__prebuiltConfigSelector_lbl"].NestedElements["__prebuiltConfigSelector_lbl"]:Set({ Options = Starlight.ConfigSystem:RefreshConfigList(`{Starlight.Folder}/Configurations/{folderpath}`) })
 						if not success then
 							Starlight:Notification({
 								Title = "Refreshing Error",
