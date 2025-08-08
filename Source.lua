@@ -3294,7 +3294,7 @@ function Starlight:CreateWindow(WindowSettings)
 
 						Set(Element.Values.CurrentValue)
 
-						Starlight.Window.TabSections[Name].Tabs[TabIndex].Groupboxes[GroupIndex].Elements[ElementSettings.Name].Values = Element.Values
+						Starlight.Window.TabSections[Name].Tabs[TabIndex].Groupboxes[GroupIndex].Elements[Index].Values = Element.Values
 
 					end
 
@@ -3374,8 +3374,8 @@ function Starlight:CreateWindow(WindowSettings)
 						Tween(Element.Instance.PART_Backdrop.PART_Progress.DropShadowHolder.DropShadow, {ImageTransparency = 0.9})
 					end)
 
-					Starlight.Window.TabSections[Name].Tabs[TabIndex].Groupboxes[GroupIndex].Elements[ElementSettings.Name] = Element
-					return Starlight.Window.TabSections[Name].Tabs[TabIndex].Groupboxes[GroupIndex].Elements[ElementSettings.Name]
+					Starlight.Window.TabSections[Name].Tabs[TabIndex].Groupboxes[GroupIndex].Elements[Index] = Element
+					return Starlight.Window.TabSections[Name].Tabs[TabIndex].Groupboxes[GroupIndex].Elements[Index]
 				end
 
 				function Groupbox:CreateInput(ElementSettings, Index)
