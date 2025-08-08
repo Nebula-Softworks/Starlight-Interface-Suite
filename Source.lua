@@ -2960,12 +2960,20 @@ function Starlight:CreateWindow(WindowSettings)
 						local Success,Response = pcall(function()
 							Element.Values.Callback(Element.Values.CurrentValue)
 						end)
+						if not Success then
+							for _, ElementInstance in pairs(Instances) do ElementInstance.Header.Text = "Callback Error" end
+							Starlight:Notification({
+								Title = Element.Values.Name.." Callback Error",
+								Content = tostring(Response),
+								Icon = 129398364168201
+							})
+							wait(0.5)
+							for _, ElementInstance in pairs(Instances) do ElementInstance.Header.Text = Element.Values.Name end
+						end
 
 						for _, ElementInstance in pairs(Instances) do
 
-							ElementInstance.Parent = Groupbox.ParentingItem
-
-							ElementInstance.Name = "TOGGLE_" .. NewIndex
+							ElementInstance.Name = "TOGGLE_" .. Index
 							ElementInstance.Header.Text = Element.Values.Name
 							ElementInstance.Header.Icon.Visible = Element.Values.Icon ~= nil
 
@@ -2984,35 +2992,13 @@ function Starlight:CreateWindow(WindowSettings)
 								ElementInstance.Checkbox.Icon.Image = Element.Values.CheckboxIcon ~= nil and "rbxassetid://" .. Element.Values.CheckboxIcon or ""
 
 								do
-									if not Success then
-										ElementInstance.Header.Text = "Callback Error"
-										Starlight:Notification({
-											Title = Element.Values.Name.." Callback Error",
-											Content = tostring(Response),
-											Icon = 129398364168201
-										})
-										wait(0.5)
-										ElementInstance.Header.Text = Element.Values.Name
-									end
 								end
 
 							elseif ElementInstance.Switch then
 
 								if Element.Values.Style == 1 then ElementInstance.Visible = false end
 
-								do
-
-									if not Success then
-										ElementInstance.Header.Text = "Callback Error"
-										Starlight:Notification({
-											Title = Element.Values.Name.." Callback Error",
-											Content = tostring(Response),
-											Icon = 129398364168201
-										})
-										wait(0.5)
-										ElementInstance.Header.Text = Element.Values.Name
-									end
-								end
+								
 							end
 
 							tooltip.Text = Element.Values.Tooltip
@@ -3424,21 +3410,21 @@ function Starlight:CreateWindow(WindowSettings)
 
 					Element.Instance.PART_Input.FocusLost:Connect(function(Enter)
 
-						if Element.Values.Enter and Enter then
-							local Success,Response = pcall(function()
-								Element.Values.Callback(Element.Values.CurrentValue)
-							end)
+						if Element.Values.Enter and not Enter then return end
+						
+						local Success,Response = pcall(function()
+							Element.Values.Callback(Element.Values.CurrentValue)
+						end)
 
-							if not Success then
-								Element.Instance.Header.Text = "Callback Error"
-								Starlight:Notification({
-									Title = Element.Values.Name.." Callback Error",
-									Content = tostring(Response),
-									Icon = 129398364168201
-								})
-								wait(0.5)
-								Element.Instance.Header.Text = ElementSettings.Name
-							end
+						if not Success then
+							Element.Instance.Header.Text = "Callback Error"
+							Starlight:Notification({
+								Title = Element.Values.Name.." Callback Error",
+								Content = tostring(Response),
+								Icon = 129398364168201
+							})
+							wait(0.5)
+							Element.Instance.Header.Text = ElementSettings.Name
 						end
 
 						if Element.Values.RemoveTextAfterFocusLost then
@@ -3458,7 +3444,7 @@ function Starlight:CreateWindow(WindowSettings)
 					end
 
 					Element.Instance.PART_Input:GetPropertyChangedSignal("Text"):Connect(function()
-						if tonumber(Element.Values.MaxCharacters) ~= 0 then
+						if tonumber(Element.Values.MaxCharacters) ~= nil then
 							if (#Element.Instance.PART_Input.Text - 1) == Element.Values.MaxCharacters then
 								Element.Instance.PART_Input.Text = Element.Instance.PART_Input.Text:sub(1, Element.Values.MaxCharacters)
 							end
@@ -4511,7 +4497,10 @@ function Starlight:CreateWindow(WindowSettings)
 						if isfile(`{Starlight.Folder}/Configurations/{folderpath}/{selectedConfig}{Starlight.ConfigSystem.FileExtension}`) then
 							delfile(`{Starlight.Folder}/Configurations/{folderpath}/{selectedConfig}{Starlight.ConfigSystem.FileExtension}`)
 						end
-						instance.Elements["__prebuiltConfigSelector_lbl"].NestedElements["__prebuiltConfigSelector_lbl"]:Set({ Options = Starlight.ConfigSystem:RefreshConfigList(`{Starlight.Folder}/Configurations/{folderpath}`) })
+						instance.Elements["__prebuiltConfigSelector_lbl"].NestedElements["__prebuiltConfigSelector_lbl"]:Set({ 
+							Options = Starlight.ConfigSystem:RefreshConfigList(`{Starlight.Folder}/Configurations/{folderpath}`),
+							CurrentOption = nil,
+						})
 						
 					end,
 					Style = 2,
