@@ -3393,6 +3393,7 @@ function Starlight:CreateWindow(WindowSettings)
 					ElementSettings.RemoveTextAfterFocusLost = ElementSettings.RemoveTextAfterFocusLost or false
 					ElementSettings.Numeric = ElementSettings.Numeric or false
 					ElementSettings.Enter = ElementSettings.Enter or false
+					ElementSettings.MaxCharacters = ElementSettings.MaxCharacters or 0
 					ElementSettings.RemoveTextOnFocus = ElementSettings.RemoveTextOnFocus or true
 
 					local Element = {
@@ -3443,7 +3444,7 @@ function Starlight:CreateWindow(WindowSettings)
 					end
 
 					Element.Instance.PART_Input:GetPropertyChangedSignal("Text"):Connect(function()
-						if tonumber(Element.Values.MaxCharacters) ~= nil then
+						if tonumber(Element.Values.MaxCharacters) ~= 0 then
 							if (#Element.Instance.PART_Input.Text - 1) == Element.Values.MaxCharacters then
 								Element.Instance.PART_Input.Text = Element.Instance.PART_Input.Text:sub(1, Element.Values.MaxCharacters)
 							end
