@@ -4355,7 +4355,7 @@ function Starlight:CreateWindow(WindowSettings)
 					Name = "Select Config",
 					Tooltip = "Select a config for this section to work on.",
 				}, "__prebuiltConfigSelector_lbl"):AddDropdown({
-					Options = Starlight:RefreshConfigList(`{Starlight.Folder}/Configurations/{folderpath}`),
+					Options = Starlight.ConfigSystem:RefreshConfigList(`{Starlight.Folder}/Configurations/{folderpath}`),
 					CurrentOption = nil,
 					MultipleOptions = false,
 					Callback = function(val)
