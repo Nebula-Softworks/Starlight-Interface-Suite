@@ -4084,6 +4084,12 @@ function Starlight:CreateWindow(WindowSettings)
 						end
 
 						local function Refresh()
+							for i,v in pairs(NestedElement.Instances[2].List:GetChildren()) do
+								if v.ClassName == "TextButton" then 
+									v:Destroy()
+								end
+							end
+							
 							if NestedElement.Values.Special == 1 then
 								NestedElement.Values.Options = {}
 								for i,v in pairs(Players:GetChildren()) do
@@ -4362,7 +4368,7 @@ function Starlight:CreateWindow(WindowSettings)
 					CurrentOption = nil,
 					MultipleOptions = false,
 					Callback = function(val)
-						selectedConfig = val
+						selectedConfig = val[1]
 					end,
 				}, "__prebuiltConfigSelector_lbl")
 
@@ -4737,6 +4743,7 @@ function Starlight.ConfigSystem:LoadConfig(file, path)
 	end
 	
 	local fullPath = `{path}{file}{Starlight.ConfigSystem.FileExtension}`
+	print(fullPath)
 	if not isfile(fullPath) then return false, "Invalid file." end
 	
 	local success, decoded = pcall(HttpService.JSONDecode, HttpService, readfile(fullPath))
