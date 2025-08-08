@@ -875,7 +875,7 @@ local function AddToolTip(InfoStr, HoverInstance)
 	
 	local tooltip = Instance.new("Frame")
 	tooltip.BackgroundColor3 = Color3.fromRGB(27, 29, 33)
-	tooltip.ZIndex = 90
+	tooltip.ZIndex = 300
 	tooltip.Parent = Starlight.Instance.Tooltips
 	tooltip.Name = HoverInstance.Name
 	
@@ -4752,7 +4752,7 @@ function Starlight.ConfigSystem:LoadConfig(file, path)
 	for _, object in next, decoded.objects do
 		if ClassParser[object.type] then
 			task.spawn(function() 
-				ClassParser[object.type].Load(object.idx, object.Values) 
+				ClassParser[object.type].Load(object.idx, object.data) 
 			end)
 		end
 	end
