@@ -4276,6 +4276,8 @@ function Starlight:CreateWindow(WindowSettings)
 
 			function Tab:BuildConfigGroupbox(Column, Style)
 				
+				Starlight.ConfigSystem:BuildFolderTree(root == nil and false or true, root or "", folder)
+
 				local instance = Tab:CreateGroupbox({
 					Name = "Configurations",
 					Icon = 6031280882,
