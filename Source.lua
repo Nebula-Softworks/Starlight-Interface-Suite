@@ -215,6 +215,7 @@ local ClassParser = {
 		Load = function(Idx, Data, Path)
 			if GetNestedValue(Starlight.Window.TabSections, Idx) then
 				for key, value in pairs(Data) do
+					if tonumber(value) ~= nil then tonumber(value) end
 					GetNestedValue(Starlight.Window.TabSections, Idx):Set({ [key] = value })
 				end
 			end
@@ -4286,9 +4287,9 @@ function Starlight:CreateWindow(WindowSettings)
 				local root = WindowSettings.ConfigurationSettings.RootFolder
 				local folder = WindowSettings.ConfigurationSettings.FolderName
 				local folderpath = root ~= nil and root .. "/" .. folder or folder
-				
-				Starlight.ConfigSystem:BuildFolderTree(root == nil and false or true, root or "", folder)
 
+				Starlight.ConfigSystem:BuildFolderTree(root == nil and false or true, root or "", folder)
+				
 				local instance = Tab:CreateGroupbox({
 					Name = "Configurations",
 					Icon = 6031280882,
@@ -4353,7 +4354,7 @@ function Starlight:CreateWindow(WindowSettings)
 							Content = string.format("Created config %q", inputPath),
 						})
 
-						instance.Elements["__prebuiltConfigSelector_lbl"].NestedElements["__prebuiltConfigSelector_lbl"]:Set({ Options = Starlight.ConfigSystem:RefreshConfigList(`{Starlight.Folder}/Configurations/{folderpath}`) })
+						instance.Elements["__prebuiltConfigSelector_lbl"].NestedElements["__prebuiltConfigSelector_lbl"]:Set({ Options = Starlight:RefreshConfigList(`{Starlight.Folder}/Configurations/{folderpath}`) })
 					end,
 					Style = 1,
 				}, "__prebuiltConfigCreator")
@@ -4377,6 +4378,15 @@ function Starlight:CreateWindow(WindowSettings)
 					Icon = 10723433935,
 					Tooltip = "Load the selected configuration and all its settings.",
 					Callback = function()
+						if selectedConfig == nil then
+							Starlight:Notification({
+								Title = "Null Selection",
+								Icon = 129398364168201,
+								Content = "Configuration Must Be Selected!"
+							})
+							return
+						end
+						
 						local success, returned = Starlight.ConfigSystem:LoadConfig(selectedConfig, `{Starlight.Folder}/Configurations/{folderpath}/`)
 						if not success then
 							Starlight:Notification({
@@ -4401,6 +4411,15 @@ function Starlight:CreateWindow(WindowSettings)
 					Icon = 6031225810,
 					Tooltip = "Overwrite and update the selected configuration and all its settings with your current ones.",
 					Callback = function()
+						if selectedConfig == nil then
+							Starlight:Notification({
+								Title = "Null Selection",
+								Icon = 129398364168201,
+								Content = "Configuration Must Be Selected!"
+							})
+							return
+						end
+						
 						local success, returned = Starlight.ConfigSystem:SaveConfig(selectedConfig, `{Starlight.Folder}/Configurations/{folderpath}/`)
 						if not success then
 							Starlight:Notification({
@@ -4448,6 +4467,14 @@ function Starlight:CreateWindow(WindowSettings)
 					Icon = 6023565901,
 					Tooltip = "Set the selected configuration to load whenever you run the script automatically.",
 					Callback = function()
+						if selectedConfig == nil then
+							Starlight:Notification({
+								Title = "Null Selection",
+								Icon = 129398364168201,
+								Content = "Configuration Must Be Selected!"
+							})
+							return
+						end
 						local name = selectedConfig
 						pcall(function()
 							writefile(`{Starlight.Folder}/Configurations/{folderpath}/autoload.txt`, name)
@@ -4478,7 +4505,15 @@ function Starlight:CreateWindow(WindowSettings)
 					Icon = 115577765236264,
 					Tooltip = "Deleting A Configuration is permanent and you have to redo it!",
 					Callback = function()
-						delfile(`{Starlight.Folder}/Configurations/{folderpath}/{selectedConfig}.starlight`)
+						if selectedConfig == nil then
+							Starlight:Notification({
+								Title = "Null Selection",
+								Icon = 129398364168201,
+								Content = "Configuration Must Be Selected!"
+							})
+							return
+						end
+						delfile(`{Starlight.Folder}/Configurations/{folderpath}/{selectedConfig}{Starlight.ConfigSystem.FileExtension}`)
 					end,
 					Style = 2,
 				}, "__prebuiltConfigDeleter")
@@ -4488,7 +4523,7 @@ function Starlight:CreateWindow(WindowSettings)
 					Icon = 6034767619,
 					Tooltip = "Removes the autoloading of the current autoload config.",
 					Callback = function()
-						delfile(`{Starlight.Folder}/Configurations/{folderpath}/autoload.txt`)
+						if isfile(`{Starlight.Folder}/Configurations/{folderpath}/autoload.txt`) then delfile(`{Starlight.Folder}/Configurations/{folderpath}/autoload.txt`) end
 						loadlabel:Set({ Content = "None" })
 
 						Starlight:Notification({
@@ -4499,8 +4534,6 @@ function Starlight:CreateWindow(WindowSettings)
 					end,
 					Style = 2,
 				}, "__prebuiltConfigDeleter")
-				
-				Starlight.ConfigSystem:BuildFolderTree(root == nil and false or true, root or "", folder or "")
 				
 			end
 			
