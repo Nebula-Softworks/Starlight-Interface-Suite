@@ -1,3 +1,8 @@
+--!nocheck
+
+-- Studio Function Error Prevention Shit
+local syn, getgenv, gethui, fluxus, http, http_request, request, isfile, isfolder, makefile, makefolder, delfile, delfolder, writefile, readfile, listfiles = nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil
+
 --[[
 
 ███████╗████████╗ █████╗ ██████╗ ██╗     ██╗ ██████╗ ██╗  ██╗████████╗    ██╗███╗   ██╗████████╗███████╗██████╗ ███████╗ █████╗  ██████╗███████╗    ███████╗██╗   ██╗██╗████████╗███████╗
@@ -4328,6 +4333,14 @@ function Starlight:CreateWindow(WindowSettings)
 							})
 							return
 						end
+						
+						if isfile(`{Starlight.Folder}/Configurations/{folderpath}/{inputPath}`) then
+							Starlight:Notification({
+								Title = "Configuration Exists",
+								Icon = 129398364168201,
+								Content = "Configuration with the provided name exists already. Overwrite it with update config below."
+							})
+						end
 
 						local success, returned = Starlight.ConfigSystem:SaveConfig(inputPath, `{Starlight.Folder}/Configurations/{folderpath}/`)
 						if not success then
@@ -4500,6 +4513,11 @@ function Starlight:CreateWindow(WindowSettings)
 						instance.Elements["__prebuiltConfigSelector_lbl"].NestedElements["__prebuiltConfigSelector_lbl"]:Set({ 
 							Options = Starlight.ConfigSystem:RefreshConfigList(`{Starlight.Folder}/Configurations/{folderpath}`),
 							CurrentOption = nil,
+						})
+						Starlight:Notification({
+							Title = "Configuration Deleted",
+							Icon = 6026568227,
+							Content = string.format("Deleted Configuration %q", selectedConfig),
 						})
 						
 					end,
