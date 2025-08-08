@@ -1621,7 +1621,8 @@ function Starlight:CreateWindow(WindowSettings)
 					Values = GroupboxSettings,
 					Elements = {},
 					ParentingItem = nil,
-					Index = GroupIndex
+					Index = GroupIndex,
+					ClassName = "Groupbox",
 				}
 
 				Groupbox.Instance = nil
