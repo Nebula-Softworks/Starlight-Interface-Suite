@@ -215,8 +215,8 @@ local ClassParser = {
 		Load = function(Idx, Data, Path)
 			if GetNestedValue(Starlight.Window.TabSections, Idx) then
 				for key, value in pairs(Data) do
-					if tonumber(value) ~= nil then tonumber(value) end
-					GetNestedValue(Starlight.Window.TabSections, Idx):Set({ [key] = value })
+					if key == "CurrentValue" then GetNestedValue(Starlight.Window.TabSections, Idx):Set({ [key] = tonumber(value) }) else
+					GetNestedValue(Starlight.Window.TabSections, Idx):Set({ [key] = value }) end
 				end
 			end
 		end
