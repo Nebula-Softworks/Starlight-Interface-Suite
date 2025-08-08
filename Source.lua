@@ -4786,11 +4786,7 @@ end
 function Starlight:LoadAutoloadConfig()
 	if isStudio or (not isfile) then return "Config system unavailable." end
 	
-	repeat
-		task.wait()
-	until Starlight.ConfigSystem.AutoloadPath ~= nil
-	
-	if isfile(Starlight.ConfigSystem.AutoloadPath .. "autoload.txt") then
+	if Starlight.ConfigSystem.AutoloadPath and isfile(Starlight.ConfigSystem.AutoloadPath .. "autoload.txt") then
 
 		local name = readfile(Starlight.ConfigSystem.AutoloadPath .. "autoload.txt")
 
