@@ -1312,6 +1312,10 @@ function Starlight:CreateWindow(WindowSettings)
 	
 	]]--
 
+	local root = WindowSettings.ConfigurationSettings.RootFolder
+	local folder = WindowSettings.ConfigurationSettings.FolderName
+	local folderpath = root ~= nil and root .. "/" .. folder or folder
+	
 	WindowSettings.NotifyOnCallbackError = WindowSettings.NotifyOnCallbackError or true
 	Starlight.ConfigSystem.AutoloadPath = `{Starlight.Folder}/Configurations/{folderpath}/`
 
@@ -3884,8 +3888,7 @@ function Starlight:CreateWindow(WindowSettings)
 
 							NestedElement.Values = NestedSettings
 
-							NestedElement.Instances[1].Name = "BIND_" .. NestedIndex
-							NestedElement.Instances[2].Name = "BIND_" .. NestedIndex
+							NestedElement.Instances.Name = "BIND_" .. NestedIndex
 
 							NestedElement.Instance.Text = NestedElement.Values.CurrentValue
 							Starlight.Window.TabSections[Name].Tabs[TabIndex].Groupboxes[GroupIndex].Elements[ParentIndex].NestedElements[NestedIndex].Values = NestedElement.Values
@@ -4289,10 +4292,6 @@ function Starlight:CreateWindow(WindowSettings)
 
 			function Tab:BuildConfigGroupbox(Column, Style)
 
-				local root = WindowSettings.ConfigurationSettings.RootFolder
-				local folder = WindowSettings.ConfigurationSettings.FolderName
-				local folderpath = root ~= nil and root .. "/" .. folder or folder
-
 				Starlight.ConfigSystem:BuildFolderTree(root == nil and false or true, root or "", folder)
 
 				local instance = Tab:CreateGroupbox({
@@ -4449,15 +4448,7 @@ function Starlight:CreateWindow(WindowSettings)
 					Icon = 6035056483,
 					Tooltip = "Manually refresh the list of configurations incase of any errors.",
 					Callback = function()
-						local success, returned = instance.Elements["__prebuiltConfigSelector_lbl"].NestedElements["__prebuiltConfigSelector_lbl"]:Set({ Options = Starlight.ConfigSystem:RefreshConfigList(`{Starlight.Folder}/Configurations/{folderpath}`) })
-						if not success then
-							Starlight:Notification({
-								Title = "Refreshing Error",
-								Icon = 6031071057,
-								Content = "Unable to refresh config list, return error: " .. returned
-							})
-							return
-						end
+						instance.Elements["__prebuiltConfigSelector_lbl"].NestedElements["__prebuiltConfigSelector_lbl"]:Set({ Options = Starlight.ConfigSystem:RefreshConfigList(`{Starlight.Folder}/Configurations/{folderpath}`) })
 					end,
 					Style = 2,
 				}, "__prebuiltConfigRefresher")
@@ -4520,15 +4511,8 @@ function Starlight:CreateWindow(WindowSettings)
 						if isfile(`{Starlight.Folder}/Configurations/{folderpath}/{selectedConfig}{Starlight.ConfigSystem.FileExtension}`) then
 							delfile(`{Starlight.Folder}/Configurations/{folderpath}/{selectedConfig}{Starlight.ConfigSystem.FileExtension}`)
 						end
-						local success, returned = instance.Elements["__prebuiltConfigSelector_lbl"].NestedElements["__prebuiltConfigSelector_lbl"]:Set({ Options = Starlight.ConfigSystem:RefreshConfigList(`{Starlight.Folder}/Configurations/{folderpath}`) })
-						if not success then
-							Starlight:Notification({
-								Title = "Refreshing Error",
-								Icon = 6031071057,
-								Content = "Unable to refresh config list, return error: " .. returned
-							})
-							return
-						end
+						instance.Elements["__prebuiltConfigSelector_lbl"].NestedElements["__prebuiltConfigSelector_lbl"]:Set({ Options = Starlight.ConfigSystem:RefreshConfigList(`{Starlight.Folder}/Configurations/{folderpath}`) })
+						
 					end,
 					Style = 2,
 				}, "__prebuiltConfigDeleter")
