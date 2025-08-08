@@ -4491,7 +4491,7 @@ function Starlight:CreateWindow(WindowSettings)
 					Style = 2,
 				}, "__prebuiltConfigDeleter")
 				
-				Starlight.ConfigSystem:BuildFolderTree(root ~= nil and true or false, root, folder)
+				Starlight.ConfigSystem:BuildFolderTree(root == nil and false or true, root or "", folder or "")
 				
 			end
 			
@@ -4660,9 +4660,13 @@ function Starlight.ConfigSystem:BuildFolderTree(hasRoot : boolean, Root : string
 	local paths = {
 		Starlight.Folder,
 		Starlight.Folder .. "/Configurations",
-		(hasRoot and Starlight.Folder .. "/Configurations/".. Root or nil),
-		(hasRoot and Starlight.Folder .. "/Configurations/".. Root .. "/" .. Folder or Starlight.Folder .. "/Configurations/".. Folder)
 	}
+	if hasRoot then
+		table.insert(paths, Starlight.Folder .. "/Configurations/".. Root)
+		table.insert(paths, Starlight.Folder .. "/Configurations/".. Root .. "/" .. Folder)
+	else
+		table.insert(paths, Starlight.Folder .. "/Configurations/".. Folder)
+	end
 
 	for i = 1, #paths do
 		local str = paths[i]
