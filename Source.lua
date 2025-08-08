@@ -4275,6 +4275,10 @@ function Starlight:CreateWindow(WindowSettings)
 			--end
 
 			function Tab:BuildConfigGroupbox(Column, Style)
+
+				local root = WindowSettings.ConfigurationSettings.RootFolder
+				local folder = WindowSettings.ConfigurationSettings.FolderName
+				local folderpath = root ~= nil and root .. "/" .. folder or folder
 				
 				Starlight.ConfigSystem:BuildFolderTree(root == nil and false or true, root or "", folder)
 
@@ -4302,10 +4306,6 @@ function Starlight:CreateWindow(WindowSettings)
 				
 				local inputPath = nil
 				local selectedConfig = nil
-
-				local root = WindowSettings.ConfigurationSettings.RootFolder
-				local folder = WindowSettings.ConfigurationSettings.FolderName
-				local folderpath = root ~= nil and root .. "/" .. folder or folder
 				
 				instance:CreateInput({
 					Name = "Config Name",
