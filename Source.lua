@@ -1,3 +1,8 @@
+--!nocheck
+
+-- Studio Function Error Prevention Shit
+local syn, getgenv, gethui, fluxus, http, http_request, request, isfile, isfolder, makefile, makefolder, delfile, delfolder, writefile, readfile, listfiles = nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil
+
 --[[
 
 ███████╗████████╗ █████╗ ██████╗ ██╗     ██╗ ██████╗ ██╗  ██╗████████╗    ██╗███╗   ██╗████████╗███████╗██████╗ ███████╗ █████╗  ██████╗███████╗    ███████╗██╗   ██╗██╗████████╗███████╗
@@ -2757,6 +2762,7 @@ function Starlight:CreateWindow(WindowSettings)
 					]]
 
 					ElementSettings.Style = ElementSettings.Style or 1
+					ElementSettings.CurrentValue = ElementSettings.CurrentValue or false
 
 					local Element = {
 						Values = ElementSettings,
@@ -4517,6 +4523,15 @@ function Starlight:CreateWindow(WindowSettings)
 							return
 						end
 						delfile(`{Starlight.Folder}/Configurations/{folderpath}/{selectedConfig}{Starlight.ConfigSystem.FileExtension}`)
+						local success, returned = configSelection:Set({ Options = Starlight.ConfigSystem:RefreshConfigList(`{Starlight.Folder}/Configurations/{folderpath}`) })
+						if not success then
+							Starlight:Notification({
+								Title = "Refreshing Error",
+								Icon = 6031071057,
+								Content = "Unable to refresh config list, return error: " .. returned
+							})
+							return
+						end
 					end,
 					Style = 2,
 				}, "__prebuiltConfigDeleter")
