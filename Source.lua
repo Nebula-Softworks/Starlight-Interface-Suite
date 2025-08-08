@@ -4344,7 +4344,7 @@ function Starlight:CreateWindow(WindowSettings)
 							Content = string.format("Created config %q", inputPath),
 						})
 
-						instance.Elements["__prebuiltConfigSelector_lbl"].NestedElements["__prebuiltConfigSelector_lbl"]:Set({ Options = Starlight:RefreshConfigList(`{Starlight.Folder}/Configurations/{folderpath}`) })
+						instance.Elements["__prebuiltConfigSelector_lbl"].NestedElements["__prebuiltConfigSelector_lbl"]:Set({ Options = Starlight.ConfigSystem:RefreshConfigList(`{Starlight.Folder}/Configurations/{folderpath}`) })
 					end,
 					Style = 1,
 				}, "__prebuiltConfigCreator")
