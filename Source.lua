@@ -1,3 +1,8 @@
+--!nocheck
+
+-- Studio Function Error Prevention Shit
+local syn, getgenv, gethui, fluxus, http, http_request, request, isfile, isfolder, makefile, makefolder, delfile, delfolder, writefile, readfile, listfiles = nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil
+
 --[[
 
 ███████╗████████╗ █████╗ ██████╗ ██╗     ██╗ ██████╗ ██╗  ██╗████████╗    ██╗███╗   ██╗████████╗███████╗██████╗ ███████╗ █████╗  ██████╗███████╗    ███████╗██╗   ██╗██╗████████╗███████╗
@@ -1351,8 +1356,8 @@ function Starlight:CreateWindow(WindowSettings)
 		mainWindow.Size = WindowSettings.DefaultSize ~= nil and WindowSettings.DefaultSize or mainWindow.Size
 
 		mainWindow.Sidebar.Icon.Image = WindowSettings.Icon ~= nil and "rbxassetid://" .. WindowSettings.Icon or ""
-		mainWindow.Sidebar.Header.Text = WindowSettings.Name
-		mainWindow.Content.Topbar.Headers.Subheader.Text = WindowSettings.Subtitle
+		mainWindow.Sidebar.Header.Text = WindowSettings.Name or ""
+		mainWindow.Content.Topbar.Headers.Subheader.Text = WindowSettings.Subtitle or ""
 		
 		mainWindow.Visible = true
 		mainWindow.Size = WindowSettings.LoadingEnabled and UDim2.fromOffset(mainWindow.Size.X.Offset - 65, mainWindow.Size.Y.Offset - 55) or mainWindow.Size
@@ -5079,6 +5084,8 @@ Like this, i am a much bigger paragraph than the other one! i also support multi
 	})
 
 	local configg = t:BuildConfigGroupbox(1)
+	
+	Starlight:LoadAutoloadConfig()
 end
 
 --// ENDSECTION
