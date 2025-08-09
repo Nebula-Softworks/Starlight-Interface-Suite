@@ -311,8 +311,7 @@ end
 -- Creates the BlurBehind Effect for the transparent theme
 local function BlurModule(Frame : Frame)
 
-	-- old one incase frostedglass ever gets fucked up
-	--[[
+	
 	local BLUR_SIZE         = Vector2.new(5, 2)
 	local PART_SIZE         = 0.01
 	local PART_TRANSPARENCY = 0.9
@@ -438,204 +437,6 @@ local function BlurModule(Frame : Frame)
 		mesh.Offset = center
 		mesh.Scale  = size / PART_SIZE
 	end
-
-	function BlurredGui.updateAll()
-		BLUR_OBJ.NearIntensity = tonumber(Frame:GetAttribute("BlurIntensity"))
-
-		for i = 1, #BlursList do
-			updateGui(BlursList[i])
-		end
-
-		local cframes = table.create(#BlursList, workspace.CurrentCamera.CFrame)
-		workspace:BulkMoveTo(PartsList, cframes, Enum.BulkMoveMode.FireCFrameChanged)
-
-		BLUR_OBJ.FocusDistance = 0.25 - Camera.NearPlaneZ
-	end
-
-	function BlurredGui:Destroy()
-		self.Part:Destroy()
-		BlurObjects[self] = nil
-		rebuildPartsList()
-	end
-
-	BlurredGui.new(Frame, "Rectangle")
-
-	BlurredGui.updateAll()
-	return BlurredGui]]
-
-	local BLUR_SIZE         = Vector2.new(5, 2)
-	local PART_SIZE         = 0.01
-	local PART_TRANSPARENCY = 0.75
-	local START_INTENSITY	= 1
-
-	Frame:SetAttribute("BlurIntensity", START_INTENSITY)
-
-	local BLUR_OBJ          = Instance.new("DepthOfFieldEffect")
-	BLUR_OBJ.FarIntensity   = 0
-	BLUR_OBJ.NearIntensity  = Frame:GetAttribute("BlurIntensity")
-	BLUR_OBJ.FocusDistance  = 0
-	BLUR_OBJ.InFocusRadius  = 50
-	BLUR_OBJ.Parent         = Lighting
-	BLUR_OBJ.Name = "StarlightBlur_" .. Frame.Name .. "_" .. HttpService:GenerateGUID(false)
-
-	local PartsRoot = not Camera["Starlight Blur Elements"] and Instance.new("Folder", Camera) or Camera["Starlight Blur Elements"]
-	PartsRoot.Name = "Starlight Blur Elements"
-
-	local PartsList         = {}
-	local BlursList         = {}
-	local BlurObjects       = {}
-	local BlurredGui        = {}
-
-	BlurredGui.__index      = BlurredGui
-
-	local function rayPlaneIntersect(planePos, planeNormal, rayOrigin, rayDirection)
-		local n = planeNormal
-		local d = rayDirection
-		local v = rayOrigin - planePos
-
-		local num = n.x*v.x + n.y*v.y + n.z*v.z
-		local den = n.x*d.x + n.y*d.y + n.z*d.z
-		local a = -num / den
-
-		return rayOrigin + a * rayDirection, a
-	end
-
-	local function rebuildPartsList()
-		PartsList = {}
-		BlursList = {}
-		for blurObj, part in pairs(BlurObjects) do
-			table.insert(PartsList, part)
-			table.insert(BlursList, blurObj)
-		end
-	end
-
-	function BlurredGui.new(frame, shape)
-		local blurPart        = Instance.new("Part")
-		blurPart.Size         = Vector3.new(1, 1, 1) * 0.01
-		blurPart.Anchored     = true
-		blurPart.CanCollide   = false
-		blurPart.CanTouch     = false
-		blurPart.Material     = Enum.Material.Glass
-		blurPart.Transparency = PART_TRANSPARENCY
-		blurPart.Parent       = PartsRoot
-		blurPart.Color = Color3.new(1,1,1)
-
-		local mesh = isStudio and ReplicatedStorage.plshelp:Clone() or game:GetObjects("rbxassetid://121473386700198")
-		pcall(function()
-			mesh.Parent = blurPart
-		end)
-		if not isStudio then
-			pcall(function()
-				mesh.MeshId = ""
-				task.wait()
-				mesh.MeshId = "rbxassetid://11247063534"
-			end)
-		end
-
-		local scale = Vector3.new(1, 1, 1)  -- default: 1:1 scaling
-
-		local function updateSize()
-			pcall(function()
-				local pSize = blurPart.Size
-				mesh.Size = Vector3.new(
-					pSize.X * scale.X,
-					pSize.Y * scale.Y,
-					pSize.Z * scale.Z
-				)
-			end)
-		end
-
-		updateSize()
-
-		blurPart:GetPropertyChangedSignal("Size"):Connect(updateSize)
-
-		local ignoreInset = false
-		local currentObj  = frame
-
-		while true do
-			currentObj = currentObj.Parent
-
-			if (currentObj and currentObj:IsA("ScreenGui")) then
-				ignoreInset = currentObj.IgnoreGuiInset
-				break
-			elseif (currentObj == nil) then
-				break
-			end
-		end
-
-		local new = setmetatable({
-			Frame          = frame;
-			Part           = blurPart;
-			Mesh           = mesh;
-			IgnoreGuiInset = ignoreInset;
-		}, BlurredGui)
-
-		BlurObjects[new] = blurPart
-		rebuildPartsList()
-
-		RunService:BindToRenderStep("...", Enum.RenderPriority.Camera.Value + 1, function()
-			blurPart.CFrame = Camera.CFrame
-			BlurredGui.updateAll()
-		end)
-		return new
-	end
-
-	local function updateGui(blurObj)
-		pcall(function()
-			if not blurObj.Frame.Visible then
-				blurObj.Part.Transparency = 1
-				return
-			end
-
-			local frame = blurObj.Frame
-			local part  = blurObj.Part
-			local mesh  = blurObj.Mesh
-
-			part.Transparency = PART_TRANSPARENCY
-
-			-- compute corners of the UI frame
-			local corner0 = frame.AbsolutePosition + BLUR_SIZE
-			local corner1 = corner0 + frame.AbsoluteSize - BLUR_SIZE*2
-
-			-- project corners into 3D space
-			local ray0 = Camera:ScreenPointToRay(corner0.X, corner0.Y, 1)
-			local ray1 = Camera:ScreenPointToRay(corner1.X, corner1.Y, 1)
-
-			local planeOrigin = Camera.CFrame.Position + Camera.CFrame.LookVector * (0.05 - Camera.NearPlaneZ)
-			local planeNormal = Camera.CFrame.LookVector
-
-			local pos0 = rayPlaneIntersect(planeOrigin, planeNormal, ray0.Origin, ray0.Direction)
-			local pos1 = rayPlaneIntersect(planeOrigin, planeNormal, ray1.Origin, ray1.Direction)
-
-			-- convert to camera local space
-			pos0 = Camera.CFrame:PointToObjectSpace(pos0)
-			pos1 = Camera.CFrame:PointToObjectSpace(pos1)
-
-			-- calculate size & center
-			local size = Vector3.new(
-				math.abs(pos1.X - pos0.X),
-				math.abs(pos1.Y - pos0.Y),
-				math.abs(pos1.Z - pos0.Z)
-			)
-
-			local center = (pos0 + pos1) / 2
-
-			-- set the blurPart to cover the area
-			part.Size = size
-			part.CFrame = Camera.CFrame * CFrame.new(center)
-
-			-- if mesh is a SpecialMesh, adjust mesh.Scale
-			if mesh:IsA("SpecialMesh") then
-				mesh.Scale = size / PART_SIZE
-				mesh.Offset = Vector3.new(0,0,0) -- optional
-			elseif mesh:IsA("MeshPart") then
-				-- MeshPart already inherits size & cframe from part
-				--mesh.Size = size
-				mesh.CFrame = part.CFrame
-			end
-		end)
-	end
-
 
 	function BlurredGui.updateAll()
 		BLUR_OBJ.NearIntensity = tonumber(Frame:GetAttribute("BlurIntensity"))
@@ -1218,7 +1019,7 @@ function Starlight:Notification(data)
 		TweenService:Create(newNotification, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {Size = UDim2.new(1, 0, 0, bounds)}):Play()
 
 		task.wait(0.15)
-		TweenService:Create(newNotification, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0.18}):Play()
+		TweenService:Create(newNotification, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0.32}):Play()
 		TweenService:Create(newNotification.Shadow, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {ImageTransparency = 0.82}):Play()
 		TweenService:Create(newNotification.Title, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {TextTransparency = 0}):Play()
 
@@ -1362,6 +1163,7 @@ function Starlight:CreateWindow(WindowSettings)
 		mainWindow.Content.Topbar.Headers.Subheader.Text = WindowSettings.Subtitle or ""
 
 		mainWindow.Visible = true
+		StarlightUI.Drag.Visible = true
 		mainWindow.Size = WindowSettings.LoadingEnabled and UDim2.fromOffset(mainWindow.Size.X.Offset - 65, mainWindow.Size.Y.Offset - 55) or mainWindow.Size
 		StarlightUI.MainWindow.Position = UDim2.fromOffset(
 			Camera.ViewportSize.X / 2 - StarlightUI.MainWindow.Size.X.Offset / 2,
@@ -2969,13 +2771,13 @@ function Starlight:CreateWindow(WindowSettings)
 								Icon = 129398364168201
 							})
 							wait(0.5)
-							for _, ElementInstance in pairs(Instances) do ElementInstance.Header.Text = Element.Values.Name end
+							for _, ElementInstance in pairs(Instances) do ElementInstance.Header.Text = Element.Values.Name or "" end
 						end
 
 						for _, ElementInstance in pairs(Instances) do
 
 							ElementInstance.Name = "TOGGLE_" .. Index
-							ElementInstance.Header.Text = Element.Values.Name
+							ElementInstance.Header.Text = Element.Values.Name 
 							ElementInstance.Header.Icon.Visible = Element.Values.Icon ~= nil
 
 							if ElementInstance.Header.Icon.Visible == false then
@@ -3002,7 +2804,7 @@ function Starlight:CreateWindow(WindowSettings)
 								
 							end
 
-							tooltip.Text = Element.Values.Tooltip
+							tooltip.Text = Element.Values.Tooltip or tooltip.Text
 
 							Element.Instance = ElementInstance.Visible and ElementInstance or Element.Instance
 
@@ -3875,7 +3677,7 @@ function Starlight:CreateWindow(WindowSettings)
 
 							NestedElement.Values = NestedSettings
 
-							NestedElement.Instances.Name = "BIND_" .. NestedIndex
+							NestedElement.Instance.Name = "BIND_" .. NestedIndex
 
 							NestedElement.Instance.Text = NestedElement.Values.CurrentValue
 							Starlight.Window.TabSections[Name].Tabs[TabIndex].Groupboxes[GroupIndex].Elements[ParentIndex].NestedElements[NestedIndex].Values = NestedElement.Values
@@ -4018,10 +3820,13 @@ function Starlight:CreateWindow(WindowSettings)
 									--print("debug - fired deactivate option loop")
 								end
 								task.wait()
+							end
+								
+							if option.TextColor3 == Color3.fromRGB(165,165,165) then
+								-- activate
 								Activate(option)
-
 								local Success,Response = pcall(function()
-									NestedElement.Values.CurrentOption = {option.Text}
+									table.insert(NestedElement.Values.CurrentOption, option.Text)
 									NestedElement.Values.Callback(NestedElement.Values.CurrentOption)
 									NestedElement.Instances[1].Header.Text = Table.Unpack(NestedElement.Values.CurrentOption)
 								end)
@@ -4037,44 +3842,23 @@ function Starlight:CreateWindow(WindowSettings)
 									Parent.Instance.Header.Text = Parent.Values.Name
 								end
 							else
-								if option.TextColor3 == Color3.fromRGB(165,165,165) then
-									-- activate
-									Activate(option)
-									local Success,Response = pcall(function()
-										table.insert(NestedElement.Values.CurrentOption, option.Text)
-										NestedElement.Values.Callback(NestedElement.Values.CurrentOption)
-										NestedElement.Instances[1].Header.Text = Table.Unpack(NestedElement.Values.CurrentOption)
-									end)
+								-- deactivate
+								Deactivate(option)
+								local Success,Response = pcall(function()
+									Table.Remove(NestedElement.Values.CurrentOption, option.Text)
+									NestedElement.Values.Callback(NestedElement.Values.CurrentOption)
+									NestedElement.Instances[1].Header.Text = Table.Unpack(NestedElement.Values.CurrentOption)
+								end)
 
-									if not Success then
-										Parent.Instance.Header.Text = "Callback Error"
-										Starlight:Notification({
-											Title = Parent.Values.Name.." Callback Error",
-											Content = tostring(Response),
-											Icon = 129398364168201
-										})
-										wait(0.5)
-										Parent.Instance.Header.Text = Parent.Values.Name
-									end
-								else
-									-- deactivate
-									Deactivate(option)
-									local Success,Response = pcall(function()
-										Table.Remove(NestedElement.Values.CurrentOption, option.Text)
-										NestedElement.Values.Callback(NestedElement.Values.CurrentOption)
-										NestedElement.Instances[1].Header.Text = Table.Unpack(NestedElement.Values.CurrentOption)
-									end)
-
-									if not Success then
-										Parent.Instance.Header.Text = "Callback Error"
-										Starlight:Notification({
-											Title = Parent.Values.Name.." Callback Error",
-											Content = tostring(Response),
-											Icon = 129398364168201
-										})
-										wait(0.5)
-										Parent.Instance.Header.Text = Parent.Values.Name
-									end
+								if not Success then
+									Parent.Instance.Header.Text = "Callback Error"
+									Starlight:Notification({
+										Title = Parent.Values.Name.." Callback Error",
+										Content = tostring(Response),
+										Icon = 129398364168201
+									})
+									wait(0.5)
+									Parent.Instance.Header.Text = Parent.Values.Name
 								end
 							end
 						end
@@ -4149,20 +3933,45 @@ function Starlight:CreateWindow(WindowSettings)
 							NestedIndex = NewNestedIndex
 
 							NestedElement.Values = NestedSettings
+							
+							if NestedElement.Values.CurrentOption then
+								if typeof(NestedElement.Values.CurrentOption) == "string" then
+									NestedElement.Values.CurrentOption = {NestedElement.Values.CurrentOption}
+								end
+								if not NestedElement.Values.MultipleOptions and typeof(NestedElement.Values.CurrentOption) == "table" then
+									NestedElement.Values.CurrentOption = {NestedElement.Values.CurrentOption[1]}
+								end
+								if typeof(NestedElement.Values.CurrentOption) == "number" then
+									NestedElement.Values.CurrentOption = {NestedElement.Values.Options[NestedElement.Values.CurrentOption]}
+								end
+							else
+								NestedElement.Values.CurrentOption = {}
+							end
 
+
+							if debugV then print("updating indexes") end
 							NestedElement.Instances[1].Name = "DROPDOWN_" .. NestedIndex
 							NestedElement.Instances[2].Name = "DROPDOWN_" .. NestedIndex
+							if debugV then print("updated indexes") end
 
+							if debugV then print("refreshing dropdown") end
 							Refresh()
+							if debugV then print("refreshed dropdown") end
+							if debugV then print("setting text") end
+							NestedElement.Instances[1].Header.Text = Table.Unpack(NestedElement.Values.CurrentOption)
+							if debugV then print("set text") end
 							local preoptions = NestedElement.Values.CurrentOption
+							if debugV then print("set preoptions") end
 							NestedElement.Values.CurrentOption = {}
+							if debugV then print("set currentoptions to nil") end
 							for i,v in pairs(preoptions) do
-								--print("debug - loop current options")
+								print("debug - loop current options")
 								for _,optioninstance in pairs(NestedElement.Instances[2].List:GetChildren()) do
-									--print("debug - loop option instances")
+									print("debug - loop option instances")
 									if optioninstance.Name == "OPTION_" .. v then
-										--print("debug - fired name check")
+										print("debug - fired name check")
 										ToggleOption(optioninstance)
+										if debugV then print("toggled option") end
 									end
 								end
 							end
@@ -4330,12 +4139,13 @@ function Starlight:CreateWindow(WindowSettings)
 							return
 						end
 						
-						if isfile(`{Starlight.Folder}/Configurations/{folderpath}/{inputPath}`) then
+						if isfile(`{Starlight.Folder}/Configurations/{folderpath}/{inputPath}{Starlight.ConfigSystem.FileExtension}`) then
 							Starlight:Notification({
 								Title = "Configuration Exists",
 								Icon = 129398364168201,
 								Content = "Configuration with the provided name exists already. Overwrite it with update config below."
 							})
+							return
 						end
 
 						local success, returned = Starlight.ConfigSystem:SaveConfig(inputPath, `{Starlight.Folder}/Configurations/{folderpath}/`)
@@ -4506,10 +4316,18 @@ function Starlight:CreateWindow(WindowSettings)
 						if isfile(`{Starlight.Folder}/Configurations/{folderpath}/{selectedConfig}{Starlight.ConfigSystem.FileExtension}`) then
 							delfile(`{Starlight.Folder}/Configurations/{folderpath}/{selectedConfig}{Starlight.ConfigSystem.FileExtension}`)
 						end
+						
+						if loadlabel.Values.Content == selectedConfig then
+							if isfile(`{Starlight.Folder}/Configurations/{folderpath}/autoload.txt`) then delfile(`{Starlight.Folder}/Configurations/{folderpath}/autoload.txt`) end
+							loadlabel:Set({ Content = "None" })
+						end
+						
 						instance.Elements["__prebuiltConfigSelector_lbl"].NestedElements["__prebuiltConfigSelector_lbl"]:Set({ 
 							Options = Starlight.ConfigSystem:RefreshConfigList(`{Starlight.Folder}/Configurations/{folderpath}`),
-							CurrentOption = nil,
+							CurrentOption = "",
 						})
+						if selectedConfig then selectedConfig = nil end
+						
 						Starlight:Notification({
 							Title = "Configuration Deleted",
 							Icon = 6026568227,
@@ -4750,7 +4568,7 @@ function Starlight.ConfigSystem:SaveConfig(file, path)
 						if object.NestedElements and (object.Class == "Toggle" or object.Class == "Label" --[[or object.Class == "Input"]]) then
 							for nestedidx, nestedobject in next, object.NestedElements do
 
-								table.insert(data.objects, ClassParser[object.Class].Save(`{fullidx}.NestedElements.{nestedidx}`, nestedobject.Values))
+								table.insert(data.objects, ClassParser[nestedobject.Class].Save(`{fullidx}.NestedElements.{nestedidx}`, nestedobject.Values))
 
 							end end
 					end end
@@ -4778,7 +4596,6 @@ function Starlight.ConfigSystem:LoadConfig(file, path)
 	end
 
 	local fullPath = `{path}{file}{Starlight.ConfigSystem.FileExtension}`
-	print(fullPath)
 	if not isfile(fullPath) then return false, "Invalid file." end
 
 	local success, decoded = pcall(HttpService.JSONDecode, HttpService, readfile(fullPath))
