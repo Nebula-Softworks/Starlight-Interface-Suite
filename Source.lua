@@ -465,7 +465,7 @@ local function BlurModule(Frame : Frame)
 
 	local BLUR_SIZE         = Vector2.new(5, 2)
 	local PART_SIZE         = 0.01
-	local PART_TRANSPARENCY = 0.97
+	local PART_TRANSPARENCY = 0.75
 	local START_INTENSITY	= 1
 
 	Frame:SetAttribute("BlurIntensity", START_INTENSITY)
@@ -473,12 +473,12 @@ local function BlurModule(Frame : Frame)
 	local BLUR_OBJ          = Instance.new("DepthOfFieldEffect")
 	BLUR_OBJ.FarIntensity   = 0
 	BLUR_OBJ.NearIntensity  = Frame:GetAttribute("BlurIntensity")
-	BLUR_OBJ.FocusDistance  = 51.6
+	BLUR_OBJ.FocusDistance  = 0
 	BLUR_OBJ.InFocusRadius  = 50
 	BLUR_OBJ.Parent         = Lighting
 	BLUR_OBJ.Name = "StarlightBlur_" .. Frame.Name .. "_" .. HttpService:GenerateGUID(false)
 
-	local PartsRoot = Instance.new("Folder", Camera)
+	local PartsRoot = not Camera["Starlight Blur Elements"] and Instance.new("Folder", Camera) or Camera["Starlight Blur Elements"]
 	PartsRoot.Name = "Starlight Blur Elements"
 
 	local PartsList         = {}
@@ -518,6 +518,7 @@ local function BlurModule(Frame : Frame)
 		blurPart.Material     = Enum.Material.Glass
 		blurPart.Transparency = PART_TRANSPARENCY
 		blurPart.Parent       = PartsRoot
+		blurPart.Color = Color3.new(1,1,1)
 
 		local mesh = isStudio and ReplicatedStorage.plshelp:Clone() or game:GetObjects("rbxassetid://121473386700198")
 		pcall(function()
