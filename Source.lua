@@ -4834,7 +4834,7 @@ function Starlight:LoadAutoloadConfig()
 
 		local name = readfile(Starlight.ConfigSystem.AutoloadPath .. "autoload.txt")
 
-		local success, err = Starlight.ConfigSystem:LoadConfig(name)
+		local success, err = Starlight.ConfigSystem:LoadConfig(name, Starlight.ConfigSystem.AutoloadPath)
 		if not success then
 			return Starlight:Notification({
 				Title = "Autoloading Error",
