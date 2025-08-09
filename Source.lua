@@ -75,7 +75,7 @@ by Nebula Softworks
 --// SECTION : Core Variables
 
 local Release = "Prerelease Beta 3"
-local debugV = true
+local debugV = false
 
 local Starlight = {
 
