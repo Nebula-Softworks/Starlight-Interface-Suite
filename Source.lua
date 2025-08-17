@@ -68,14 +68,14 @@ by Nebula Softworks
 
 --// SECTION : Core Variables
 
-local Release = "Prerelease Beta 3b" 
+local Release = "Prerelease Beta 3c" 
 local debugV = false                 
 
 local Starlight = {
 
 	Folder = "Starlight Interface Suite",
 
-	InterfaceBuild = "B3BA", -- Beta 3 Build A
+	InterfaceBuild = "B3BF", -- Beta 3 Build F
 
 	CurrentTheme = "Default",
 	BlurEnabled = nil, -- disabled till further notice
@@ -124,8 +124,7 @@ local StarterGui = game:GetService("StarterGui")
 local Player = Players.LocalPlayer
 local Camera = workspace.CurrentCamera
 local Mouse = Player:GetMouse()
-local GuiInset, _ = GuiService:GetGuiInset()
-GuiInset = GuiInset.Y-20
+local GuiInset, _ = GuiService:GetGuiInset() ; GuiInset = GuiInset.Y-20
 
 local isStudio = RunService:IsStudio() or false
 local website = "nebulasoftworks.xyz"
@@ -181,7 +180,7 @@ local function GetNestedValue(tbl, path)
 end
 
 
-local ClassParser = {
+local ConfigFunctions = {
 	Save = function(Idx, Data)
 		return {
 			type = "Toggle", 
@@ -421,7 +420,7 @@ function Table.Unpack(array : table)
 
 	local val = ""
 	for _,v in pairs(array) do
-		val = val .. v .. ", "
+		val = val .. tostring(v) .. ", "
 	end
 
 	val = string.sub(val, 1,  #val-2)
@@ -840,7 +839,7 @@ local function makeDraggable(Bar, Window : Frame, enableTaptic, tapticOffset)
 				local newMainPosition = UDim2.new(FramePos.X.Scale, FramePos.X.Offset + Delta.X, FramePos.Y.Scale, FramePos.Y.Offset + Delta.Y)
 				Tween(Window, {Position = newMainPosition}, nil, TweenInfo.new(0.35, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out))
 
-				local newDragBarPosition = UDim2.new(FramePos.X.Scale, FramePos.X.Offset + Delta.X + (Window.Size.X.Offset/2), FramePos.Y.Scale, Window.Position.Y.Offset + Window.Size.Y.Offset +10)
+				local newDragBarPosition = UDim2.new(FramePos.X.Scale, FramePos.X.Offset + Delta.X + Window.Size.X.Offset/2, FramePos.Y.Scale, FramePos.Y.Offset + Delta.Y + Window.Size.Y.Offset +10)
 				Tween(dragBar, {Position = newDragBarPosition}, nil, TweenInfo.new(0.35, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out))
 			end
 		end)
@@ -1077,31 +1076,32 @@ function Starlight:Notification(data)
 		TweenService:Create(newNotification.Time, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {TextTransparency = 0.35}):Play()
 		TweenService:Create(newNotification.UIStroke, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {Transparency = 0.95}):Play()
 
-		local waitDuration = math.min(math.max((#newNotification.Description.Text * 0.1) + 2.5, 3), 10)
-		task.wait(data.Duration or waitDuration)
+		data.Duration = data.Duration or math.min(math.max((#newNotification.Description.Text * 0.1) + 2.5, 3), 10)
+		if data.Duration ~= -1 then
+			task.wait(data.Duration)
 
-		pcall(function()
-			if not Starlight.NotificationsOpen then
-				newNotification.Icon.Visible = false
-				TweenService:Create(newNotification, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {BackgroundTransparency = 1}):Play()
-				TweenService:Create(newNotification.UIStroke, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {Transparency = 1}):Play()
-				TweenService:Create(newNotification.Shadow.antumbraShadow, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {ImageTransparency = 1}):Play()
-				TweenService:Create(newNotification.Shadow.penumbraShadow, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {ImageTransparency = 1}):Play()
-				TweenService:Create(newNotification.Shadow.umbraShadow, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {ImageTransparency = 1}):Play()
-				TweenService:Create(newNotification.Title, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {TextTransparency = 1}):Play()
-				TweenService:Create(newNotification.Description, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {TextTransparency = 1}):Play()
-				TweenService:Create(newNotification.Time, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {TextTransparency = 1}):Play()
+			pcall(function()
+				if not Starlight.NotificationsOpen then
+					newNotification.Icon.Visible = false
+					TweenService:Create(newNotification, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {BackgroundTransparency = 1}):Play()
+					TweenService:Create(newNotification.UIStroke, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {Transparency = 1}):Play()
+					TweenService:Create(newNotification.Shadow.antumbraShadow, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {ImageTransparency = 1}):Play()
+					TweenService:Create(newNotification.Shadow.penumbraShadow, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {ImageTransparency = 1}):Play()
+					TweenService:Create(newNotification.Shadow.umbraShadow, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {ImageTransparency = 1}):Play()
+					TweenService:Create(newNotification.Title, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {TextTransparency = 1}):Play()
+					TweenService:Create(newNotification.Description, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {TextTransparency = 1}):Play()
+					TweenService:Create(newNotification.Time, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {TextTransparency = 1}):Play()
 
-				TweenService:Create(newNotification, TweenInfo.new(1, Enum.EasingStyle.Exponential), {Size = UDim2.new(1, -90, 0, 0)}):Play()
+					TweenService:Create(newNotification, TweenInfo.new(1, Enum.EasingStyle.Exponential), {Size = UDim2.new(1, -90, 0, 0)}):Play()
 
-				Tween(newNotification, {Size = UDim2.new(1, -90, 0, -StarlightUI.Notifications:FindFirstChild("UIListLayout").Padding.Offset)}, function()
-					newNotification.Visible = false
-				end, TweenInfo.new(1, Enum.EasingStyle.Exponential))
-			end
+					Tween(newNotification, {Size = UDim2.new(1, -90, 0, -StarlightUI.Notifications:FindFirstChild("UIListLayout").Padding.Offset)}, function()
+						newNotification.Visible = false
+					end, TweenInfo.new(1, Enum.EasingStyle.Exponential))
+				end
 
-			CollectionService:AddTag(newNotification, "__starlight_ExpiredNotification")
-		end)
-
+				CollectionService:AddTag(newNotification, "__starlight_ExpiredNotification")
+			end)
+		end
 	end)
 
 end
@@ -1504,11 +1504,14 @@ function Starlight:CreateWindow(WindowSettings)
 				Groupbox.Instance.Header.Icon.Image = "rbxassetid://" .. GroupboxSettings.Icon
 				Groupbox.Instance.Name = "GROUPBOX_" .. GroupIndex
 
+				-- Now removed due to autosizing actually working
+				--[[
 				if GroupboxSettings.Style == 2 then
 					Groupbox.Instance["PART_Content"]:GetPropertyChangedSignal("AbsoluteSize"):Connect(function()
 						Groupbox.Instance["PART_Backdrop"].Size = UDim2.new(1,0,0, Groupbox.Instance["PART_Content"].AbsoluteSize.Y)
 					end)
 				end
+				]]
 
 				function Groupbox:Set(NewGroupboxSettings)
 
@@ -2444,14 +2447,13 @@ function Starlight:CreateWindow(WindowSettings)
 						ElementInstance.Parent = Groupbox.ParentingItem
 
 						ElementInstance.Name = "BUTTON_" .. Index
-						ElementInstance["PART_Backdrop"].Header.Text = Element.Values.Name
+						ElementInstance["PART_Backdrop"].Header.Header.Text = Element.Values.Name
 						ElementInstance["PART_Backdrop"].Header.Icon.Visible = not String.IsEmptyOrNull(Element.Values.Icon)
-						if ElementInstance["PART_Backdrop"].Header.Icon.Visible == false then
-							ElementInstance["PART_Backdrop"].Header.UIPadding.PaddingLeft = UDim.new(0,6)
-						else
-							ElementInstance["PART_Backdrop"].Header.UIPadding.PaddingLeft = UDim.new(0,32)
-						end
 						ElementInstance["PART_Backdrop"].Header.Icon.Image = not String.IsEmptyOrNull(Element.Values.Icon) and "rbxassetid://" .. Element.Values.Icon or ""
+
+						ElementInstance["PART_Backdrop"].Icon.Image = (Element.Values.IndicatorStyle == 1 and "rbxassetid://6031094680") or (Element.Values.IndicatorStyle == 2 and "rbxassetid://6023565895") or ""
+
+						ElementInstance["PART_Backdrop"].Header.UIListLayout.HorizontalAlignment = Element.Values.CenterContent and Enum.HorizontalAlignment.Center or Enum.HorizontalAlignment.Left
 
 						if ElementInstance.PART_Backdrop:FindFirstChild("Accent") then
 							local hover = nil
@@ -2480,11 +2482,11 @@ function Starlight:CreateWindow(WindowSettings)
 
 						else
 							ElementInstance.MouseEnter:Connect(function()
-								Tween(ElementInstance["PART_Backdrop"], {BackgroundColor3 = Color3.fromRGB(31, 33, 38)})
+								Tween(ElementInstance["PART_Backdrop"].UIStroke, {Transparency = 0})
 							end)
 
 							ElementInstance.MouseLeave:Connect(function()
-								Tween(ElementInstance["PART_Backdrop"], {BackgroundColor3 = Color3.fromRGB(27, 29, 34)})
+								Tween(ElementInstance["PART_Backdrop"].UIStroke, {Transparency = 1})
 							end)
 						end
 
@@ -2492,7 +2494,7 @@ function Starlight:CreateWindow(WindowSettings)
 							local Success,Response = pcall(Element.Values.Callback)
 
 							if not Success then
-								ElementInstance["PART_Backdrop"].Header.Text = "Callback Error"
+								ElementInstance["PART_Backdrop"].Header.Header.Text = "Callback Error"
 								warn(`Starlight Interface Suite - Callback Error | {Element.Values.Name} ({Index})`)
 								print(Response)
 								if WindowSettings.NotifyOnCallbackError then
@@ -2503,7 +2505,7 @@ function Starlight:CreateWindow(WindowSettings)
 									})
 								end
 								wait(0.5)
-								ElementInstance["PART_Backdrop"].Header.Text = ElementSettings.Name
+								ElementInstance["PART_Backdrop"].Header.Header.Text = ElementSettings.Name
 							end
 						end)
 
@@ -2538,13 +2540,8 @@ function Starlight:CreateWindow(WindowSettings)
 							ElementInstance.Parent = Groupbox.ParentingItem
 
 							ElementInstance.Name = "BUTTON_" .. NewIndex
-							ElementInstance["PART_Backdrop"].Header.Text = Element.Values.Name
+							ElementInstance["PART_Backdrop"].Header.Header.Text = Element.Values.Name
 							ElementInstance["PART_Backdrop"].Header.Icon.Visible = not String.IsEmptyOrNull(Element.Values.Icon)
-							if ElementInstance["PART_Backdrop"].Header.Icon.Visible == false then
-								ElementInstance["PART_Backdrop"].Header.UIPadding.PaddingLeft = UDim.new(0,6)
-							else
-								ElementInstance["PART_Backdrop"].Header.UIPadding.PaddingLeft = UDim.new(0,32)
-							end
 							ElementInstance["PART_Backdrop"].Header.Icon.Image = not String.IsEmptyOrNull(Element.Values.Icon) and "rbxassetid://" .. Element.Values.Icon or ""
 
 							tooltip.Text = Element.Values.Tooltip
@@ -2628,6 +2625,7 @@ function Starlight:CreateWindow(WindowSettings)
 					end
 
 					local tooltip
+					local knobcolor = Color3.fromRGB(165,165,165)
 
 					local function Set(bool)
 
@@ -2643,9 +2641,9 @@ function Starlight:CreateWindow(WindowSettings)
 						else
 							Tween(Instances.Style1.Checkbox, {BackgroundTransparency = 0.9})
 							Tween(Instances.Style1.Checkbox.Icon, {ImageTransparency = 1})
-							Tween(Instances.Style2.Switch, {BackgroundTransparency = 1, BackgroundColor3 = Color3.fromRGB(165,165,165)})
-							Tween(Instances.Style2.Switch.Knob, {Position = UDim2.new(0,0,.5,0), BackgroundColor3 = Color3.fromRGB(165,165,165), BackgroundTransparency = 0.5})
-							Tween(Instances.Style2.Switch.UIStroke, {Color = Color3.fromRGB(165,165,165)})
+							Tween(Instances.Style2.Switch, {BackgroundTransparency = 1, BackgroundColor3 = knobcolor})
+							Tween(Instances.Style2.Switch.Knob, {Position = UDim2.new(0,0,.5,0), BackgroundColor3 = knobcolor, BackgroundTransparency = 0.5})
+							Tween(Instances.Style2.Switch.UIStroke, {Color = knobcolor})
 							Tween(Instances.Style2.Switch.DropShadowHolder.DropShadow, {ImageTransparency = 1})
 							Instances.Style2.Switch.Accent.Enabled = false
 							Instances.Style2.Switch.UIStroke.Accent.Enabled = false
@@ -2769,6 +2767,23 @@ function Starlight:CreateWindow(WindowSettings)
 									ElementInstance.Header.Text = ElementSettings.Name
 								end
 							end
+
+							ElementInstance.Switch.MouseEnter:Connect(function()
+								knobcolor = Color3.fromRGB(185, 185, 185)
+								if not Element.Values.CurrentValue then
+									Tween(ElementInstance.Switch, {BackgroundColor3 = knobcolor})
+									Tween(ElementInstance.Switch.Knob, {BackgroundColor3 = knobcolor})
+									Tween(ElementInstance.Switch.UIStroke, {Color = knobcolor})
+								end
+							end)
+							ElementInstance.Switch.MouseLeave:Connect(function()
+								knobcolor = Color3.fromRGB(165, 165, 165)
+								if not Element.Values.CurrentValue then
+									Tween(ElementInstance.Switch, {BackgroundColor3 = knobcolor})
+									Tween(ElementInstance.Switch.Knob, {BackgroundColor3 = knobcolor})
+									Tween(ElementInstance.Switch.UIStroke, {Color = knobcolor})
+								end
+							end)
 
 							ElementInstance.Switch.Interact.MouseButton1Click:Connect(function()
 								Element.Values.CurrentValue = not Element.Values.CurrentValue
@@ -3052,7 +3067,19 @@ function Starlight:CreateWindow(WindowSettings)
 						end 
 					end)
 					
-					Element.Instance.PART_Backdrop.Interact.MouseButton1Down:Connect(function(X)
+					Element.Instance.PART_Backdrop.PART_Progress.Knob.InputBegan:Connect(function(Input) 
+						if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then 
+							Element.SLDragging = true
+						end 
+					end)
+					
+					Element.Instance.PART_Backdrop.PART_Progress.Knob.InputEnded:Connect(function(Input) 
+						if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then 
+							Element.SLDragging = false 
+						end 
+					end)
+					
+					local dragFunction = function(X)
 
 						local Current = Element.Instance.PART_Backdrop.PART_Progress.AbsolutePosition.X + Element.Instance.PART_Backdrop.PART_Progress.AbsoluteSize.X
 						local Start = Current
@@ -3089,7 +3116,7 @@ function Starlight:CreateWindow(WindowSettings)
 									nil,
 									Tween.Info(nil,nil,0.2)
 								)
-								
+
 								task.wait()
 
 								local NewValue = ((Element.Values.Range[2] - Element.Values.Range[1]) * percentage) + Element.Values.Range[1]
@@ -3121,17 +3148,16 @@ function Starlight:CreateWindow(WindowSettings)
 									Element.Values.CurrentValue = NewValue
 								end
 							else
-								Tween(
-									Element.Instance.PART_Backdrop.PART_Progress,
-
-									{Size = UDim2.new((Location - Element.Instance.PART_Backdrop.AbsolutePosition.X) / Element.Instance.PART_Backdrop.AbsoluteSize.X, 0, 1, 0)},
-
-									nil,
-									Tween.Info(nil,nil,0.2)
-								)
 								Loop:Disconnect()
 							end
 						end)
+					end
+					
+					Element.Instance.PART_Backdrop.Interact.MouseButton1Down:Connect(function(X)
+						dragFunction(X)
+					end)
+					Element.Instance.PART_Backdrop.PART_Progress.Knob.MouseButton1Down:Connect(function(X)
+						dragFunction(X)
 					end)
 					
 					Element.Instance.PART_Backdrop.PART_Progress:GetPropertyChangedSignal("Size"):Connect(function()
@@ -3227,9 +3253,11 @@ function Starlight:CreateWindow(WindowSettings)
 
 					Element.Instance.MouseEnter:Connect(function()
 						Tween(Element.Instance.PART_Backdrop.PART_Progress.DropShadowHolder.DropShadow, {ImageTransparency = 0.1})
+						Tween(Element.Instance.PART_Backdrop.PART_Progress.Knob.DropShadowHolder.DropShadow, {ImageTransparency = 0})
 					end)
 					Element.Instance.MouseLeave:Connect(function()
 						Tween(Element.Instance.PART_Backdrop.PART_Progress.DropShadowHolder.DropShadow, {ImageTransparency = 0.9})
+						Tween(Element.Instance.PART_Backdrop.PART_Progress.Knob.DropShadowHolder.DropShadow, {ImageTransparency = 1})
 					end)
 
 					Set(Element.Values.CurrentValue)
@@ -3311,7 +3339,7 @@ function Starlight:CreateWindow(WindowSettings)
 					ElementSettings.Numeric = ElementSettings.Numeric or false
 					ElementSettings.Enter = ElementSettings.Enter or false
 					ElementSettings.MaxCharacters = ElementSettings.MaxCharacters or -1
-					ElementSettings.RemoveTextOnFocus = ElementSettings.RemoveTextOnFocus or true
+					ElementSettings.RemoveTextOnFocus = ElementSettings.RemoveTextOnFocus == nil and true
 
 					local Element = {
 						Values = ElementSettings,
@@ -3357,6 +3385,13 @@ function Starlight:CreateWindow(WindowSettings)
 					
 					Element.Instance.PART_Backdrop.Interact.MouseButton1Down:Connect(function()
 						Element.Instance.PART_Backdrop.PART_Input:CaptureFocus()
+					end)
+					
+					Element.Instance.MouseEnter:Connect(function()
+						Tween(Element.Instance.PART_Backdrop.UIStroke, {Color = Color3.fromRGB(85, 86, 97)})
+					end)
+					Element.Instance.MouseLeave:Connect(function()
+						Tween(Element.Instance.PART_Backdrop.UIStroke, {Color = Color3.fromRGB(65, 66, 77)})
 					end)
 
 					if Element.Values.Numeric then
@@ -3572,12 +3607,12 @@ function Starlight:CreateWindow(WindowSettings)
 						]]
 
 						NestedSettings.HoldToInteract = NestedSettings.HoldToInteract or false
-						NestedSettings.SyncToggleState = NestedSettings.SyncToggleState or true
+						NestedSettings.SyncToggleState = NestedSettings.SyncToggleState == nil and true
 						NestedSettings.OnChangedCallback = NestedSettings.OnChangedCallback or function() end
 						if isToggle then
 							NestedSettings.Callback = NestedSettings.Callback or function() end
 						end
-						NestedSettings.CurrentValue = NestedSettings.CurrentValue and string.upper(NestedSettings.CurrentValue) or "No Bind"
+						NestedSettings.CurrentValue = NestedSettings.CurrentValue or "No Bind"
 						NestedSettings.WindowSetting = NestedSettings.WindowSetting or false
 
 						local NestedElement = {
@@ -3586,6 +3621,18 @@ function Starlight:CreateWindow(WindowSettings)
 							Class = "Bind",
 							IgnoreConfig = NestedSettings.IgnoreConfig
 						}
+						
+						-- Current Value Validation
+						
+						local digits = { [1] = "One", [2] = "Two", [3] = "Three", [4] = "Four", [5] = "Five", [6] = "Six", [7] = "Seven", [8] = "Eight", [9] = "Nine", [0] = "Zero" }
+
+						if tonumber(NestedElement.Values.CurrentValue) then
+							NestedElement.Values.CurrentValue = digits[tonumber(NestedElement.Values.CurrentValue)]
+						end
+						
+						NestedElement.Values.CurrentValue = NestedElement.Values.CurrentValue:sub(1,1):upper() .. NestedElement.Values.CurrentValue:sub(2)
+						
+						-- 
 
 						NestedElement.Instance = Element.Instance.ElementContainer.Bind:Clone()
 						NestedElement.Instance.Visible = true
@@ -3614,6 +3661,13 @@ function Starlight:CreateWindow(WindowSettings)
 							task.wait()
 							CheckingForKey = true
 						end)
+						
+						NestedElement.Instance.MouseEnter:Connect(function()
+							Tween(NestedElement.Instance.UIStroke, {Color = Color3.fromRGB(85,86,97)})
+						end)
+						NestedElement.Instance.MouseLeave:Connect(function()
+							Tween(NestedElement.Instance.UIStroke, {Color = Color3.fromRGB(65,66,77)})
+						end)
 
 						NestedElement.Instance.FocusLost:Connect(function(enter)
 							if not enter then
@@ -3634,7 +3688,7 @@ function Starlight:CreateWindow(WindowSettings)
 									if input.KeyCode ~= Enum.KeyCode.Unknown then
 										local SplitMessage = string.split(tostring(input.KeyCode), ".")
 										local NewKeyNoEnum = SplitMessage[3]
-										NestedElement.Instance.Text = string.upper(tostring(NewKeyNoEnum))
+										NestedElement.Instance.Text = tostring(NewKeyNoEnum)
 										NestedElement.Values.CurrentValue = tostring(NewKeyNoEnum)
 										local Success,Response = pcall(function()
 											NestedElement.Values.OnChangedCallback(NestedElement.Values.CurrentValue)
@@ -3664,7 +3718,7 @@ function Starlight:CreateWindow(WindowSettings)
 									if input.KeyCode ~= Enum.KeyCode.Unknown and input.KeyCode ~= Enum.KeyCode[Starlight.WindowKeybind] then
 										local SplitMessage = string.split(tostring(input.KeyCode), ".")
 										local NewKeyNoEnum = SplitMessage[3]
-										NestedElement.Instance.Text = string.upper(tostring(NewKeyNoEnum))
+										NestedElement.Instance.Text = tostring(NewKeyNoEnum)
 										NestedElement.Values.CurrentValue = tostring(NewKeyNoEnum)
 										local Success,Response = pcall(function()
 											NestedElement.Values.OnChangedCallback(NestedElement.Values.CurrentValue)
@@ -3845,6 +3899,26 @@ function Starlight:CreateWindow(WindowSettings)
 
 							end
 						end)
+						
+						local Success,Response = pcall(function()
+							NestedElement.Values.OnChangedCallback(NestedElement.Values.CurrentValue)
+							if NestedElement.Values.WindowSetting then Starlight.WindowKeybind = tostring(NestedElement.Values.CurrentValue) end
+						end)
+
+						if not Success then
+							Parent.Instance.Header.Text = "Callback Error"
+							warn(`Starlight Interface Suite - Callback Error | {Element.Values.Name} ({Index} {NestedIndex})`)
+							print(Response)
+							if WindowSettings.NotifyOnCallbackError then
+								Starlight:Notification({
+									Title = Element.Values.Name.." Callback Error",
+									Content = tostring(Response),
+									Icon = 129398364168201
+								})
+							end
+							wait(0.5)
+							Parent.Instance.Header.Text = ElementSettings.Name
+						end
 
 						function NestedElement:Destroy()
 							NestedElement.Instance:Destroy()
@@ -3869,6 +3943,26 @@ function Starlight:CreateWindow(WindowSettings)
 							NestedElement.Instance.Name = "BIND_" .. NestedIndex
 
 							NestedElement.Instance.Text = NestedElement.Values.CurrentValue == "No Bind" and `<font color="rgb(165,165,165)">No Bind</font>` or NestedElement.Values.CurrentValue
+							
+							local Success,Response = pcall(function()
+								NestedElement.Values.OnChangedCallback(NestedElement.Values.CurrentValue)
+								if NestedElement.Values.WindowSetting then Starlight.WindowKeybind = tostring(NestedElement.Values.CurrentValue) end
+							end)
+
+							if not Success then
+								Parent.Instance.Header.Text = "Callback Error"
+								warn(`Starlight Interface Suite - Callback Error | {Element.Values.Name} ({Index} {NestedIndex})`)
+								print(Response)
+								if WindowSettings.NotifyOnCallbackError then
+									Starlight:Notification({
+										Title = Element.Values.Name.." Callback Error",
+										Content = tostring(Response),
+										Icon = 129398364168201
+									})
+								end
+								wait(0.5)
+								Parent.Instance.Header.Text = ElementSettings.Name
+							end
 							
 							Starlight.Window.TabSections[Name].Tabs[TabIndex].Groupboxes[GroupIndex].Elements[ParentIndex].NestedElements[NestedIndex].Values = NestedElement.Values
 						end
@@ -3896,9 +3990,12 @@ function Starlight:CreateWindow(WindowSettings)
 							Callback = function(table),
 						}
 						]]
+						
+						local additionSize = Parent.Instance.DropdownHolder:FindFirstChild("Dropdown") and 36 or 34
 
 						NestedSettings.MultipleOptions = NestedSettings.MultipleOptions or false
 						NestedSettings.Special = NestedSettings.Special or 0
+						NestedSettings.Required = NestedSettings.Required or false
 
 						local NestedElement = {
 							Values = NestedSettings,
@@ -3907,50 +4004,76 @@ function Starlight:CreateWindow(WindowSettings)
 							IgnoreConfig = NestedSettings.IgnoreConfig
 						}
 
-						NestedElement.Instances[1] = Element.Instance.Dropdown:Clone()
+						NestedElement.Instances[1] = Element.Instance.DropdownHolder.Dropdown:Clone()
 						NestedElement.Instances[1].Visible = true
-						NestedElement.Instances[1].Parent = Parent.Instance
-						Parent.Instance.Size = UDim2.fromOffset(0, Parent.Instance.Size.Y.Offset + 34)
+						NestedElement.Instances[1].Parent = Parent.Instance.DropdownHolder
+						Parent.Instance.Size = UDim2.fromOffset(0, Parent.Instance.Size.Y.Offset + additionSize)
 
-						NestedElement.Instances[2] = StarlightUI.DropdownOverlay.Dropdown_TEMPLATE:Clone()
+						NestedElement.Instances[2] = Resources.Elements.DropdownPopup:Clone()
 						NestedElement.Instances[2].Parent = StarlightUI.DropdownOverlay
 
 						NestedElement.Instances[1].Name = "DROPDOWN_" .. NestedIndex
 						NestedElement.Instances[2].Name = "DROPDOWN_" .. NestedIndex
 
 						for _, option in pairs(NestedElement.Instances[2].List:GetChildren()) do
-							if option.ClassName == "TextButton" then
+							if option.ClassName == "Frame" then
 								option:Destroy()
 							end
 						end
-
-						NestedElement.Instances[1]:GetPropertyChangedSignal("AbsolutePosition"):Connect(function()
+						
+						local function close()
 							NestedElement.Instances[2].Position = UDim2.fromOffset(math.ceil(NestedElement.Instances[1].AbsolutePosition.X), math.ceil(NestedElement.Instances[1].AbsolutePosition.Y) + 35)
 
+							NestedElement.Instances[2].List.Size = UDim2.new(1,0,0,0)
+							task.wait()
 							Tween(NestedElement.Instances[2], {Size = UDim2.fromOffset(NestedElement.Instances[2].Size.X.Offset, 0)}, function()
-								Tween(NestedElement.Instances[1]:WaitForChild("Icon"), {Rotation = 0})
 								NestedElement.Instances[2].Visible = false
 							end, Tween.Info(nil, nil, 0.18))
-						end)
+						end
+						NestedElement.Instances[1]:GetPropertyChangedSignal("AbsolutePosition"):Connect(close)
 
 						NestedElement.Instances[1]:GetPropertyChangedSignal("AbsoluteSize"):Connect(function()
 							NestedElement.Instances[2].Size = UDim2.fromOffset(math.ceil(NestedElement.Instances[1].AbsoluteSize.X), NestedElement.Instances[2].Size.Y.Offset)
 							task.wait()
-							NestedElement.Instances[1].Header.Text = NestedElement:truncate()
+							NestedElement:truncate()
 						end)
 
 						NestedElement.Instances[1].Interact.MouseButton1Click:Connect(function()
 							if NestedElement.Instances[2].Visible then
-								Tween(NestedElement.Instances[1]:WaitForChild("Icon"), {Rotation = 0})
-								Tween(NestedElement.Instances[2], {Size = UDim2.fromOffset(NestedElement.Instances[2].Size.X.Offset, 0)}, function()
-									NestedElement.Instances[2].Visible = false
-								end, Tween.Info(nil, nil, 0.18))
+								close()
 							else
 								NestedElement.Instances[2].Visible = true
-								Tween(NestedElement.Instances[2], {Size = UDim2.fromOffset(NestedElement.Instances[2].Size.X.Offset, 120)})
-								Tween(NestedElement.Instances[1]:WaitForChild("Icon"), {Rotation = 180})
+								local height = NestedElement.Instances[2].List.AbsoluteCanvasSize.Y >= 175 and 175 or NestedElement.Instances[2].List.AbsoluteCanvasSize.Y
+								NestedElement.Instances[2].List.Size = UDim2.new(1,0,0,0)
+								NestedElement.Instances[2].List.ScrollBarImageTransparency = 1
+								Tween(NestedElement.Instances[2], {Size = UDim2.fromOffset(NestedElement.Instances[2].Size.X.Offset, height)})
+								Tween(NestedElement.Instances[2].List, {Size = UDim2.new(1,0,0,height)}, function()
+									NestedElement.Instances[2].List.ScrollBarImageTransparency = 0
+								end)
+								local connection ; connection = UserInputService.InputBegan:Connect(function(i, g)
+									if g or i.UserInputType ~= Enum.UserInputType.MouseButton1 then return end
+									local p, pos, size = i.Position, NestedElement.Instances[2].AbsolutePosition, NestedElement.Instances[2].AbsoluteSize
+									if not (p.X >= pos.X and p.X <= pos.X + size.X and p.Y >= pos.Y and p.Y <= pos.Y + size.Y) then
+										close()
+										connection:Disconnect()
+									end
+								end)
 							end
 						end)
+						
+						local function hover()
+							Tween(NestedElement.Instances[1].UIStroke, {Color = Color3.fromRGB(85,86,97)})
+							Tween(NestedElement.Instances[2].UIStroke, {Color = Color3.fromRGB(85,86,97)})
+						end
+						local function leave()
+							Tween(NestedElement.Instances[1].UIStroke, {Color = Color3.fromRGB(65,66,77)})
+							Tween(NestedElement.Instances[2].UIStroke, {Color = Color3.fromRGB(65,66,77)})
+						end
+
+						NestedElement.Instances[1].MouseEnter:Connect(hover)
+						NestedElement.Instances[1].MouseLeave:Connect(leave)
+						NestedElement.Instances[2].MouseEnter:Connect(hover)
+						NestedElement.Instances[2].MouseLeave:Connect(leave)
 
 						if NestedElement.Values.CurrentOption then
 							if typeof(NestedElement.Values.CurrentOption) == "string" then
@@ -3965,44 +4088,48 @@ function Starlight:CreateWindow(WindowSettings)
 						else
 							NestedElement.Values.CurrentOption = {}
 						end
+						if NestedElement.Values.Required and unpack(NestedElement.Values.CurrentOption) == nil then
+							NestedElement.Values.CurrentOption = {NestedElement.Values.Options[1]}
+						end
 
 						--// SUBSECTION : display updation and methods
 
 						function NestedElement:truncate()
-							if TextService:GetTextSize(NestedElement.Instances[1].Header.Text, NestedElement.Instances[1].Header.TextSize, 
-								NestedElement.Instances[1].Header.Font, Vector2.new(math.huge, math.huge)).X <= NestedElement.Instances[1].Header.AbsoluteSize.X then
-								return NestedElement.Instances[1].Header.Text
+							NestedElement.Instances[1].Header.Size = UDim2.new(1,-18,0,20)
+							if NestedElement.Instances[1].Header.TextBounds.X <= NestedElement.Instances[1].Header.AbsoluteSize.X then
+								NestedElement.Instances[1].Truncater.Visible = false
+								return
 							end
-
-							local result = NestedElement.Instances[1].Header.Text
-							while TextService:GetTextSize(result .. "...", NestedElement.Instances[1].Header.TextSize, 
-								NestedElement.Instances[1].Header.Font, Vector2.new(math.huge, math.huge)).X > NestedElement.Instances[1].Header.AbsoluteSize.X-9 and #result > 0 do
-								result = string.sub(result, 1, -2)
-							end
-
-							return result .. "..."
+							NestedElement.Instances[1].Header.Size = UDim2.new(1,-26,0,20)
+							NestedElement.Instances[1].Truncater.Visible = true
 						end
 
 						NestedElement.Instances[1].Header:GetPropertyChangedSignal("Text"):Connect(function()
-							NestedElement.Instances[1].Header.Text = NestedElement:truncate()
+							NestedElement:truncate()
 						end)
 
 						--// ENDSUBSECTION
 
 						local function Activate(option)
-							option.TextColor3 = Color3.new(1,1,1)
+							Tween(option, {BackgroundTransparency = 0.5})
+							Tween(option.header, {TextColor3 = Color3.new(1,1,1)})
+							Tween(option.UIPadding, {PaddingLeft = UDim.new(0,12)}, nil, Tween.Info(nil, nil, 0.2))
+							Tween(option.Indicator, {Size = UDim2.fromOffset(4,17)}, nil, Tween.Info(nil, nil, 0.2))
 							option:SetAttribute("Active", true)
 						end
 
 						local function Deactivate(option)
-							option.TextColor3 = Color3.fromRGB(165,165,165)
+							Tween(option, {BackgroundTransparency = 1})
+							Tween(option.header, {TextColor3 = Color3.fromRGB(165,165,165)})
+							Tween(option.UIPadding, {PaddingLeft = UDim.new(0,8)}, nil, Tween.Info(nil, nil, 0.2))
+							Tween(option.Indicator, {Size = UDim2.fromOffset(4,0)}, nil, Tween.Info(nil, nil, 0.2))
 							option:SetAttribute("Active", false)
 						end
 
 						local function ToggleOption(option)
 							if not NestedElement.Values.MultipleOptions then
 								for i,v in pairs(NestedElement.Instances[2].List:GetChildren()) do
-									if v.ClassName == "TextButton" and v ~= option then 
+									if v.ClassName == "Frame" and v ~= option then 
 										Deactivate(v)
 										NestedElement.Values.CurrentOption = {}
 									end
@@ -4012,7 +4139,7 @@ function Starlight:CreateWindow(WindowSettings)
 							if option:GetAttribute("Active") == false then
 								Activate(option)
 								local Success,Response = pcall(function()
-									table.insert(NestedElement.Values.CurrentOption, option.Text)
+									table.insert(NestedElement.Values.CurrentOption, option.header.Text)
 									NestedElement.Values.Callback(NestedElement.Values.CurrentOption)
 									NestedElement.Instances[1].Header.Text = Table.Unpack(NestedElement.Values.CurrentOption)
 								end)
@@ -4032,9 +4159,11 @@ function Starlight:CreateWindow(WindowSettings)
 									Parent.Instance.Header.Text = ElementSettings.Name
 								end
 							else
+								if (NestedElement.Values.Required == true and NestedElement.Values.CurrentOption ~= {}) then return end
+								
 								Deactivate(option)
 								local Success,Response = pcall(function()
-									Table.Remove(NestedElement.Values.CurrentOption, option.Text)
+									Table.Remove(NestedElement.Values.CurrentOption, option.header.Text)
 									NestedElement.Values.Callback(NestedElement.Values.CurrentOption)
 									NestedElement.Instances[1].Header.Text = Table.Unpack(NestedElement.Values.CurrentOption)
 								end)
@@ -4078,14 +4207,27 @@ function Starlight:CreateWindow(WindowSettings)
 
 							-- ipairs so it actually lines up correctly
 							for _, option in ipairs(NestedElement.Values.Options) do
-								local optioninstance = StarlightUI.DropdownOverlay.Dropdown_TEMPLATE.List.Option_TEMPLATE:Clone()
+								local optioninstance = Resources.Elements.DropdownPopup.List.Option_TEMPLATE:Clone()
 								optioninstance.Parent = NestedElement.Instances[2].List
 								optioninstance.Name = "OPTION_" .. option
-								optioninstance.Text = option
+								optioninstance.header.Text = option
 								optioninstance:SetAttribute("Active", false)
 
-								optioninstance.MouseButton1Click:Connect(function()
+								optioninstance.Interact.MouseButton1Click:Connect(function()
 									ToggleOption(optioninstance)
+								end)
+								
+								optioninstance.MouseEnter:Connect(function()
+									if optioninstance:GetAttribute("Active") == false then
+										Tween(optioninstance, {BackgroundTransparency = 0.8})
+										Tween(optioninstance.header, {TextColor3 = Color3.new(1,1,1)})
+									end
+								end)
+								optioninstance.MouseLeave:Connect(function()
+									if optioninstance:GetAttribute("Active") == false then
+										Tween(optioninstance, {BackgroundTransparency = 1})
+										Tween(optioninstance.header, {TextColor3 = Color3.fromRGB(165,165,165)})
+									end
 								end)
 							end
 						end
@@ -4104,11 +4246,20 @@ function Starlight:CreateWindow(WindowSettings)
 							end
 						end
 						NestedElement.Instances[1].Header.Text = Table.Unpack(NestedElement.Values.CurrentOption)
+						NestedElement.Instances[1].Header.PlaceholderText = NestedElement.Values.Placeholder or "--"
 
+						if NestedElement.Values.Special == 1 then
+							Players.PlayerAdded:Connect(Refresh)
+							Players.ChildRemoved:Connect(Refresh)
+						end
+						if NestedElement.Values.Special == 2 then
+							Teams.ChildAdded:Connect(Refresh)
+							Teams.ChildAdded:Connect(Refresh)
+						end
 
 						function NestedElement:Destroy()
 							NestedElement.Instance:Destroy()
-							Parent.Instance.Size = UDim2.fromOffset(0, Parent.Instance.Size.Y.Offset - 34)
+							Parent.Instance.Size = UDim2.fromOffset(0, Parent.Instance.Size.Y.Offset - additionSize)
 						end
 
 						function NestedElement:Set(NewNestedSettings, NewNestedIndex)
@@ -4136,6 +4287,9 @@ function Starlight:CreateWindow(WindowSettings)
 									NestedElement.Values.CurrentOption = {NestedElement.Values.Options[NestedElement.Values.CurrentOption]}
 								end
 							end
+							if NestedElement.Values.Required and unpack(NestedElement.Values.CurrentOption) == nil then
+								NestedElement.Values.CurrentOption = {NestedElement.Values.Options[1]}
+							end
 
 
 							NestedElement.Instances[1].Name = "DROPDOWN_" .. NestedIndex
@@ -4153,6 +4307,7 @@ function Starlight:CreateWindow(WindowSettings)
 								end
 							end
 							NestedElement.Instances[1].Header.Text = Table.Unpack(NestedElement.Values.CurrentOption)
+							NestedElement.Instances[1].Header.PlaceholderText = NestedElement.Values.Placeholder or "--"
 
 							Starlight.Window.TabSections[Name].Tabs[TabIndex].Groupboxes[GroupIndex].Elements[ParentIndex].NestedElements[NestedIndex].Values = NestedElement.Values
 						end
@@ -4620,8 +4775,6 @@ function Starlight:CreateWindow(WindowSettings)
 					end)
 
 				end
-
-				-- StarlightUI.Notifications.CanvasPosition = Vector2.new(0,0)
 			end
 			Starlight.NotificationsOpen = not Starlight.NotificationsOpen
 		end)
@@ -4634,14 +4787,18 @@ function Starlight:CreateWindow(WindowSettings)
 			Tween(mainWindow.Content.Topbar.Search, {ImageColor3 = Resources.Themes[Starlight.CurrentTheme]['Fore_Dark'].Value})
 		end)
 
-		for _, Button in ipairs(mainWindow.Content.Topbar.Controls:GetChildren()) do
-			Button["MouseEnter"]:Connect(function()
-				Tween(Button, {BackgroundColor3 = Button.Value.Value})
-			end)
+		for _, Button in pairs(mainWindow.Content.Topbar.Controls:GetChildren()) do
+			if Button.ClassName == "TextButton" then
+				Button["MouseEnter"]:Connect(function()
+					Tween(Button.Fill, {BackgroundTransparency = 0})
+					Tween(Button.Fill.Icon, {Position = UDim2.fromScale(.5,.5)})
+				end)
 
-			Button["MouseLeave"]:Connect(function()
-				Tween(Button, {BackgroundColor3 = Color3.fromRGB(65, 69, 77)})
-			end)
+				Button["MouseLeave"]:Connect(function()
+					Tween(Button.Fill, {BackgroundTransparency = 1})
+					Tween(Button.Fill.Icon, {Position = UDim2.fromScale(.5,1.5)})
+				end)
+			end
 		end
 
 		mainWindow.Content.Topbar.Controls.Close["MouseButton1Click"]:Connect(function()
@@ -4675,7 +4832,6 @@ function Starlight:CreateWindow(WindowSettings)
 		mainWindow.Content.Topbar.Controls.Minimize["MouseButton1Click"]:Connect(function()
 			Hide(mainWindow, false, true, Starlight.WindowKeybind)
 			Hide(StarlightUI.Drag, false, false, Starlight.WindowKeybind)
-			Tween(mainWindow.Content.Topbar.Controls.Minimize, {BackgroundColor3 = Color3.fromRGB(65,65,65)})
 		end)
 
 		connections["__windowKeybindHidingBindConnection"] = UserInputService.InputBegan:Connect(function(input, gpe)
@@ -4684,6 +4840,8 @@ function Starlight:CreateWindow(WindowSettings)
 				if Starlight.Minimized == true then
 					Unhide(mainWindow)
 					Unhide(StarlightUI.Drag)
+					Tween(mainWindow.Content.Topbar.Controls.Minimize.Fill.Icon, {Position = UDim2.fromScale(.5,1.5)})
+					Tween(mainWindow.Content.Topbar.Controls.Minimize.Fill, {BackgroundTransparency = 1})
 				elseif Starlight.Minimized == false then
 					Hide(mainWindow, false, true, Starlight.WindowKeybind)
 					Hide(StarlightUI.Drag, false, false, Starlight.WindowKeybind)
@@ -4745,12 +4903,12 @@ function Starlight.ConfigSystem:SaveConfig(file, path)
 
 				local fullidx = `{tsecidx}.Tabs.{tidx}.Groupboxes.{grpidx}.Elements.{idx}`
 
-				table.insert(data.objects, ClassParser.Save(fullidx, object.Values))
+				table.insert(data.objects, ConfigFunctions.Save(fullidx, object.Values))
 
 				if object.Class == "Toggle" or object.Class == "Label" --[[or object.Class == "Input"]] then
 				for nestedidx, nestedobject in next, object.NestedElements do
 
-					table.insert(data.objects, ClassParser.Save(`{fullidx}.NestedElements.{nestedidx}`, nestedobject.Values))
+					table.insert(data.objects, ConfigFunctions.Save(`{fullidx}.NestedElements.{nestedidx}`, nestedobject.Values))
 
 				end end
 		end end
@@ -4785,7 +4943,7 @@ function Starlight.ConfigSystem:LoadConfig(file, path)
 
 	for _, object in next, decoded.objects do
 		task.spawn(function() 
-			ClassParser.Load(object.idx, object.data) 
+			ConfigFunctions.Load(object.idx, object.data) 
 		end)
 	end
 
@@ -4864,8 +5022,8 @@ StarlightUI.Enabled = true
 local enabled = true
 if isStudio and enabled then
 	local win = Starlight:CreateWindow({
-		Name = "",
-		Subtitle = Release,
+		Name = "Window",
+		Subtitle = "this is an optional subtitle",
 		Icon = 92936499827985,
 
 		LoadingEnabled = false,
@@ -4944,9 +5102,10 @@ if isStudio and enabled then
 	}, "noindex")
 
 	g:CreateButton({
-		Name = "Button 2",
+		Name = "Centered Button",
 		Callback = "",
 		Tooltip = "Button 2!",
+		CenterContent = true, 
 		Style = 1,
 	}, "btn2")
 
@@ -5017,11 +5176,6 @@ if isStudio and enabled then
 		Callback = function(v) print(v) end
 	}, "sldr2")
 
-	--g:CreateBind({
-	--	Name = "bind",
-	--	CurrentValue = "Q",
-	--	Callback = function() end
-	--})
 	g:CreateInput({
 		Name = "dynamic input",
 		Tooltip = "Hi",
@@ -5034,12 +5188,17 @@ if isStudio and enabled then
 		Tooltip = "Hi",
 		Callback = function() end
 	}, "nmrcinpt")
-
+	
+	--g:CreateBind({
+	--	Name = "bind",
+	--	CurrentValue = "Q",
+	--	Callback = function() end
+	--})
 	g2:CreateLabel({
 		Tooltip = "Hi",
 		Name = "Label"
 	}, "lblbnd"):AddBind({
-		CurrentValue = "Q",
+		CurrentValue = "1",
 		HoldToInteract = true,
 		Tooltip = "Hi",
 		Callback = function(v)
@@ -5051,7 +5210,7 @@ if isStudio and enabled then
 		Tooltip = "Hi",
 		Name = "Window Bind"
 	}, "lblbnd"):AddBind({
-		CurrentValue = "K",
+		CurrentValue = "q",
 		HoldToInteract = false,
 		Tooltip = "Hi",
 		WindowSetting = true,
@@ -5066,7 +5225,7 @@ if isStudio and enabled then
 			print(v)
 		end,
 	}, "bndprnt"):AddBind({
-		CurrentValue = "C",
+		CurrentValue = "return",
 		Tooltip = "Hi",
 		SyncToggleState = true
 	}, "bnd2")
@@ -5088,7 +5247,7 @@ if isStudio and enabled then
 	local dropdown = g:CreateLabel({Name = "Dropdown"}, "lbldrpdwn"):AddDropdown({
 		Options = {"hi","heeh","huh"},
 		Tooltip = "Hi",
-		CurrentOption = {"wsp"},
+		CurrentOption = nil,
 		Callback = function(v)
 			print(v)
 		end,
@@ -5111,6 +5270,7 @@ if isStudio and enabled then
 		Tooltip = "Hi",
 		MultipleOptions = true,
 		Special = 1,
+		Placeholder = "Select a player!",
 		Callback = function(v)
 			print(v)
 		end,
@@ -5144,6 +5304,12 @@ Like this, i am a much bigger paragraph than the other one! i also support multi
 I also grow bigger or smaller depending on how much text is in my body! 
 Like this, i am a much bigger paragraph than the other one! i also support multi lines ]],
 		Icon = NebulaIcons:GetIcon("notifications_active", "Material")
+	})
+	Starlight:Notification({
+		Title = "Infinite Notification",
+		Content = "same as the other guy but i cant expire cus im set to -1 duration",
+		Duration = -1,
+		Icon = NebulaIcons:GetIcon("bell-simple-ringing", "Phosphor-Filled")
 	})
 
 	local configg = t:BuildConfigGroupbox(1)
