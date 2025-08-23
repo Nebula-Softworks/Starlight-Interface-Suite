@@ -1,1 +1,1 @@
-Forwarding you to [Nebula Softworks Docs](https://nebula-softworks.github.io/docs/)
+Forwarding you to [Nebula Softworks Docs](https://docs.nebulasoftworks.xyz)
