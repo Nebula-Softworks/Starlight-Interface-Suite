@@ -68,7 +68,7 @@ by Nebula Softworks
 
 --// SECTION : Core Variables
 
-local Release = "Prerelease Beta 3.1" 
+local Release = "Prerelease Beta 3.1a" 
 local debugV = false                 
 
 local Starlight = {
@@ -1348,6 +1348,7 @@ function Starlight:CreateWindow(WindowSettings)
 			]]
 
 			TabSettings.Icon = TabSettings.Icon or ""
+			TabSettings.Columns = TabSettings.Columns or 2
 			local Tab = {
 				Instances = {},
 				Values = TabSettings,
