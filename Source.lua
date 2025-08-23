@@ -68,7 +68,7 @@ by Nebula Softworks
 
 --// SECTION : Core Variables
 
-local Release = "Prerelease Beta 3.1a" 
+local Release = "Prerelease Beta 3.1b" 
 local debugV = false                 
 
 local Starlight = {
@@ -116,8 +116,9 @@ local HttpService = game:GetService("HttpService")
 local Localization = game:GetService("LocalizationService")
 local CollectionService = game:GetService("CollectionService")
 local TextService = game:GetService("TextService")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local GuiService = game:GetService("GuiService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local ContentProvider = game:GetService("ContentProvider")
 local CoreGui = game:GetService("CoreGui")
 local StarterGui = game:GetService("StarterGui")
 
@@ -127,7 +128,7 @@ local Mouse = Player:GetMouse()
 local GuiInset, _ = GuiService:GetGuiInset() ; GuiInset = GuiInset.Y-20
 
 local isStudio = RunService:IsStudio() or false
-local website = "nebulasoftworks.xyz"
+local website = "nebulasoftworks.xyz/starlight"
 
 local Request = (syn and syn.request) or (fluxus and fluxus.request) or (http and http.request) or http_request or request
 
@@ -162,10 +163,6 @@ local connections = {}
 
 
 --// SECTION : Functions
-
--- Class Parsing System for Configurations
--- really weirdly scripted, ask justhey why its like this
--- and then i modified it for starlight and it became even more redundant
 
 -- used so we index system allows for universal linking without breaking
 local function GetNestedValue(tbl, path)
@@ -416,6 +413,8 @@ local function BlurModule(Frame : Frame)
 end
 
 -- Unpacks A Table, Returning it as string containing a list of the values
+
+--[Obsolete "So apparently... theres a function called table.concat and it does exactly what this does. So yea, i didnt know lmap"]
 function Table.Unpack(array : table)
 
 	local val = ""
@@ -860,7 +859,6 @@ local modelId = debugV and 136653172778765 or 115378917859034
 local StarlightUI : ScreenGui = isStudio and script.Parent:WaitForChild("Starlight V2") or game:GetObjects("rbxassetid://" .. modelId)[1]
 local buildAttempts = 0
 local correctBuild = false
-local warned
 
 repeat
 
@@ -869,35 +867,20 @@ repeat
 		break
 	end
 
-	correctBuild = false
-
-	if not warned then
-		warn('Starlight | Build Mismatch')
-		warn('Starlight may run into issues as it seems you are running an incompatible interface version ('.. (StarlightUI:FindFirstChild('Build') and StarlightUI.Build.Value or 'No Build') ..'). of Starlight\n\nThis version of Starlight is intended for interface build '..Starlight.InterfaceBuild..'.')
-		pcall(function()
-			Starlight:Notification({
-				Title = "Starlight - Build Mistmatch",
-				Content = 'Starlight may run into issues as it seems you are running an incompatible interface version ('.. (StarlightUI:FindFirstChild('Build') and StarlightUI.Build.Value or 'No Build') ..'). of Starlight\n\nThis version of Starlight is intended for interface build '..Starlight.InterfaceBuild..'.',
-				Icon = 129398364168201
-			})
-		end)
-		warned = true
-	end
-
 	if StarlightUI and not isStudio then StarlightUI:Destroy() end
 	StarlightUI = isStudio and script.Parent:WaitForChild("Starlight V2") or game:GetObjects("rbxassetid://" .. modelId)[1]
 
 	buildAttempts += 1
 
 until buildAttempts >= 2
-if correctBuild and warned then
-	print('Starlight | Correct Build Found')
-	print('Starlight has managed to load the intended build ('.. (StarlightUI:FindFirstChild('Build').Value) ..') for this version of the library ('.. Release ..'). You may ignore the warning above')
+if not correctBuild then
+	warn('Starlight | Build Mismatch')
+	warn('Starlight may run into issues as it seems you are running an incompatible interface version ('.. (StarlightUI:FindFirstChild('Build') and StarlightUI.Build.Value or 'No Build') ..'). of Starlight\n\nThis version of Starlight is intended for interface build '..Starlight.InterfaceBuild..'.')
 	pcall(function()
 		Starlight:Notification({
-			Title = "Starlight - Correct Build Found",
-			Content = 'Starlight has managed to load the intended build ('.. (StarlightUI:FindFirstChild('Build').Value) ..') for this version of the library ('.. Release ..'). You may ignore the warning above',
-			Icon = 126864552069475
+			Title = "Starlight - Build Mistmatch",
+			Content = 'Starlight may run into issues as it seems you are running an incompatible interface version ('.. (StarlightUI:FindFirstChild('Build') and StarlightUI.Build.Value or 'No Build') ..'). of Starlight\n\nThis version of Starlight is intended for interface build '..Starlight.InterfaceBuild..'.',
+			Icon = 129398364168201
 		})
 	end)
 end
@@ -1237,6 +1220,25 @@ function Starlight:CreateWindow(WindowSettings)
 		mainWindow.Sidebar.Player.PlayerIcon.Image = Players:GetUserThumbnailAsync(Player.UserId, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size48x48)
 		mainWindow.Sidebar.Player.Header.Text = Player.DisplayName
 		mainWindow.Sidebar.Player.subheader.Text = Player.Name
+		
+		ContentProvider:PreloadAsync({
+			"rbxassetid://116767744785553", -- cursor
+			"rbxassetid://90155503712202", -- cursor shadow
+			"rbxassetid://18824089198", -- player blurred
+			"rbxassetid://129398364168201", -- warning
+			"rbxassetid://3926305904", -- dropdown arrows
+			"rbxassetid://108613279334326", -- linking colorpicker
+			"rbxassetid://6031625148", -- rainbow colorpicker
+			"rbxassetid://16423157073", -- close
+			"rbxassetid://123097456061373", -- minimise
+			"rbxassetid://114684871091583", -- maximise
+			"rbxassetid://6034304908", -- notification
+			"rbxassetid://8445471332", -- search
+		}, function(a)
+			if debugV then
+				print(`load asset {a}`)
+			end
+		end)
 
 		--[[if Starlight.BlurEnabled then
 			mainWindow.Sidebar.BackgroundTransparency = 1
@@ -1348,7 +1350,6 @@ function Starlight:CreateWindow(WindowSettings)
 			]]
 
 			TabSettings.Icon = TabSettings.Icon or ""
-			TabSettings.Columns = TabSettings.Columns or 2
 			local Tab = {
 				Instances = {},
 				Values = TabSettings,
@@ -4296,6 +4297,8 @@ function Starlight:CreateWindow(WindowSettings)
 								NestedElement.Instances[2].Container.Color.NewColor.Size = UDim2.fromOffset(130,24)
 								NestedElement.Instances[2].Container.Color.OldColor.Position = UDim2.fromOffset(148,180)
 							end
+							
+							safeCallback()
 
 						end
 
@@ -4340,7 +4343,6 @@ function Starlight:CreateWindow(WindowSettings)
 									local color = Color3.fromHSV(h,s,v) 
 									NestedElement.Values.CurrentValue = color
 									updateInstances()
-									safeCallback()
 									local r,g,b = math.floor((color.R*255)+0.5),math.floor((color.G*255)+0.5),math.floor((color.B*255)+0.5)
 								end
 								if sliderDragging then 
@@ -4349,7 +4351,6 @@ function Starlight:CreateWindow(WindowSettings)
 									local color = Color3.fromHSV(h,s,v) 
 									NestedElement.Values.CurrentValue = color
 									updateInstances()
-									safeCallback()
 									Tween(NestedElement.Instances[2].Container.Color.HueSlider.Value, {Size = UDim2.new(1,0,h,0)})
 									local r,g,b = math.floor((color.R*255)+0.5),math.floor((color.G*255)+0.5),math.floor((color.B*255)+0.5)
 								end
@@ -4359,7 +4360,6 @@ function Starlight:CreateWindow(WindowSettings)
 									Tween(NestedElement.Instances[2].Container.Color.TransparencySlider.Value, {Size = UDim2.new(1,0,h,0)})
 									NestedElement.Values.Transparency = 1-h
 									updateInstances()
-									safeCallback()
 								end
 							end)
 
@@ -4370,7 +4370,6 @@ function Starlight:CreateWindow(WindowSettings)
 							if NestedElement.Values.Transparency ~= nil then
 								NestedElement.Values.Transparency = NestedElement.Instances[2].Container.Color.OldColor.Frame.BackgroundTransparency
 							end
-							safeCallback()
 							updateInstances()
 						end)
 
@@ -4498,6 +4497,31 @@ function Starlight:CreateWindow(WindowSettings)
 								end
 
 							end
+						end
+
+						function NestedElement:Destroy()
+							NestedElement.Instances[1]:Destroy()
+							NestedElement.Instances[2]:Destroy()
+							NestedElement = nil
+						end
+
+						function NestedElement:Set(NewNestedSettings, NewNestedIndex)
+							NewNestedIndex = NewNestedIndex or NestedIndex
+
+							for i,v in pairs(NestedElement.Values) do
+								if NewNestedSettings[i] == nil then
+									NewNestedSettings[i] = v
+								end
+							end
+
+							NestedSettings = NewNestedSettings
+							NestedIndex = NewNestedIndex
+
+							NestedElement.Values = NestedSettings
+
+							updateInstances()
+
+							Starlight.Window.TabSections[Name].Tabs[TabIndex].Groupboxes[GroupIndex].Elements[ParentIndex].NestedElements[NestedIndex].Values = NestedElement.Values
 						end
 
 
@@ -4790,7 +4814,8 @@ function Starlight:CreateWindow(WindowSettings)
 						end
 
 						function NestedElement:Destroy()
-							NestedElement.Instance:Destroy()
+							NestedElement.Instances[1]:Destroy()
+							NestedElement.Instances[2]:Destroy()
 							Parent.Instance.Size = UDim2.fromOffset(0, Parent.Instance.Size.Y.Offset - additionSize)
 							NestedElement = nil
 						end
