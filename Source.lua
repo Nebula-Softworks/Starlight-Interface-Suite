@@ -1033,7 +1033,7 @@ function Starlight:Notification(data)
 		-- Set Data
 		newNotification.Title.Text = data.Title
 		newNotification.Description.Text = data.Content 
-		newNotification.Icon.Image = "rbxassetid://" .. data.Icon or ""
+		newNotification.Icon.Image = "rbxassetid://" .. (data.Icon or "")
 
 		-- Set initial transparency values
 		Hide(newNotification, false, false, false)
@@ -3761,7 +3761,7 @@ function Starlight:CreateWindow(WindowSettings)
 						end
 						Element.Instance.Header.Icon.Image = not String.IsEmptyOrNull(Element.Values.Icon) and "rbxassetid://" .. Element.Values.Icon or ""
 
-						tooltip.Text = Element.Values.Tooltip
+						tooltip.Text = Element.Values.Tooltip or ""
 
 						Starlight.Window.TabSections[Name].Tabs[TabIndex].Groupboxes[GroupIndex].Elements[Index].Values = Element.Values
 					end
@@ -6101,7 +6101,7 @@ if isStudio and enabled then
 	Starlight:Notification({
 		Title = "Hi",
 		Content = "Hello!! Im A Paragraph, and i can store bunch of text. \nI also grow bigger or smaller depending on how much text is in my body! \nLike this, i am a much bigger paragraph than the other one! i also support multi lines ",
-		Icon = NebulaIcons:GetIcon("notifications_active", "Material")
+		
 	})
 	Starlight:Notification({
 		Title = "Infinite Notification",
