@@ -1,4 +1,4 @@
-> [important]
+> [!IMPORTANT]  
 > Our Discord Server Got Nuked Recently! If you were in it, please join back, we are sorry for the inconvenience caused.  
 > Nuked by @skid_for_life on discord. Please spread this information!
 
