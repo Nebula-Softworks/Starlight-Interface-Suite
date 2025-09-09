@@ -68,34 +68,31 @@ by Nebula Softworks
 
 --// SECTION : Core Variables
 
-local Release = "Prerelease Beta 3.22" 
-local debugV = false                 
+local Release = "Prerelease Beta 4" 
+local debugV = false 
 
 local Starlight = {
 
-	Folder = "Starlight Interface Suite",
-
-	InterfaceBuild = "B3BK", -- Beta 3 Build K
-
-	CurrentTheme = "Default",
-	BlurEnabled = nil, -- disabled till further notice
-	DialogOpen = false,
-
+	InterfaceBuild = "B4B0", -- Beta 4 Build 0
+	
 	WindowKeybind = "K",
+	
 	Minimized = false,
 	Maximized = false,
 	NotificationsOpen = false,
+	DialogOpen = false,
 
 	Window = nil,
 	Notifications = nil,
 	Instance = nil,
 	OnDestroy = nil,
 
-	Themes = {},
-	ConfigSystem = {
+	FileSystem = {
+		Folder = "Starlight Interface Suite",
 		FileExtension = ".starlight",
 
-		AutoloadPath = nil,
+		AutoloadConfigPath = nil,
+		AutoloadThemePath = nil,
 	}
 
 }
@@ -126,13 +123,22 @@ local Player = Players.LocalPlayer
 local Camera = workspace.CurrentCamera
 local Mouse = Player:GetMouse()
 local GuiInset, _ = GuiService:GetGuiInset() ; GuiInset = GuiInset.Y-20
+local themeEvent = Instance.new("BindableEvent")
+
+local mainAcrylic = false
+local notificationAcrylic = true
+local acrylicEvent = Instance.new("BindableEvent")
+local notificationAcrylicEvent = Instance.new("BindableEvent")
 
 local isStudio = RunService:IsStudio() or false
 local website = "nebulasoftworks.xyz/starlight"
+local Acrylic = isStudio and require(ReplicatedStorage.Acrylic) or loadstring(game:HttpGet("https://raw." .. website .. "/AcrylicModule.luau"))
+Acrylic.Init()
 
 local Request = (syn and syn.request) or (fluxus and fluxus.request) or (http and http.request) or http_request or request
 
 --//SUBSECTION : Classes
+
 local String = {}
 local Table = {}
 local Color = {}
@@ -144,7 +150,607 @@ setmetatable(Tween, {
 		tween.Completed:Connect(callback or function() end)
 		tween:Play()
 	end,
-})
+})      
+
+local Themes = {
+
+	Starlight = {
+		Backgrounds = {
+			Dark = Color3.fromRGB(23,25,29),
+			Medium = Color3.fromRGB(27,29,33),
+			Light = Color3.fromRGB(33,34,38),
+			Groupbox = Color3.fromRGB(33,36,42),
+			Popup = Color3.fromRGB(17,19,22)
+		},
+		Foregrounds = {
+			Active = Color3.fromRGB(255,255,255),
+			Light = Color3.fromRGB(255,255,255),
+			Medium = Color3.fromRGB(165,165,165),
+			Dark = Color3.fromRGB(65,69,77),
+			MediumHover = Color3.fromRGB(185,185,185),
+			DarkHover = Color3.fromRGB(85,89,97),
+		},
+		Miscellaneous = {
+			Divider = Color3.fromRGB(117,128,149),
+			Shadow = Color3.fromRGB(19,21,24),
+			LighterShadow = Color3.fromRGB(24,25,30),
+		},
+		Accents = {
+			Main = ColorSequence.new {
+				ColorSequenceKeypoint.new(0.0, Color3.fromRGB(230, 186, 251)), 
+				ColorSequenceKeypoint.new(0.5, Color3.fromRGB(161, 169, 225)),
+				ColorSequenceKeypoint.new(1.0, Color3.fromRGB(138, 201, 242))
+			},
+			Brighter = ColorSequence.new {
+				ColorSequenceKeypoint.new(0.0, Color3.fromRGB(241, 212, 251)), 
+				ColorSequenceKeypoint.new(0.5, Color3.fromRGB(187, 192, 225)),
+				ColorSequenceKeypoint.new(1.0, Color3.fromRGB(195, 227, 242))
+			}
+		}
+	},
+	["Hollywood Dark"] = {
+		Backgrounds = {
+			Dark = Color3.fromRGB(8, 8, 8),
+			Medium = Color3.fromRGB(12, 12, 12),
+			Light = Color3.fromRGB(15, 15, 15),
+			Groupbox = Color3.fromRGB(14, 14, 14),
+			Popup = Color3.fromRGB(13, 13, 13)
+		},
+		Foregrounds = {
+			Active = Color3.fromRGB(255,255,255),
+			Light = Color3.fromRGB(255,255,255),
+			Medium = Color3.fromRGB(165,165,165),
+			Dark = Color3.fromRGB(77, 77, 77),
+			MediumHover = Color3.fromRGB(185,185,185),
+			DarkHover = Color3.fromRGB(97, 97, 97),
+		},
+		Miscellaneous = {
+			Divider = Color3.fromRGB(199, 199, 199),
+			Shadow = Color3.fromRGB(21, 21, 21),
+			LighterShadow = Color3.fromRGB(30, 30, 30),
+		},
+		Accents = {
+			Main = ColorSequence.new {
+				ColorSequenceKeypoint.new(0.0, Color3.fromRGB(230, 186, 251)), 
+				ColorSequenceKeypoint.new(0.5, Color3.fromRGB(161, 169, 225)),
+				ColorSequenceKeypoint.new(1.0, Color3.fromRGB(138, 201, 242))
+			},
+			Brighter = ColorSequence.new {
+				ColorSequenceKeypoint.new(0.0, Color3.fromRGB(241, 212, 251)), 
+				ColorSequenceKeypoint.new(0.5, Color3.fromRGB(187, 192, 225)),
+				ColorSequenceKeypoint.new(1.0, Color3.fromRGB(195, 227, 242))
+			}
+		}
+	},
+	["Hollywood Light"] = {
+		Backgrounds = {
+			Dark = Color3.fromRGB(240, 240, 240),  
+			Medium = Color3.fromRGB(250, 250, 250),
+			Light = Color3.fromRGB(255, 255, 255), 
+			Groupbox = Color3.fromRGB(245, 245, 245),
+			Popup = Color3.fromRGB(217, 217, 217)
+		},
+		Foregrounds = {
+			Active = Color3.fromRGB(255, 255, 255),            
+			Light = Color3.fromRGB(40, 40, 40),     
+			Medium = Color3.fromRGB(145, 145, 145), 
+			Dark = Color3.fromRGB(190, 190, 190),   
+			MediumHover = Color3.fromRGB(125, 125, 125), 
+			DarkHover = Color3.fromRGB(170, 170, 170),
+		},
+		Miscellaneous = {
+			Divider = Color3.fromRGB(40, 40, 40), 
+			Shadow = Color3.fromRGB(179, 179, 179), 
+			LighterShadow = Color3.fromRGB(209, 209, 209), 
+		},
+		Accents = {
+			Main = ColorSequence.new {
+				ColorSequenceKeypoint.new(0.0, Color3.fromRGB(178, 101, 199)), 
+				ColorSequenceKeypoint.new(0.5, Color3.fromRGB(73, 77, 135)),
+				ColorSequenceKeypoint.new(1.0, Color3.fromRGB(79, 166, 207))
+			},
+			Brighter = ColorSequence.new {
+				ColorSequenceKeypoint.new(0.0, Color3.fromRGB(221, 156, 239)), 
+				ColorSequenceKeypoint.new(0.5, Color3.fromRGB(135, 146, 214)),
+				ColorSequenceKeypoint.new(1.0, Color3.fromRGB(137, 200, 229))
+			}
+		}
+	},
+	Orca = {
+		Backgrounds = {
+			Dark = Color3.fromRGB(12,12,12),  
+			Medium = Color3.fromRGB(8, 8, 8),
+			Light = Color3.fromRGB(6,6,6), 
+			Groupbox = Color3.fromRGB(8,8,8),
+			Popup = Color3.fromRGB(20,20,20)
+		},
+		Foregrounds = {
+			Active = Color3.fromRGB(255, 255, 255),            
+			Light = Color3.fromRGB(254, 238, 255),     
+			Medium = Color3.fromRGB(199, 195, 186), 
+			Dark = Color3.fromRGB(61, 51, 62),   
+			MediumHover = Color3.fromRGB(185, 177, 160), 
+			DarkHover = Color3.fromRGB(81, 71, 82),
+		},
+		Miscellaneous = {
+			Divider = Color3.fromRGB(193, 61, 191), 
+			Shadow = Color3.fromRGB(12, 12, 12), 
+			LighterShadow = Color3.fromRGB(15, 15, 15), 
+		},
+		Accents = {
+			Main = ColorSequence.new {
+				ColorSequenceKeypoint.new(0.0, Color3.fromRGB(255, 170, 0)), 
+				ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255, 85, 127)),
+				ColorSequenceKeypoint.new(1.0, Color3.fromRGB(224, 71, 255))
+			},
+			Brighter = ColorSequence.new {
+				ColorSequenceKeypoint.new(0.0, Color3.fromRGB(255, 202, 78)), 
+				ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255, 123, 143)),
+				ColorSequenceKeypoint.new(1.0, Color3.fromRGB(255, 151, 253))
+			}
+		}
+	},
+	Glacier = {
+		Backgrounds = {
+			Dark = Color3.fromRGB(240, 238, 240),  
+			Medium = Color3.fromRGB(239, 246, 250),
+			Light = Color3.fromRGB(244, 254, 255), 
+			Groupbox = Color3.fromRGB(246,250,250),
+			Popup = Color3.fromRGB(191, 211, 217)
+		},
+		Foregrounds = {
+			Active = Color3.fromRGB(0, 0, 0),            
+			Light = Color3.fromRGB(40, 40, 40),     
+			Medium = Color3.fromRGB(145, 145, 145), 
+			Dark = Color3.fromRGB(190, 190, 190),   
+			MediumHover = Color3.fromRGB(125, 125, 125), 
+			DarkHover = Color3.fromRGB(170, 170, 170),
+		},
+		Miscellaneous = {
+			Divider = Color3.fromRGB(56, 63, 66), 
+			Shadow = Color3.fromRGB(164, 175, 179), 
+			LighterShadow = Color3.fromRGB(209, 209, 209), 
+		},
+		Accents = {
+			Main = ColorSequence.new {
+				ColorSequenceKeypoint.new(0.0, Color3.fromRGB(196,222,255)), 
+				ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255, 234, 192)),
+				ColorSequenceKeypoint.new(1.0, Color3.fromRGB(198, 225, 254))
+			},
+			Brighter = ColorSequence.new {
+				ColorSequenceKeypoint.new(0.0, Color3.fromRGB(228, 239, 255)), 
+				ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255, 241, 222)),
+				ColorSequenceKeypoint.new(1.0, Color3.fromRGB(230, 242, 254))
+			}
+		}
+	},
+	Pacific = {
+		Backgrounds = {
+			Dark = Color3.fromRGB(12,12,12),  
+			Medium = Color3.fromRGB(14,14,14),
+			Light = Color3.fromRGB(6,6,6), 
+			Groupbox = Color3.fromRGB(8,8,8),
+			Popup = Color3.fromRGB(20,20,20)
+		},
+		Foregrounds = {
+			Active = Color3.fromRGB(255, 255, 255),            
+			Light = Color3.fromRGB(225, 255, 227),     
+			Medium = Color3.fromRGB(173, 199, 196), 
+			Dark = Color3.fromRGB(51, 62, 61),   
+			MediumHover = Color3.fromRGB(157, 185, 179), 
+			DarkHover = Color3.fromRGB(72, 82, 80),
+		},
+		Miscellaneous = {
+			Divider = Color3.fromRGB(193, 61, 191), 
+			Shadow = Color3.fromRGB(12, 12, 12), 
+			LighterShadow = Color3.fromRGB(15, 15, 15), 
+		},
+		Accents = {
+			Main = ColorSequence.new {
+				ColorSequenceKeypoint.new(0.0, Color3.fromRGB(85,255,255)), 
+				ColorSequenceKeypoint.new(0.5, Color3.fromRGB(85,255,127)),
+				ColorSequenceKeypoint.new(1.0, Color3.fromRGB(0,170,127))
+			},
+			Brighter = ColorSequence.new {
+				ColorSequenceKeypoint.new(0.0, Color3.fromRGB(161, 253, 255)), 
+				ColorSequenceKeypoint.new(0.5, Color3.fromRGB(175, 255, 198)),
+				ColorSequenceKeypoint.new(1.0, Color3.fromRGB(75, 170, 133))
+			}
+		}
+	},
+	Neo = {
+		Backgrounds = {
+			Dark = Color3.fromRGB(240, 240, 240),  
+			Medium = Color3.fromRGB(250, 250, 250),
+			Light = Color3.fromRGB(255, 255, 255), 
+			Groupbox = Color3.fromRGB(245, 245, 245),
+			Popup = Color3.fromRGB(217, 217, 217)
+		},
+		Foregrounds = {
+			Active = Color3.fromRGB(255, 255, 255),       
+			Light = Color3.fromRGB(40, 40, 40),     
+			Medium = Color3.fromRGB(145, 145, 145), 
+			Dark = Color3.fromRGB(190, 190, 190),   
+			MediumHover = Color3.fromRGB(125, 125, 125), 
+			DarkHover = Color3.fromRGB(170, 170, 170),
+		},
+		Miscellaneous = {
+			Divider = Color3.fromRGB(40, 40, 40), 
+			Shadow = Color3.fromRGB(200, 200, 200), 
+			LighterShadow = Color3.fromRGB(225, 225, 225), 
+		},
+		Accents = {
+			Main = ColorSequence.new {
+				ColorSequenceKeypoint.new(0.0, Color3.fromRGB(7, 7, 7)), 
+				ColorSequenceKeypoint.new(0.5, Color3.fromRGB(20, 20, 20)),
+				ColorSequenceKeypoint.new(1.0, Color3.fromRGB(8, 8, 8))
+			},
+			Brighter = ColorSequence.new {
+				ColorSequenceKeypoint.new(0.0, Color3.fromRGB(26, 26, 26)), 
+				ColorSequenceKeypoint.new(0.5, Color3.fromRGB(0, 0, 0)),
+				ColorSequenceKeypoint.new(1.0, Color3.fromRGB(17, 17, 17))
+			}
+		}
+	},
+	["Neo (Dark)"] = {
+		Backgrounds = {
+			Dark = Color3.fromRGB(13, 13, 13),
+			Medium = Color3.fromRGB(16, 16, 16),
+			Light = Color3.fromRGB(21, 21, 21),
+			Groupbox = Color3.fromRGB(24, 24, 24),
+			Popup = Color3.fromRGB(16, 16, 16)
+		},
+		Foregrounds = {
+			Active = Color3.fromRGB(20, 20, 20),
+			Light = Color3.fromRGB(255,255,255),
+			Medium = Color3.fromRGB(165,165,165),
+			Dark = Color3.fromRGB(77, 77, 77),
+			MediumHover = Color3.fromRGB(185,185,185),
+			DarkHover = Color3.fromRGB(97, 97, 97),
+		},
+		Miscellaneous = {
+			Divider = Color3.fromRGB(199, 199, 199),
+			Shadow = Color3.fromRGB(21, 21, 21),
+			LighterShadow = Color3.fromRGB(30, 30, 30),
+		},
+		Accents = {
+			Main = ColorSequence.new {
+				ColorSequenceKeypoint.new(0.0, Color3.fromRGB(220, 220, 220)), 
+				ColorSequenceKeypoint.new(0.5, Color3.fromRGB(198, 198, 198)),
+				ColorSequenceKeypoint.new(1.0, Color3.fromRGB(230, 230, 230))
+			},
+			Brighter = ColorSequence.new {
+				ColorSequenceKeypoint.new(0.0, Color3.fromRGB(241, 241, 241)), 
+				ColorSequenceKeypoint.new(0.5, Color3.fromRGB(214, 214, 214)),
+				ColorSequenceKeypoint.new(1.0, Color3.fromRGB(253, 253, 253))
+			}
+		}
+	},
+	Crimson = {
+		Backgrounds = {
+			Dark = Color3.fromRGB(11, 11, 15),  
+			Medium = Color3.fromRGB(18, 18, 24),
+			Light = Color3.fromRGB(11, 11, 15), 
+			Groupbox = Color3.fromRGB(18, 18, 24),
+			Popup = Color3.fromRGB(18, 18, 24)
+		},
+		Foregrounds = {
+			Active = Color3.fromRGB(255, 255, 255),            
+			Light = Color3.fromRGB(224,224,224),     
+			Medium = Color3.fromRGB(147,147,149), 
+			Dark = Color3.fromRGB(67,67,78),   
+			MediumHover = Color3.fromRGB(177,177,179), 
+			DarkHover = Color3.fromRGB(97,97,107),
+		},
+		Miscellaneous = {
+			Divider = Color3.fromRGB(107,107,109), 
+			Shadow = Color3.fromRGB(12, 12, 12), 
+			LighterShadow = Color3.fromRGB(15, 15, 15), 
+		},
+		Accents = {
+			Main = ColorSequence.new {
+				ColorSequenceKeypoint.new(0.0, Color3.fromRGB(216, 79, 104)), 
+				ColorSequenceKeypoint.new(0.5, Color3.fromRGB(199,92,112)),
+				ColorSequenceKeypoint.new(1.0,Color3.fromRGB(216, 79, 104))
+			},
+			Brighter = ColorSequence.new {
+				ColorSequenceKeypoint.new(0.0, Color3.fromRGB(199,92,112)), 
+				ColorSequenceKeypoint.new(0.5, Color3.fromRGB(216, 79, 104)),
+				ColorSequenceKeypoint.new(1.0,Color3.fromRGB(199,92,112))
+			}
+		}
+	},
+	--Matcha = {},
+	Nebula = {
+		Backgrounds = {
+			Dark = Color3.fromRGB(1,4,9),  
+			Medium = Color3.fromRGB(14,18,26),
+			Light = Color3.fromRGB(13,17,23), 
+			Groupbox = Color3.fromRGB(13,17,23),
+			Popup = Color3.fromRGB(14,18,26)
+		},
+		Foregrounds = {
+			Active = Color3.fromRGB(243, 243, 243),            
+			Light = Color3.fromRGB(255, 255, 255),     
+			Medium = Color3.fromRGB(170, 177, 191), 
+			Dark = Color3.fromRGB(33, 38, 45),   
+			MediumHover = Color3.fromRGB(186, 194, 209), 
+			DarkHover = Color3.fromRGB(84, 97, 115),
+		},
+		Miscellaneous = {
+			Divider = Color3.fromRGB(201, 209, 217), 
+			Shadow = Color3.fromRGB(12, 12, 12), 
+			LighterShadow = Color3.fromRGB(15, 15, 15), 
+		},
+		Accents = {
+			Main = ColorSequence.new {
+				ColorSequenceKeypoint.new(0.0, Color3.fromRGB(94, 255, 236)), 
+				ColorSequenceKeypoint.new(0.5, Color3.fromRGB(172, 164, 255)),
+				ColorSequenceKeypoint.new(1.0,Color3.fromRGB(191,0,255))
+			},
+			Brighter = ColorSequence.new {
+				ColorSequenceKeypoint.new(0.0, Color3.fromRGB(179, 255, 240)), 
+				ColorSequenceKeypoint.new(0.5, Color3.fromRGB(214, 202, 255)),
+				ColorSequenceKeypoint.new(1.0,Color3.fromRGB(220, 133, 255))
+			},
+		}
+	},
+
+
+	Evergreen = {
+		Backgrounds = {
+			Dark = Color3.fromRGB(41, 50, 54),  
+			Medium = Color3.fromRGB(45,53,59),
+			Light = Color3.fromRGB(52,63,68), 
+			Groupbox = Color3.fromRGB(45, 52, 54),
+			Popup = Color3.fromRGB(45,53,59)
+		},
+		Foregrounds = {
+			Active = Color3.fromRGB(255, 255, 255),            
+			Light = Color3.fromRGB(224,224,224),     
+			Medium = Color3.fromRGB(211,198,170), 
+			Dark = Color3.fromRGB(122,132,120),   
+			MediumHover = Color3.fromRGB(177,177,179), 
+			DarkHover = Color3.fromRGB(97,97,107),
+		},
+		Miscellaneous = {
+			Divider = Color3.fromRGB(211,198,170), 
+			Shadow = Color3.fromRGB(93,104,102), 
+			LighterShadow = Color3.fromRGB(93,104,102), 
+		},
+		Accents = {
+			Main = ColorSequence.new {
+				ColorSequenceKeypoint.new(0.0, Color3.fromRGB(167,192,128)), 
+				ColorSequenceKeypoint.new(0.5, Color3.fromRGB(145,177,89)),
+				ColorSequenceKeypoint.new(1.0,Color3.fromRGB(167,192,128))
+			},
+			Brighter = ColorSequence.new {
+				ColorSequenceKeypoint.new(0.0, Color3.fromRGB(145,177,89)), 
+				ColorSequenceKeypoint.new(0.5, Color3.fromRGB(167,192,128)),
+				ColorSequenceKeypoint.new(1.0,Color3.fromRGB(145,177,89))
+			}
+		}
+	},
+	Ubuntu = {
+		Backgrounds = {
+			Dark = Color3.fromRGB(50,50,50),  
+			Medium = Color3.fromRGB(56,56,56),
+			Light = Color3.fromRGB(62,62,62), 
+			Groupbox = Color3.fromRGB(62,62,62),
+			Popup = Color3.fromRGB(50,50,50)
+		},
+		Foregrounds = {
+			Active = Color3.fromRGB(255, 255, 255),            
+			Light = Color3.fromRGB(255,255,255),     
+			Medium = Color3.fromRGB(141, 141, 141), 
+			Dark = Color3.fromRGB(50,50,50),   
+			MediumHover = Color3.fromRGB(100,100,100), 
+			DarkHover = Color3.fromRGB(70,70,70),
+		},
+		Miscellaneous = {
+			Divider = Color3.fromRGB(226,88,30), 
+			Shadow = Color3.fromRGB(25,25,25), 
+			LighterShadow = Color3.fromRGB(50,50,50), 
+		},
+		Accents = {
+			Main = ColorSequence.new {
+				ColorSequenceKeypoint.new(0.0, Color3.fromRGB(226,88,30)), 
+				ColorSequenceKeypoint.new(0.5, Color3.fromRGB(226, 114, 70)),
+				ColorSequenceKeypoint.new(1.0,Color3.fromRGB(226,88,30))
+			},
+			Brighter = ColorSequence.new {
+				ColorSequenceKeypoint.new(0.0, Color3.fromRGB(226, 108, 61)), 
+				ColorSequenceKeypoint.new(0.5, Color3.fromRGB(226, 149, 111)),
+				ColorSequenceKeypoint.new(1.0,Color3.fromRGB(226, 108, 61))
+			}
+		}
+	},
+	Luna = {
+		Backgrounds = {
+			Dark = Color3.fromRGB(21, 20, 25),  
+			Medium = Color3.fromRGB(26, 25, 31),
+			Light = Color3.fromRGB(37, 35, 44), 
+			Groupbox = Color3.fromRGB(39, 34, 43),
+			Popup = Color3.fromRGB(22,22,31)
+		},
+		Foregrounds = {
+			Active = Color3.fromRGB(255, 255, 255),            
+			Light = Color3.fromRGB(255,255,255),     
+			Medium = Color3.fromRGB(203, 203, 203), 
+			Dark = Color3.fromRGB(66, 63, 76),   
+			MediumHover = Color3.fromRGB(227,227,227), 
+			DarkHover = Color3.fromRGB(98, 98, 98),
+		},
+		Miscellaneous = {
+			Divider = Color3.fromRGB(64, 61, 76), 
+			Shadow = Color3.fromRGB(32, 28, 35), 
+			LighterShadow = Color3.fromRGB(45, 39, 49), 
+		},
+		Accents = {
+			Main = ColorSequence.new {
+				ColorSequenceKeypoint.new(0.0, Color3.fromRGB(117, 164, 206)), 
+				ColorSequenceKeypoint.new(0.5, Color3.fromRGB(123, 201, 201)),
+				ColorSequenceKeypoint.new(1.0, Color3.fromRGB(224, 138, 175))
+			},
+			Brighter = ColorSequence.new {
+				ColorSequenceKeypoint.new(0.0, Color3.fromRGB(152, 193, 221)), 
+				ColorSequenceKeypoint.new(0.5, Color3.fromRGB(181, 235, 231)),
+				ColorSequenceKeypoint.new(1.0, Color3.fromRGB(244, 175, 202))
+			}
+		}
+	},
+	["Tokyo Night"] = {
+		Backgrounds = {
+			Dark = Color3.fromRGB(22,22,31),  
+			Medium = Color3.fromRGB(28,28,40),
+			Light = Color3.fromRGB(25,25,37), 
+			Groupbox = Color3.fromRGB(25,25,37),
+			Popup = Color3.fromRGB(22,22,31)
+		},
+		Foregrounds = {
+			Active = Color3.fromRGB(255, 255, 255),            
+			Light = Color3.fromRGB(255,255,255),     
+			Medium = Color3.fromRGB(167, 160, 185), 
+			Dark = Color3.fromRGB(80, 78, 98),   
+			MediumHover = Color3.fromRGB(180, 167, 206), 
+			DarkHover = Color3.fromRGB(88, 82, 130),
+		},
+		Miscellaneous = {
+			Divider = Color3.fromRGB(144, 101, 163), 
+			Shadow = Color3.fromRGB(40,40,48), 
+			LighterShadow = Color3.fromRGB(40,40,48), 
+		},
+		Accents = {
+			Main = ColorSequence.new {
+				ColorSequenceKeypoint.new(0.0, Color3.fromRGB(132, 116, 163)), 
+				ColorSequenceKeypoint.new(0.5, Color3.fromRGB(133, 122, 194)),
+				ColorSequenceKeypoint.new(1.0,Color3.fromRGB(132, 116, 163))
+			},
+			Brighter = ColorSequence.new {
+				ColorSequenceKeypoint.new(0.0, Color3.fromRGB(133, 122, 194)), 
+				ColorSequenceKeypoint.new(0.5, Color3.fromRGB(132, 116, 163)),
+				ColorSequenceKeypoint.new(1.0,Color3.fromRGB(133, 122, 194))
+			}
+		}
+	},
+	OperaGX = {
+		Backgrounds = {
+			Dark = Color3.fromRGB(15, 13, 18),  
+			Medium = Color3.fromRGB(12, 11, 15),
+			Light = Color3.fromRGB(11, 9, 16), 
+			Groupbox = Color3.fromRGB(6, 5, 8),
+			Popup = Color3.fromRGB(13, 11, 18)
+		},
+		Foregrounds = {
+			Active = Color3.fromRGB(255, 255, 255),            
+			Light = Color3.fromRGB(255,255,255),     
+			Medium = Color3.fromRGB(170,170,170), 
+			Dark = Color3.fromRGB(80, 78, 98),   
+			MediumHover = Color3.fromRGB(190,190,190), 
+			DarkHover = Color3.fromRGB(122, 117, 130),
+		},
+		Miscellaneous = {
+			Divider = Color3.fromRGB(250,30,78), 
+			Shadow = Color3.fromRGB(24, 23, 26), 
+			LighterShadow = Color3.fromRGB(40,40,48), 
+		},
+		Accents = {
+			Main = ColorSequence.new {
+				ColorSequenceKeypoint.new(0.0, Color3.fromRGB(250,30,78)), 
+				ColorSequenceKeypoint.new(0.5, Color3.fromRGB(216, 27, 62)),
+				ColorSequenceKeypoint.new(1.0,Color3.fromRGB(250,30,78))
+			},
+			Brighter = ColorSequence.new {
+				ColorSequenceKeypoint.new(0.0, Color3.fromRGB(216, 27, 62)), 
+				ColorSequenceKeypoint.new(0.5, Color3.fromRGB(250,30,78)),
+				ColorSequenceKeypoint.new(1.0,Color3.fromRGB(216, 27, 62))
+			}
+		}
+	},
+	BBot = {
+		Backgrounds = {
+			Dark = Color3.fromRGB(35,35,35),  
+			Medium = Color3.fromRGB(40,40,40),
+			Light = Color3.fromRGB(30,30,30), 
+			Groupbox = Color3.fromRGB(30,30,30),
+			Popup = Color3.fromRGB(35,35,35)
+		},
+		Foregrounds = {
+			Active = Color3.fromRGB(255, 255, 255),            
+			Light = Color3.fromRGB(255,255,255),     
+			Medium = Color3.fromRGB(180, 180, 180), 
+			Dark = Color3.fromRGB(82, 82, 82),   
+			MediumHover = Color3.fromRGB(150, 150, 150), 
+			DarkHover = Color3.fromRGB(112, 112, 112),
+		},
+		Miscellaneous = {
+			Divider = Color3.fromRGB(144, 101, 163), 
+			Shadow = Color3.fromRGB(20,20,20), 
+			LighterShadow = Color3.fromRGB(40,40,40), 
+		},
+		Accents = {
+			Main = ColorSequence.new {
+				ColorSequenceKeypoint.new(0.0, Color3.fromRGB(126, 72, 163)), 
+				ColorSequenceKeypoint.new(0.5, Color3.fromRGB(144, 101, 163)),
+				ColorSequenceKeypoint.new(1.0,Color3.fromRGB(167, 97, 218))
+			},
+			Brighter = ColorSequence.new {
+				ColorSequenceKeypoint.new(0.0, Color3.fromRGB(170, 98, 221)), 
+				ColorSequenceKeypoint.new(0.5, Color3.fromRGB(124, 75, 148)),
+				ColorSequenceKeypoint.new(1.0,Color3.fromRGB(179, 131, 218))
+			}
+		}
+	},
+	["Hollywood Fluent"] = {
+		Backgrounds = {
+			Dark = Color3.fromRGB(8, 8, 8),
+			Medium = Color3.fromRGB(12, 12, 12),
+			Light = Color3.fromRGB(15, 15, 15),
+			Groupbox = Color3.fromRGB(14, 14, 14),
+			Popup = Color3.fromRGB(13, 13, 13)
+		},
+		Foregrounds = {
+			Active = Color3.fromRGB(255,255,255),
+			Light = Color3.fromRGB(255,255,255),
+			Medium = Color3.fromRGB(165,165,165),
+			Dark = Color3.fromRGB(77, 77, 77),
+			MediumHover = Color3.fromRGB(185,185,185),
+			DarkHover = Color3.fromRGB(97, 97, 97),
+		},
+		Miscellaneous = {
+			Divider = Color3.fromRGB(180, 180, 180), 
+			Shadow = Color3.fromRGB(25,25,25), 
+			LighterShadow = Color3.fromRGB(50,50,50), 
+		},
+		Accents = {
+			Main = ColorSequence.new {
+				ColorSequenceKeypoint.new(0.0, Color3.fromRGB(84, 195, 255)), 
+				ColorSequenceKeypoint.new(0.5, Color3.fromRGB(112, 210, 255)), 
+				ColorSequenceKeypoint.new(1.0, Color3.fromRGB(84, 195, 255)) 
+			},
+			Brighter = ColorSequence.new {
+				ColorSequenceKeypoint.new(0.0, Color3.fromRGB(110, 197, 255)), 
+				ColorSequenceKeypoint.new(0.5, Color3.fromRGB(144, 216, 255)), 
+				ColorSequenceKeypoint.new(1.0, Color3.fromRGB(110, 197, 255)) 
+			}
+		}
+	},
+	--PHub = {},
+	--Serika = {},
+	--Rust = {}
+
+}
+
+local function deepCopy(tbl)
+	if type(tbl) ~= "table" then return tbl end
+	local copy = {}
+	for k, v in pairs(tbl) do
+		copy[k] = deepCopy(v)
+	end
+	return copy
+end
+Starlight.Themes = Themes
+Starlight.CurrentTheme = deepCopy(Themes.Starlight)
 
 --//ENDSUBSECTION
 
@@ -178,20 +784,156 @@ end
 
 
 local ConfigMethods = {
-	Save = function(Idx, Data)
-		return {
-			type = "Toggle", 
-			idx = Idx, 
-			data = Data
-		}
+	Save = function(Idx, Data, Type)
+		if Type == "ColorPicker" then
+			local appendedData = {}
+			for i,v in pairs(Data) do
+				if i == "CurrentValue" then
+					appendedData[i] = Color.Unpack(v)
+				else
+					appendedData[i] = v
+				end
+			end
+			return {
+				type = Type, 
+				idx = Idx, 
+				data = appendedData
+			}
+		else
+			return {
+				type = Type, 
+				idx = Idx, 
+				data = Data
+			}
+		end
 	end,
 	Load = function(Idx, Data, Path)
 		if GetNestedValue(Starlight.Window.TabSections, Idx) then
-			for key, value in pairs(Data) do
-				GetNestedValue(Starlight.Window.TabSections, Idx):Set({ [key] = value })
+			if GetNestedValue(Starlight.Window.TabSections, Idx).Class == "ColorPicker" then
+				for key, value in pairs(Data) do
+					if key == "CurrentValue" then
+						GetNestedValue(Starlight.Window.TabSections, Idx):Set({ CurrentValue = Color.Pack(value) })
+					else
+						GetNestedValue(Starlight.Window.TabSections, Idx):Set({ [key] = value })
+					end
+				end
+				return
+			end
+			GetNestedValue(Starlight.Window.TabSections, Idx):Set(Data)
+		end
+	end,
+	UpdateOld = function(oldPath, newPath)
+		local list = listfiles(oldPath) or {}
+
+		for i = 1, #list do
+			local file = list[i]
+			if file:sub(-#Starlight.FileSystem.FileExtension) == Starlight.FileSystem.FileExtension then
+				local content = readfile(file)
+
+				local pos = file:find(Starlight.FileSystem.FileExtension, 1, true)
+				local start = pos
+
+				local char = file:sub(pos, pos)
+				while char ~= "/" and char ~= "\\" and char ~= "" do
+					pos = pos - 1
+					char = file:sub(pos, pos)
+				end
+
+				if char == "/" or char == "\\" then
+					local name = file:sub(pos + 1, start - 1)
+					if name ~= "options" then
+						writefile(`{newPath}/{name}{Starlight.FileSystem.FileExtension}`, content)
+					end
+				end
+
+				delfile(file)
 			end
 		end
 	end,
+}
+
+local ThemeMethods = {
+	bindTheme = function(object : GuiObject, property, themeKey)
+
+		local function set()
+			task.spawn(function()
+				if object.ClassName == "UIGradient" and typeof(GetNestedValue(Starlight.CurrentTheme, themeKey)) == "Color3" then
+					object[property] = ColorSequence.new {
+						ColorSequenceKeypoint.new(0, GetNestedValue(Starlight.CurrentTheme, themeKey)),
+						ColorSequenceKeypoint.new(1, GetNestedValue(Starlight.CurrentTheme, themeKey))
+					}
+					return
+				end
+
+				object[property] = GetNestedValue(Starlight.CurrentTheme, themeKey)
+			end)
+		end
+
+		themeEvent.Event:Connect(set)
+		set()
+
+	end,
+	encodeTheme = function(theme)
+		local function serialize(data)
+			if typeof(data) == "Color3" then
+				return {R = data.R*255, G = data.G*255, B = data.B*255}
+			elseif typeof(data) == "ColorSequence" then
+				local keypoints = {}
+				for _, kp in ipairs(data.Keypoints) do
+					table.insert(keypoints, {
+						Time = kp.Time,
+						Value = {R = kp.Value.R*255, G = kp.Value.G*255, B = kp.Value.B*255}
+					})
+				end
+				return {__type = "ColorSequence", Keypoints = keypoints}
+			elseif type(data) == "table" then
+				local newTbl = {}
+				for k, v in pairs(data) do
+					newTbl[k] = serialize(v)
+				end
+				return newTbl
+			end
+			return data
+		end
+
+		local serialized = serialize(theme)
+		local success, encoded = pcall(HttpService.JSONEncode, HttpService, serialized)
+		if not success then
+			return false, "Failed to encode into JSON Data."
+		end
+		return true, encoded
+	end,
+	decodeTheme = function(data)
+		local function deserialize(value)
+			if type(value) == "table" then
+				if value.__type == "ColorSequence" then
+					local keypoints = {}
+					for _, kp in ipairs(value.Keypoints) do
+						table.insert(keypoints, ColorSequenceKeypoint.new(
+							kp.Time,
+							Color.Pack(kp.Value)
+							))
+					end
+					return ColorSequence.new(keypoints)
+				elseif #value == 3 and type(value[1]) == "number" then
+					return Color.Pack(value)
+				else
+					local newTbl = {}
+					for k, v in pairs(value) do
+						newTbl[k] = deserialize(v)
+					end
+					return newTbl
+				end
+			end
+			return value
+		end
+
+		local success, decoded = pcall(HttpService.JSONDecode, HttpService, data)
+		if not success then
+			return false, "Failed to decode JSON data."
+		end
+		return deserialize(decoded)
+	end
 }
 
 -- Removes item from a provided table via the value of the item
@@ -214,18 +956,18 @@ function Color.Pack(Color : table)
 	return Color3.fromRGB(Color.R, Color.G, Color.B)
 end
 
+--[=[
 -- Creates the BlurBehind Effect for the transparent theme
 local function BlurModule(Frame : Frame)
-
 	local universalDof;
 	for i,v in pairs(Lighting:GetChildren()) do
-		
+
 		if v:IsA("DepthOfFieldEffect")
 			and not string.find(v.Name, "starlightBlur_", nil) then
-			
+
 			universalDof = v
 		end
-		
+
 	end
 	if universalDof == nil then
 		universalDof = Instance.new("DepthOfFieldEffect")
@@ -235,7 +977,7 @@ local function BlurModule(Frame : Frame)
 		universalDof.InFocusRadius = 500
 		universalDof.Enabled = true
 	end
-	
+
 	local partRoot = Camera:FindFirstChild("Starlight Blur Elements") or Instance.new("Folder", Camera)
 	partRoot.Name = "Starlight Blur Elements"
 
@@ -252,7 +994,7 @@ local function BlurModule(Frame : Frame)
 	blurObject.FarIntensity = universalDof.FarIntensity
 	blurObject.Parent         = Lighting
 	blurObject.Name = "starlightBlur_" .. Frame.Name .. HttpService:GenerateGUID(false)
-	
+
 	universalDof:GetPropertyChangedSignal("FarIntensity"):Connect(function()
 		blurObject.FarIntensity = universalDof.FarIntensity
 	end)
@@ -369,8 +1111,8 @@ local function BlurModule(Frame : Frame)
 		local corner0 = frame.AbsolutePosition + blurSize
 		local corner1 = corner0 + frame.AbsoluteSize - blurSize*2
 		local ray0, ray1
-			ray0 = Camera:ScreenPointToRay(corner0.X, corner0.Y, 1)
-			ray1 = Camera:ScreenPointToRay(corner1.X, corner1.Y, 1)
+		ray0 = Camera:ScreenPointToRay(corner0.X, corner0.Y, 1)
+		ray1 = Camera:ScreenPointToRay(corner1.X, corner1.Y, 1)
 
 		local planeOrigin = Camera.CFrame.Position + Camera.CFrame.LookVector * (0.05 - Camera.NearPlaneZ)
 		local planeNormal = Camera.CFrame.LookVector
@@ -411,10 +1153,10 @@ local function BlurModule(Frame : Frame)
 	BlurredGui.updateAll()
 	return BlurredGui
 end
+]=]
 
 -- Unpacks A Table, Returning it as string containing a list of the values
-
---[Obsolete "So apparently... theres a function called table.concat and it does exactly what this does. So yea, i didnt know lmap"]
+--[Obsolete "So apparently... theres a function called table.concat and it does exactly what this does. So yea, i didnt know lmao"]
 function Table.Unpack(array : table)
 
 	local val = ""
@@ -525,7 +1267,7 @@ local function Hide(Interface , JustHide : boolean?, Notify : boolean?, Bind : s
 			end
 		end
 	end
-	
+
 	if Interface.ClassName ~= "ScreenGui" then
 		if JustHide == false then
 
@@ -600,8 +1342,8 @@ local function Unhide(Interface)
 	else
 		Interface.Visible = true
 	end
-	
-	
+
+
 	for i,v in pairs(Interface:GetDescendants()) do
 		if  v.ClassName ~= "Folder" 
 			and v.ClassName ~= "UICorner" 
@@ -637,7 +1379,7 @@ local function Unhide(Interface)
 
 		end
 	end
-	
+
 	pcall(function()
 		if Interface.ClassName ~= "ScreenGui" then
 			if (Interface.ClassName == "Frame") and TransparencyValues[Interface.Name][Interface:GetAttribute("InstanceID")].BackgroundTransparency ~= nil then
@@ -704,7 +1446,6 @@ local function AddToolTip(InfoStr, HoverInstance)
 	label.TextColor3 = Color3.new(1,1,1)
 
 	local tooltip = Instance.new("Frame")
-	tooltip.BackgroundColor3 = Color3.fromRGB(27, 29, 33)
 	tooltip.ZIndex = 300
 	tooltip.Parent = Starlight.Instance.Tooltips
 	tooltip.Name = HoverInstance.Name
@@ -744,6 +1485,18 @@ local function AddToolTip(InfoStr, HoverInstance)
 			IsHovering = false
 			tooltip.Visible = false
 		end)
+		
+		HoverInstance:GetPropertyChangedSignal("AbsolutePosition"):Connect(function()
+			local p, pos, size = Mouse, HoverInstance.AbsolutePosition, HoverInstance.AbsoluteSize
+			if not (p.X >= pos.X and p.X <= pos.X + size.X and p.Y >= pos.Y and p.Y <= pos.Y + size.Y) then
+				IsHovering = false
+				tooltip.Visible = false
+			else
+				IsHovering = true
+				lastMousePos = Vector2.new(Mouse.X, Mouse.Y)
+				hoverTime = 0
+			end
+		end)
 
 		RunService.RenderStepped:Connect(function(dt)
 			if not IsHovering then return end
@@ -767,6 +1520,11 @@ local function AddToolTip(InfoStr, HoverInstance)
 	end
 
 	updateTooltipPos()
+	do -- Theme Binding
+		ThemeMethods.bindTheme(tooltip, "BackgroundColor3", "Backgrounds.Medium")
+		ThemeMethods.bindTheme(stroke, "Color", "Foregrounds.Dark")
+		ThemeMethods.bindTheme(label, "TextColor3", "Foregrounds.Light")
+	end
 
 	return label
 end
@@ -863,7 +1621,7 @@ local warned = false
 
 repeat
 
-	if StarlightUI:FindFirstChild('Build') and StarlightUI.Build.Value == Starlight.InterfaceBuild then
+	if StarlightUI.Resources:FindFirstChild("Build") and StarlightUI.Resources:FindFirstChild("Build").Value == Starlight.InterfaceBuild then
 		correctBuild = true
 		break
 	end
@@ -986,19 +1744,19 @@ function Starlight:Notification(data)
 		Duration = number, **
 	}
 	]]
-	
-	if not correctBuild and not warned then
+
+	--[[if not correctBuild and not warned then
 		warned = true
 		warn('Starlight | Build Mismatch')
-		warn('Starlight may run into issues as it seems you are running an incompatible interface version ('.. (StarlightUI:FindFirstChild('Build') and StarlightUI.Build.Value or 'No Build') ..'). of Starlight\n\nThis version of Starlight is intended for interface build '..Starlight.InterfaceBuild..'.\nTry rerunning the script. If the issue persists, join our discord for support.')
+		warn('Starlight may run into issues as it seems you are running an incompatible interface version ('.. (StarlightUI.Resources:FindFirstChild("Build") and StarlightUI.Resources:FindFirstChild("Build").Value or 'No Build') ..'). of Starlight\n\nThis version of Starlight is intended for interface build '..Starlight.InterfaceBuild..'.\nTry rerunning the script. If the issue persists, join our discord for support.')
 		pcall(function()
 			Starlight:Notification({
 				Title = "Starlight - Build Mistmatch",
-				Content = 'Starlight may run into issues as it seems you are running an incompatible interface version ('.. (StarlightUI:FindFirstChild('Build') and StarlightUI.Build.Value or 'No Build') ..'). of Starlight\n\nThis version of Starlight is intended for interface build '..Starlight.InterfaceBuild..'. \nTry rerunning the script. If the issue persists, join our discord for support.',
+				Content = 'Starlight may run into issues as it seems you are running an incompatible interface version ('.. (StarlightUI.Resources:FindFirstChild("Build") and StarlightUI.Resources:FindFirstChild("Build").Value or 'No Build') ..'). of Starlight\n\nThis version of Starlight is intended for interface build '..Starlight.InterfaceBuild..'. \nTry rerunning the script. If the issue persists, join our discord for support.',
 				Icon = 129398364168201
 			})
 		end)
-	end
+	end]]
 
 	task.spawn(function()
 
@@ -1010,24 +1768,33 @@ function Starlight:Notification(data)
 		newNotification.Parent = StarlightUI.Notifications
 		newNotification.LayoutOrder = #StarlightUI.Notifications:GetChildren()
 		newNotification.Visible = false
-		BlurModule(newNotification)
+		local AcrylicObject = Acrylic.AcrylicPaint()
+		pcall(function()
+			AcrylicObject.AddParent(newNotification)
+			AcrylicObject.Frame.Parent = newNotification
+		end)
+
+		local function setDuration(elapsed)
+			if elapsed <= 4 then
+				newNotification.Time.Text = "now"
+			elseif elapsed < 60 then
+				newNotification.Time.Text = math.floor(elapsed) .. "s ago"
+			elseif elapsed < 3600 then
+				newNotification.Time.Text = math.floor(elapsed/60) .. "m ago"
+			else
+				newNotification.Time.Text = math.floor(elapsed/3600) .. "h ago"
+			end
+		end
 
 		task.spawn(function()
 			while task.wait(1) do
-				local elapsed = tick() - creationTime
-
-				pcall(function()
-					if elapsed <= 3 then
-						newNotification.Time.Text = "now"
-					elseif elapsed < 60 then
-						newNotification.Time.Text = math.floor(elapsed) .. "s ago"
-					elseif elapsed < 3600 then
-						newNotification.Time.Text = math.floor(elapsed/60) .. "m ago"
-					else
-						newNotification.Time.Text = math.floor(elapsed/3600) .. "h ago"
-					end
-				end)
+				pcall(setDuration, tick() - creationTime)
 			end
+		end)
+
+		notificationAcrylicEvent.Event:Connect(function()
+			if newNotification.BackgroundTransparency == 1 then	return end
+			TweenService:Create(newNotification, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {BackgroundTransparency = notificationAcrylic and (mainAcrylic and 0.75 or 0.397) or 0}):Play()
 		end)
 
 		-- Set Data
@@ -1053,7 +1820,10 @@ function Starlight:Notification(data)
 		TweenService:Create(newNotification, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {Size = UDim2.new(1, 0, 0, bounds + 50)}):Play()
 
 		task.wait(0.15)
-		TweenService:Create(newNotification, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0.38}):Play()
+		TweenService:Create(newNotification, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {BackgroundTransparency = notificationAcrylic and (mainAcrylic and 0.75 or 0.397) or 0}):Play()
+		TweenService:Create(newNotification.Acrylic.shadow, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {ImageTransparency = 0.7}):Play()
+		TweenService:Create(newNotification.Acrylic.tint, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {ImageTransparency = 0.98}):Play()
+		TweenService:Create(newNotification.Acrylic.Noise, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {ImageTransparency = 0.9}):Play()
 		TweenService:Create(newNotification.Shadow.antumbraShadow, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {ImageTransparency = 0.94}):Play()
 		TweenService:Create(newNotification.Shadow.penumbraShadow, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {ImageTransparency = 0.55}):Play()
 		TweenService:Create(newNotification.Shadow.umbraShadow, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {ImageTransparency = 0.4}):Play()
@@ -1068,8 +1838,21 @@ function Starlight:Notification(data)
 		TweenService:Create(newNotification.Time, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {TextTransparency = 0.35}):Play()
 		TweenService:Create(newNotification.UIStroke, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {Transparency = 0.95}):Play()
 
+		-- Theme Binding
+		do
+			ThemeMethods.bindTheme(newNotification, "BackgroundColor3", "Backgrounds.Medium")
+			ThemeMethods.bindTheme(newNotification.UIStroke, "Color", "Foregrounds.Dark")
+			for _, shadow in pairs(newNotification.Shadow:GetChildren()) do
+				ThemeMethods.bindTheme(shadow, "ImageColor3", "Miscellaneous.LighterShadow")
+			end
+			ThemeMethods.bindTheme(newNotification.Icon, "ImageColor3", "Foregrounds.Light")
+			ThemeMethods.bindTheme(newNotification.Description, "TextColor3", "Foregrounds.Light")
+			ThemeMethods.bindTheme(newNotification.Title, "TextColor3", "Foregrounds.Light")
+			ThemeMethods.bindTheme(newNotification.Time, "TextColor3", "Foregrounds.Light")
+		end
+
 		data.Duration = data.Duration or math.min(math.max((#newNotification.Description.Text * 0.1) + 2.5, 3), 10)
-		if data.Duration ~= -1 then
+		if data.Duration >= 0 then
 			task.wait(data.Duration)
 
 			pcall(function()
@@ -1121,9 +1904,10 @@ function Starlight:CreateWindow(WindowSettings)
 		InterfaceAdvertisingPrompts = bool, **
 		NotifyOnCallbackError = bool,
 		
-		ConfigurationSettings = {
+		FileSettings = {
 			RootFolder = string, **
-			FolderName = string, ****
+			ConfigFolder = string,**  
+			ThemeFolder = string, **
 		},
 		
 		DefaultSize = UDim2, **
@@ -1152,28 +1936,48 @@ function Starlight:CreateWindow(WindowSettings)
 	}
 	
 	]]--
-	
+
 	if not correctBuild and not warned and WindowSettings.BuildWarnings then
 		warned = true
 		warn('Starlight | Build Mismatch')
-		warn('Starlight may run into issues as it seems you are running an incompatible interface version ('.. (StarlightUI:FindFirstChild('Build') and StarlightUI.Build.Value or 'No Build') ..'). of Starlight\n\nThis version of Starlight is intended for interface build '..Starlight.InterfaceBuild..'.\nTry rerunning the script. If the issue persists, join our discord for support.')
+		warn('Starlight may run into issues as it seems you are running an incompatible interface version ('.. (StarlightUI.Resources:FindFirstChild("Build") and StarlightUI.Resources:FindFirstChild("Build").Value or 'No Build') ..'). of Starlight\n\nThis version of Starlight is intended for interface build '..Starlight.InterfaceBuild..'.\nTry rerunning the script. If the issue persists, join our discord for support.')
 		pcall(function()
 			Starlight:Notification({
 				Title = "Starlight - Build Mistmatch",
-				Content = 'Starlight may run into issues as it seems you are running an incompatible interface version ('.. (StarlightUI:FindFirstChild('Build') and StarlightUI.Build.Value or 'No Build') ..'). of Starlight\n\nThis version of Starlight is intended for interface build '..Starlight.InterfaceBuild..'. \nTry rerunning the script. If the issue persists, join our discord for support.',
+				Content = 'Starlight may run into issues as it seems you are running an incompatible interface version ('.. (StarlightUI.Resources:FindFirstChild("Build") and StarlightUI.Resources:FindFirstChild("Build").Value or 'No Build') ..'). of Starlight\n\nThis version of Starlight is intended for interface build '..Starlight.InterfaceBuild..'. \nTry rerunning the script. If the issue persists, join our discord for support.',
 				Icon = 129398364168201
 			})
 		end)
 	end
 
-	local root = WindowSettings.ConfigurationSettings.RootFolder
-	local folder = WindowSettings.ConfigurationSettings.FolderName
+	WindowSettings.FileSettings = WindowSettings.FileSettings or {}
+	local hasOld = WindowSettings.ConfigurationSettings ~= nil
+	if WindowSettings.FileSettings.RootFolder == nil and hasOld then
+		WindowSettings.FileSettings.RootFolder = WindowSettings.ConfigurationSettings.RootFolder
+	end 
+	if WindowSettings.FileSettings.ConfigFolder == nil and hasOld then
+		WindowSettings.FileSettings.ConfigFolder = WindowSettings.ConfigurationSettings.FolderName
+	end
+
+	local root = WindowSettings.FileSettings.RootFolder
+	local folder = WindowSettings.FileSettings.ConfigFolder
 	local folderpath = root ~= nil and root .. "/" .. folder or folder
-	
+
+	if root ~= nil then
+		WindowSettings.FileSettings.ThemesInRoot = WindowSettings.FileSettings.ThemesInRoot == nil and true or WindowSettings.FileSettings.ThemesInRoot
+	end
+
 	if WindowSettings.NotifyOnCallbackError == nil then
 		WindowSettings.NotifyOnCallbackError = true
 	end
-	Starlight.ConfigSystem.AutoloadPath = `{Starlight.Folder}/Configurations/{folderpath}/`
+	Starlight.FileSystem.AutoloadConfigPath = `{Starlight.FileSystem.Folder}/{folderpath}/configs/`
+	if WindowSettings.FileSettings.ThemesInRoot then
+		Starlight.FileSystem.AutoloadThemePath = `{Starlight.FileSystem.Folder}/{root}/themes/`
+	else
+		Starlight.FileSystem.AutoloadThemePath = `{Starlight.FileSystem.Folder}/{folderpath}/themes/`
+	end
+
+	Starlight.FileSystem:BuildFolderTree(root ~= nil and true or false, root or "", folder, WindowSettings.FileSettings.ThemesInRoot)
 
 	Starlight.Window = {
 		Instance = mainWindow,
@@ -1188,12 +1992,42 @@ function Starlight:CreateWindow(WindowSettings)
 
 	--// SUBSECTION : Initial Code
 	do
+		local AcrylicObject = Acrylic.AcrylicPaint()
+		pcall(function()
+			AcrylicObject.AddParent(mainWindow)
+			AcrylicObject.Frame.Parent = mainWindow
+			AcrylicObject.Model.Size = Vector3.new(1.0,1.032,0.001)
+		end)
+		
+		acrylicEvent.Event:Connect(function()
+			notificationAcrylicEvent:Fire()
+			if mainAcrylic then
+				Tween(mainWindow, {BackgroundTransparency = 0.8})
+				Tween(mainWindow.Content.ContentMain, {BackgroundTransparency = 1})
+				Tween(mainWindow.Content.ContentMain.CornerRepairHorizontal, {BackgroundTransparency = 1})
+				Tween(mainWindow.Content.ContentMain.CornerRepairVertical, {BackgroundTransparency = 1})
+				Tween(mainWindow.Content.Topbar, {BackgroundTransparency = 1})
+				Tween(mainWindow.Content.Topbar.CornerRepairHorizontal, {BackgroundTransparency = 1})
+				Tween(mainWindow.Content.Topbar.CornerRepairVertical, {BackgroundTransparency = 1})
+				Tween(mainWindow.Sidebar, {BackgroundTransparency = 0.6})
+				Tween(mainWindow.Sidebar.CornerRepair, {BackgroundTransparency = 0.95})
+				AcrylicObject.Frame.shadow.Visible = true
+			else
+				Tween(mainWindow, {BackgroundTransparency = 0})
+				Tween(mainWindow.Content.ContentMain, {BackgroundTransparency = 0})
+				Tween(mainWindow.Content.ContentMain.CornerRepairHorizontal, {BackgroundTransparency = 0})
+				Tween(mainWindow.Content.ContentMain.CornerRepairVertical, {BackgroundTransparency = 0})
+				Tween(mainWindow.Content.Topbar, {BackgroundTransparency = 0})
+				Tween(mainWindow.Content.Topbar.CornerRepairHorizontal, {BackgroundTransparency = 0})
+				Tween(mainWindow.Content.Topbar.CornerRepairVertical, {BackgroundTransparency = 0})
+				AcrylicObject.Frame.shadow.Visible = false
+			end
+		end)
+		
 		mainWindow.Content.ContentMain.Elements.Tab_TEMPLATE.Visible = false
 		local loadingScreenLogoChanged = false
 
 		mainWindow["New Loading Screen"].Visible = true
-
-		--Hide(StarlightUI)
 
 		mainWindow.Size = WindowSettings.DefaultSize ~= nil and WindowSettings.DefaultSize or mainWindow.Size
 
@@ -1216,15 +2050,15 @@ function Starlight:CreateWindow(WindowSettings)
 		mainWindow["Loading Screen"].Frame.SubFrame.Subtitle.Text = WindowSettings.LoadingSettings.Subtitle or ""]]
 		if WindowSettings.LoadingSettings then
 			if WindowSettings.LoadingSettings.Logo then
-			mainWindow["New Loading Screen"].Frame.ImageLabel.Image.Image = "rbxassetid://" .. WindowSettings.LoadingSettings.Logo
-			mainWindow["New Loading Screen"].Frame.ImageLabel.Image.Size = UDim2.fromScale(1,1)
-			loadingScreenLogoChanged = true
-		end end
+				mainWindow["New Loading Screen"].Frame.ImageLabel.Image.Image = "rbxassetid://" .. WindowSettings.LoadingSettings.Logo
+				mainWindow["New Loading Screen"].Frame.ImageLabel.Image.Size = UDim2.fromScale(1,1)
+				loadingScreenLogoChanged = true
+			end end
 
 		mainWindow.Sidebar.Player.PlayerIcon.Image = Players:GetUserThumbnailAsync(Player.UserId, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size48x48)
 		mainWindow.Sidebar.Player.Header.Text = Player.DisplayName
 		mainWindow.Sidebar.Player.subheader.Text = Player.Name
-		
+
 		ContentProvider:PreloadAsync({
 			"rbxassetid://116767744785553", -- cursor
 			"rbxassetid://90155503712202", -- cursor shadow
@@ -1240,11 +2074,58 @@ function Starlight:CreateWindow(WindowSettings)
 			"rbxassetid://6034304908", -- notification
 			"rbxassetid://8445471332", -- search,
 			"rbxassetid://80990588449079" -- loading circle
-		}, function(a)
+		}, function(asset)
 			if debugV then
-				print(`loaded asset {a}`)
+				print(`loaded asset {asset}`)
 			end
 		end)
+
+		-- Theme Binding
+		do
+			ThemeMethods.bindTheme(mainWindow, "BackgroundColor3", "Backgrounds.Dark")
+			ThemeMethods.bindTheme(mainWindow.UIStroke.Accent, "Color", "Accents.Brighter")
+			for _, shadow in pairs(mainWindow.DropShadowHolder:GetChildren()) do
+				ThemeMethods.bindTheme(shadow, "ImageColor3", "Miscellaneous.Shadow")
+			end
+			ThemeMethods.bindTheme(mainWindow.ModalOverlay, "BackgroundColor3", "Backgrounds.Popup")
+			ThemeMethods.bindTheme(mainWindow.Sidebar, "BackgroundColor3", "Backgrounds.Light")
+			ThemeMethods.bindTheme(mainWindow.Sidebar.CornerRepair, "BackgroundColor3", "Backgrounds.Light")
+			ThemeMethods.bindTheme(mainWindow.Sidebar.DropShadowHolder.DropShadow, "ImageColor3", "Foregrounds.Dark")
+			ThemeMethods.bindTheme(mainWindow.Sidebar.Header, "TextColor3", "Foregrounds.Light")
+			ThemeMethods.bindTheme(mainWindow.Sidebar.Player.PlayerIcon, "BackgroundColor3", "Backgrounds.Groupbox")
+			ThemeMethods.bindTheme(mainWindow.Sidebar.Player.Header, "TextColor3", "Foregrounds.Light")
+			ThemeMethods.bindTheme(mainWindow.Sidebar.Player.Header.Icon.Accent, "Color", "Accents.Main")
+			ThemeMethods.bindTheme(mainWindow.Sidebar.Player.subheader, "TextColor3", "Foregrounds.Medium")
+			ThemeMethods.bindTheme(mainWindow.Content.Topbar, "BackgroundColor3", "Backgrounds.Medium")
+			ThemeMethods.bindTheme(mainWindow.Content.Topbar.CornerRepairHorizontal, "BackgroundColor3", "Backgrounds.Medium")
+			ThemeMethods.bindTheme(mainWindow.Content.Topbar.CornerRepairVertical, "BackgroundColor3", "Backgrounds.Medium")
+			ThemeMethods.bindTheme(mainWindow.Content.Topbar.Headers.Subheader, "TextColor3", "Foregrounds.Medium")
+			for _, control in pairs(mainWindow.Content.Topbar.Controls:GetChildren()) do
+				if control.ClassName ~= "TextButton" then continue end
+				ThemeMethods.bindTheme(control, "BackgroundColor3", "Foregrounds.Dark")
+			end
+			ThemeMethods.bindTheme(mainWindow.Content.Topbar.NotificationCenterIcon, "ImageColor3", "Foregrounds.Dark")
+			ThemeMethods.bindTheme(mainWindow.Content.Topbar.Search, "ImageColor3", "Foregrounds.Dark")
+			ThemeMethods.bindTheme(mainWindow.Content.ContentMain, "BackgroundColor3", "Backgrounds.Dark")
+			ThemeMethods.bindTheme(mainWindow.Content.ContentMain.CornerRepairHorizontal, "BackgroundColor3", "Backgrounds.Dark")
+			ThemeMethods.bindTheme(mainWindow.Content.ContentMain.CornerRepairVertical, "BackgroundColor3", "Backgrounds.Dark")
+
+			ThemeMethods.bindTheme(StarlightUI.Drag.DragCosmetic, "BackgroundColor3", "Foregrounds.Light")
+
+
+			ThemeMethods.bindTheme(mainWindow["New Loading Screen"], "BackgroundColor3", "Backgrounds.Medium")
+			for _, shadow in pairs(mainWindow["New Loading Screen"].shadows:GetChildren()) do
+				ThemeMethods.bindTheme(shadow, "ImageColor3", "Miscellaneous.LighterShadow")
+			end
+			ThemeMethods.bindTheme(mainWindow["New Loading Screen"].Version, "TextColor3", "Foregrounds.Medium")
+			ThemeMethods.bindTheme(mainWindow["New Loading Screen"].Frame.SubFrame.Title, "TextColor3", "Foregrounds.Light")
+			ThemeMethods.bindTheme(mainWindow["New Loading Screen"].Frame.SubFrame.Title.playerName, "TextColor3", "Foregrounds.Light")
+			ThemeMethods.bindTheme(mainWindow["New Loading Screen"].Frame.SubFrame.Subtitle, "TextColor3", "Foregrounds.Medium")
+			if not loadingScreenLogoChanged then
+				ThemeMethods.bindTheme(mainWindow["New Loading Screen"].Frame.ImageLabel.Image, "ImageColor3", "Foregrounds.Light")
+			end
+			ThemeMethods.bindTheme(mainWindow["New Loading Screen"].Frame.ImageLabel.Player, "BackgroundColor3", "Backgrounds.Groupbox")
+		end
 
 		--[[if Starlight.BlurEnabled then
 			mainWindow.Sidebar.BackgroundTransparency = 1
@@ -1262,7 +2143,12 @@ function Starlight:CreateWindow(WindowSettings)
 
 			BlurModule(mainWindow)
 		end]]
-		--Unhide(StarlightUI)
+		--[[task.delay(5/60, function()
+			Hide(StarlightUI)
+			task.delay(3/60, function()
+				Unhide(StarlightUI)
+			end)
+		end)]]
 
 		if WindowSettings.LoadingEnabled then
 
@@ -1296,7 +2182,7 @@ function Starlight:CreateWindow(WindowSettings)
 			loadingCircle.ImageTransparency = 1
 			subtitle.TextTransparency = 1
 			title.TextTransparency = 1
-			
+
 			title.Text = WindowSettings.LoadingSettings and WindowSettings.LoadingSettings.Title or "Starlight Interface Suite"
 			versionLabel.Text = title.Text == "Starlight Interface Suite" and Release or `Starlight UI {Release}`
 			title.playerName.Text = Player.DisplayName
@@ -1335,7 +2221,7 @@ function Starlight:CreateWindow(WindowSettings)
 			subtitle.Text = "Logging In..."
 			task.wait(1.72)
 
-			subtitle.Text = WindowSettings.LoadingSettings and WindowSettings.LoadingSettings.Subtitle or "Welcome to Starlight!"
+			subtitle.Text = WindowSettings.LoadingSettings and (WindowSettings.LoadingSettings.Subtitle or WindowSettings.LoadingSettings.Title) or "Welcome To Starlight!"
 			Tween(title, {TextTransparency = 1}, nil, Tween.Info("Quint", "InOut", 0.2))
 			Tween(title.playerName, {Position = UDim2.new(0,-8,0,0)}, nil, Tween.Info("Quint", "InOut", 0.85))
 			Tween(playerIcon, {Size = UDim2.new(1,-10,1,-10), Position = UDim2.new(0.5,0,0.5,-6)}, nil, Tween.Info("Back", "InOut", 1.4))
@@ -1427,6 +2313,11 @@ function Starlight:CreateWindow(WindowSettings)
 		TabSection.Instance.Name = "TAB_SECTION_"..Name
 		TabSection.Instance.Header.Visible = Visible
 
+		-- Theme Binding
+		do
+			ThemeMethods.bindTheme(TabSection.Instance.Header, "TextColor3", "Foregrounds.Medium")
+		end
+
 		--// SUBSECTION : User Methods
 
 		function TabSection:Set(NewName)
@@ -1435,7 +2326,7 @@ function Starlight:CreateWindow(WindowSettings)
 			TabSection.Instance.Name = "TAB_SECTION_"..Name
 			Starlight.Window.TabSections[Name] = TabSection
 		end
-		
+
 		function TabSection:Destroy()
 			TabSection.Instance:Destroy()
 			for _, tab in pairs(TabSection.Tabs) do
@@ -1477,7 +2368,7 @@ function Starlight:CreateWindow(WindowSettings)
 
 			Tab.Instances.Button.Header.Text = TabSettings.Name
 			Tab.Instances.Button.Name = "TAB_" .. TabIndex
-			
+
 			Tab.Instances.Button.Header.UIPadding.PaddingLeft = UDim.new(0, not String.IsEmptyOrNull(Tab.Values.Icon) and 36 or 8)
 			Tab.Instances.Button.Icon.Image = "rbxassetid://" .. Tab.Values.Icon
 
@@ -1496,8 +2387,8 @@ function Starlight:CreateWindow(WindowSettings)
 			local function Activate() -- so i dont have to rewrite shit again
 
 				Tween(Tab.Instances.Button, {BackgroundTransparency = 0.5})
-				Tween(Tab.Instances.Button.Icon, {ImageColor3 = Color3.new(1,1,1)})
-				Tween(Tab.Instances.Button.Header, {TextColor3 = Color3.new(1,1,1)})
+				Tween(Tab.Instances.Button.Icon, {ImageColor3 = Starlight.CurrentTheme.Foregrounds.Light})
+				Tween(Tab.Instances.Button.Header, {TextColor3 = Starlight.CurrentTheme.Foregrounds.Light})
 				Tab.Instances.Button.Icon.AccentBrighter.Enabled = true
 				Tab.Instances.Button.Header.AccentBrighter.Enabled = true
 
@@ -1512,8 +2403,8 @@ function Starlight:CreateWindow(WindowSettings)
 					for _, OtherTab in pairs(OtherTabSection:GetChildren()) do
 						if OtherTab.ClassName == "Frame" and OtherTab ~= Tab.Instances.Button then
 							Tween(OtherTab, {BackgroundTransparency = 1})
-							Tween(OtherTab.Icon, {ImageColor3 = Color3.fromRGB(165,165,165)})
-							Tween(OtherTab.Header, {TextColor3 = Color3.fromRGB(165,165,165)})
+							Tween(OtherTab.Icon, {ImageColor3 = Starlight.CurrentTheme.Foregrounds.Medium})
+							Tween(OtherTab.Header, {TextColor3 = Starlight.CurrentTheme.Foregrounds.Medium})
 							OtherTab.Icon.AccentBrighter.Enabled = false
 							OtherTab.Header.AccentBrighter.Enabled = false
 						end
@@ -1523,31 +2414,33 @@ function Starlight:CreateWindow(WindowSettings)
 				Tab.Active = true
 				Starlight.Window.CurrentTab = Tab
 				tabs.UIPageLayout:JumpTo(Tab.Instances.Page)
-				
+
 			end
 
 			if Starlight.Window.CurrentTab == nil then
 				--task.spawn(function()
-					repeat
-						task.wait()
-					until Tab.Instances.Page.Parent == tabs
-					Activate()
+				repeat
+					task.wait()
+				until Tab.Instances.Page.Parent == tabs
+				Activate()
 				--end)
 			end
-			
+
 			Tab.Instances.Button.Interact["MouseButton1Click"]:Connect(Activate)
 
 			Tab.Instances.Button.MouseEnter:Connect(function()
 				Tab.Hover = true
-				Tween(Tab.Instances.Button.Icon, {ImageColor3 = Color3.new(1,1,1)})
-				Tween(Tab.Instances.Button.Header, {TextColor3 = Color3.new(1,1,1)})
+				if not Tab.Active then
+					Tween(Tab.Instances.Button.Icon, {ImageColor3 = Starlight.CurrentTheme.Foregrounds.Light})
+					Tween(Tab.Instances.Button.Header, {TextColor3 = Starlight.CurrentTheme.Foregrounds.Light})
+				end
 			end)
 
 			Tab.Instances.Button.MouseLeave:Connect(function()
 				Tab.Hover = false
 				if not Tab.Active then
-					Tween(Tab.Instances.Button.Icon, {ImageColor3 = Color3.fromRGB(165,165,165)})
-					Tween(Tab.Instances.Button.Header, {TextColor3 = Color3.fromRGB(165,165,165)})
+					Tween(Tab.Instances.Button.Icon, {ImageColor3 = Starlight.CurrentTheme.Foregrounds.Medium})
+					Tween(Tab.Instances.Button.Header, {TextColor3 = Starlight.CurrentTheme.Foregrounds.Medium})
 				end
 			end)
 
@@ -1562,22 +2455,27 @@ function Starlight:CreateWindow(WindowSettings)
 						v:Destroy()
 					end
 				end
-				
+
 				local fadetop = mainWindow.Content.ContentMain.FadesTop.Fade:Clone()
 				fadetop.Name = "FADE_" .. TabIndex
 				fadetop.Parent = mainWindow.Content.ContentMain.FadesTop
 				fadetop.Size = UDim2.new(1/TabSettings.Columns,-10/TabSettings.Columns, 0, 40)
 				fadetop.LayoutOrder = i
-				
+
 				local fadebottom = mainWindow.Content.ContentMain.FadesBottom.Fade:Clone()
 				fadebottom.Name = "FADE_" .. TabIndex
 				fadebottom.Parent = mainWindow.Content.ContentMain.FadesBottom
 				fadebottom.Size = UDim2.new(1/TabSettings.Columns,-10/TabSettings.Columns, 0, 40)
 				fadebottom.LayoutOrder = i
+
+				ThemeMethods.bindTheme(fadetop.UIGradient, "Color", "Backgrounds.Dark")
+				ThemeMethods.bindTheme(fadebottom.UIGradient, "Color", "Backgrounds.Dark")
 				
+				local basetrans = 0
+
 				local function updTop()
 					if column.CanvasPosition.Y ~= 0 then
-						fadetop.BackgroundTransparency = 0
+						fadetop.BackgroundTransparency = basetrans
 					else
 						fadetop.BackgroundTransparency = 1
 					end
@@ -1586,25 +2484,47 @@ function Starlight:CreateWindow(WindowSettings)
 
 				local function updBottom()
 					if column.CanvasPosition.Y + column.AbsoluteWindowSize.Y ~= column.AbsoluteCanvasSize.Y then
-						fadebottom.BackgroundTransparency = 0
-						fadebottom.Visible = tabs.UIPageLayout.CurrentPage == Tab.Instances.Page
-						return
+						fadebottom.BackgroundTransparency = basetrans
+					else
+						fadebottom.BackgroundTransparency = 1
 					end
-					fadebottom.BackgroundTransparency = 1
-					fadebottom.Visible = false
+					fadebottom.Visible = tabs.UIPageLayout.CurrentPage == Tab.Instances.Page
 				end
-				
+				acrylicEvent.Event:Connect(function()
+					if mainAcrylic then
+						basetrans = 0.75
+						updTop()
+						updBottom()
+					else
+						basetrans = 0
+						updBottom()
+						updBottom()
+					end
+				end)
+
 				column:GetPropertyChangedSignal("CanvasPosition"):Connect(updTop)
 				column:GetPropertyChangedSignal("CanvasPosition"):Connect(updBottom)
 				tabs.UIPageLayout:GetPropertyChangedSignal("CurrentPage"):Connect(updTop)
 				tabs.UIPageLayout:GetPropertyChangedSignal("CurrentPage"):Connect(updBottom)
-				
+
 				task.delay(1.2, function()
 					updTop()
 					updBottom()
 				end)
-				
+
 			end
+
+			ThemeMethods.bindTheme(Tab.Instances.Button, "BackgroundColor3", "Backgrounds.Dark")
+			ThemeMethods.bindTheme(Tab.Instances.Button.Accent, "Color", "Accents.Main")
+			ThemeMethods.bindTheme(Tab.Instances.Button.Icon.AccentBrighter, "Color", "Accents.Brighter")
+			ThemeMethods.bindTheme(Tab.Instances.Button.Header.AccentBrighter, "Color", "Accents.Brighter")
+			ThemeMethods.bindTheme(Tab.Instances.Button.Icon, "ImageColor3", "Foregrounds.Medium")
+			ThemeMethods.bindTheme(Tab.Instances.Button.Header, "TextColor3", "Foregrounds.Medium")
+			themeEvent.Event:Connect(function()
+				if tabs.UIPageLayout.CurrentPage == Tab.Instances.Page then
+					Activate()
+				end
+			end)
 
 			--// SUBSECTION : User Methods
 
@@ -1669,23 +2589,47 @@ function Starlight:CreateWindow(WindowSettings)
 					Groupbox.Instance = nil
 					if GroupboxSettings.Style == 1 then
 						Groupbox.Instance = tabs["Tab_TEMPLATE"].ScrollingCollumnTemplate["Groupbox_Style1"]:Clone()
-						for i,v in pairs(Groupbox.Instance:GetChildren()) do
+						for i,v in pairs(Groupbox.Instance.PART_Content:GetChildren()) do
 							if v.ClassName == "Frame" then v:Destroy() end
 						end
 					else
 						Groupbox.Instance = tabs["Tab_TEMPLATE"].ScrollingCollumnTemplate2["Groupbox_Style2"]:Clone()
 					end
+					Groupbox.Instance.PART_Content:GetPropertyChangedSignal("AbsoluteSize"):Connect(function()
+						Groupbox.Instance.PART_Backdrop.Inner.Visible = false
+						Groupbox.Instance.PART_Backdrop.Inner.Size = UDim2.fromOffset(Groupbox.Instance.PART_Backdrop.AbsoluteSize.X - 2, Groupbox.Instance.PART_Backdrop.AbsoluteSize.Y - 2)
+						Groupbox.Instance.PART_Backdrop.Inner.Visible = true
+					end)
+					Groupbox.Instance.PART_Backdrop.Inner.Visible = false
+					Groupbox.Instance.PART_Backdrop.Inner.Size = UDim2.fromOffset(Groupbox.Instance.PART_Backdrop.AbsoluteSize.X - 2, Groupbox.Instance.PART_Backdrop.AbsoluteSize.Y - 2)
+					Groupbox.Instance.PART_Backdrop.Inner.Visible = true
 
-					GroupboxTemplateInstance = tabs["Tab_TEMPLATE"].ScrollingCollumnTemplate["Groupbox_Style1"]
+					Groupbox.ParentingItem = Groupbox.Instance.PART_Content
 
-					Groupbox.ParentingItem = GroupboxSettings.Style == 2 and
-						Groupbox.Instance.PART_Content 
-						or Groupbox.Instance
+					GroupboxTemplateInstance = tabs["Tab_TEMPLATE"].ScrollingCollumnTemplate["Groupbox_Style1"].PART_Content
 
 					Groupbox.Instance.Header.Text = GroupboxSettings.Name
 					Groupbox.Instance.Header.UIPadding.PaddingLeft = UDim.new(0, not String.IsEmptyOrNull(GroupboxSettings.Icon) and 32 or 6)
 					Groupbox.Instance.Header.Icon.Image = "rbxassetid://" .. GroupboxSettings.Icon
 					Groupbox.Instance.Name = "GROUPBOX_" .. GroupIndex
+
+					ThemeMethods.bindTheme(Groupbox.Instance.Header, "TextColor3", "Foregrounds.Medium")
+					ThemeMethods.bindTheme(Groupbox.Instance.Header.Icon, "ImageColor3", "Foregrounds.Medium")
+					ThemeMethods.bindTheme(Groupbox.Instance.PART_Backdrop, "BackgroundColor3", "Backgrounds.Medium")
+					ThemeMethods.bindTheme(Groupbox.Instance.PART_Backdrop.Inner, "BackgroundColor3", "Backgrounds.Groupbox")
+					ThemeMethods.bindTheme(Groupbox.Instance.PART_Backdrop.UIStroke, "Color", "Miscellaneous.Shadow")
+					
+					acrylicEvent.Event:Connect(function()
+						if mainAcrylic then
+							Groupbox.Instance.PART_Backdrop.BackgroundTransparency = 0.7
+							Groupbox.Instance.PART_Backdrop.Inner.BackgroundTransparency = 0.7
+							Groupbox.Instance.PART_Backdrop.UIStroke.Transparency = 0.6
+						else
+							Groupbox.Instance.PART_Backdrop.BackgroundTransparency = 0
+							Groupbox.Instance.PART_Backdrop.Inner.BackgroundTransparency = 0
+							Groupbox.Instance.PART_Backdrop.UIStroke.Transparency = 0
+						end
+					end)
 				end)
 
 				-- Now removed due to autosizing actually working
@@ -1703,7 +2647,7 @@ function Starlight:CreateWindow(WindowSettings)
 
 					if NewGroupboxSettings.Style == 1 then
 						Groupbox.Instance = tabs["Tab_TEMPLATE"].ScrollingCollumnTemplate["Groupbox_Style1"]:Clone()
-						for i,v in pairs(Groupbox.Instance:GetChildren()) do
+						for i,v in pairs(Groupbox.Instance.PartContent:GetChildren()) do
 							if v.ClassName == "Frame" then v:Destroy() end
 						end
 					else
@@ -1712,9 +2656,7 @@ function Starlight:CreateWindow(WindowSettings)
 
 					Groupbox.Instance.Parent = Tab.Instances.Page["Column_" .. NewGroupboxSettings.Column]
 
-					Groupbox.ParentingItem = NewGroupboxSettings.Style == 2 and
-						Groupbox.Instance.PART_Content 
-						or Groupbox.Instance
+					Groupbox.ParentingItem = Groupbox.Instance.PART_Content
 
 					if GroupboxSettings.Style == 1 then
 						for _, element in pairs(oldInstance:GetChildren())do
@@ -1733,13 +2675,14 @@ function Starlight:CreateWindow(WindowSettings)
 					end
 					oldInstance:Destroy()
 
+
 					Groupbox.Instance.Header.Text = NewGroupboxSettings.Name
 					Groupbox.Instance.Header.Icon.Image = "rbxassetid://" .. NewGroupboxSettings.Icon
 					Groupbox.Instance.Name = "GROUPBOX_" .. GroupIndex
 
 					Starlight.Window.TabSections[Name].Tabs[TabIndex].Groupboxes[GroupIndex].Values = NewGroupboxSettings
 				end
-				
+
 				function Groupbox:Destroy()
 					Groupbox.Instance:Destroy()
 					for _, element in pairs(Groupbox.Elements) do
@@ -2626,8 +3569,9 @@ function Starlight:CreateWindow(WindowSettings)
 						Class = "Button",
 					}
 
+					local Instances
 					task.spawn(function()
-						local Instances = {
+						Instances = {
 							Style1 = GroupboxTemplateInstance["Button_TEMPLATE_Style1"]:Clone(),
 							Style2 = GroupboxTemplateInstance["Button_TEMPLATE_Style2"]:Clone()
 						}
@@ -2672,6 +3616,14 @@ function Starlight:CreateWindow(WindowSettings)
 									end
 								end)
 
+								ThemeMethods.bindTheme(ElementInstance.PART_Backdrop.Accent, "Color", "Accents.Main")
+								ThemeMethods.bindTheme(ElementInstance.PART_Backdrop.UIStroke.Accent, "Color", "Accents.Main")
+								ThemeMethods.bindTheme(ElementInstance.PART_Backdrop.DropShadowHolder.DropShadow.Accent, "Color", "Accents.Main")
+								ThemeMethods.bindTheme(ElementInstance.PART_Backdrop.PART_BackdropHover.AccentBrighter, "Color", "Accents.Brighter")
+								ThemeMethods.bindTheme(ElementInstance.PART_Backdrop.Icon, "ImageColor3", "Foregrounds.Active")
+								ThemeMethods.bindTheme(ElementInstance.PART_Backdrop.Header.Icon, "ImageColor3", "Foregrounds.Active")
+								ThemeMethods.bindTheme(ElementInstance.PART_Backdrop.Header.Header, "TextColor3", "Foregrounds.Active")
+
 							else
 								ElementInstance.MouseEnter:Connect(function()
 									Tween(ElementInstance["PART_Backdrop"].UIStroke, {Transparency = 0})
@@ -2680,6 +3632,13 @@ function Starlight:CreateWindow(WindowSettings)
 								ElementInstance.MouseLeave:Connect(function()
 									Tween(ElementInstance["PART_Backdrop"].UIStroke, {Transparency = .85})
 								end)
+
+								ThemeMethods.bindTheme(ElementInstance.PART_Backdrop, "BackgroundColor3", "Backgrounds.Dark")
+								ThemeMethods.bindTheme(ElementInstance.PART_Backdrop.UIStroke, "Color", "Foregrounds.Dark")
+								ThemeMethods.bindTheme(ElementInstance.PART_Backdrop.Shadow, "BackgroundColor3", "Backgrounds.Dark")
+								ThemeMethods.bindTheme(ElementInstance.PART_Backdrop.Icon, "ImageColor3", "Foregrounds.Light")
+								ThemeMethods.bindTheme(ElementInstance.PART_Backdrop.Header.Icon, "ImageColor3", "Foregrounds.Light")
+								ThemeMethods.bindTheme(ElementInstance.PART_Backdrop.Header.Header, "TextColor3", "Foregrounds.Light")
 							end
 
 							ElementInstance.Interact.MouseButton1Click:Connect(function()
@@ -2826,7 +3785,7 @@ function Starlight:CreateWindow(WindowSettings)
 						end
 
 						local tooltips = {}
-						local knobcolor = Color3.fromRGB(165,165,165)
+						local knobcolor = Starlight.CurrentTheme.Foregrounds.Medium
 
 						local function Set(bool)
 
@@ -2834,7 +3793,7 @@ function Starlight:CreateWindow(WindowSettings)
 								Tween(Instances.Style1.Checkbox, {BackgroundTransparency = 0})
 								Tween(Instances.Style1.Checkbox.Icon, {ImageTransparency = 0})
 								Tween(Instances.Style2.Switch, {BackgroundTransparency = 0, BackgroundColor3 = Color3.fromRGB(255,255,255)})
-								Tween(Instances.Style2.Switch.Knob, {Position = UDim2.new(0,20,.5,0), BackgroundColor3 = Color3.fromRGB(255,255,255), BackgroundTransparency = 0})
+								Tween(Instances.Style2.Switch.Knob, {Position = UDim2.new(0,20,.5,0), BackgroundColor3 = Starlight.CurrentTheme.Foregrounds.Active, BackgroundTransparency = 0})
 								Tween(Instances.Style2.Switch.UIStroke, {Color = Color3.fromRGB(255,255,255)})
 								Tween(Instances.Style2.Switch.DropShadowHolder.DropShadow, {ImageTransparency = 0})
 								Instances.Style2.Switch.Accent.Enabled = true
@@ -2879,6 +3838,9 @@ function Starlight:CreateWindow(WindowSettings)
 								ElementInstance.Header.UIPadding.PaddingLeft = UDim.new(0,32)
 							end
 							ElementInstance.Header.Icon.Image = not String.IsEmptyOrNull(Element.Values.Icon) and "rbxassetid://" .. Element.Values.Icon or ""
+
+							ThemeMethods.bindTheme(ElementInstance.Header, "TextColor3", "Foregrounds.Light")
+							ThemeMethods.bindTheme(ElementInstance.Header.Icon, "ImageColor3", "Foregrounds.Light")
 
 							if ElementInstance:FindFirstChild("Checkbox") then
 
@@ -2943,6 +3905,12 @@ function Starlight:CreateWindow(WindowSettings)
 									end
 								end)
 
+								ThemeMethods.bindTheme(ElementInstance.Checkbox.Accent, "Color", "Accents.Main")
+								ThemeMethods.bindTheme(ElementInstance.Checkbox.AccentBrighter, "Color", "Accents.Brighter")
+								ThemeMethods.bindTheme(ElementInstance.Checkbox.UIStroke.Accent, "Color", "Accents.Main")
+								ThemeMethods.bindTheme(ElementInstance.Checkbox.DropShadowHolder.DropShadow.Accent, "Color", "Accents.Main")
+								ThemeMethods.bindTheme(ElementInstance.Checkbox.Icon, "ImageColor3", "Foregrounds.Active")
+
 							elseif ElementInstance.Switch then
 
 								if Element.Values.Style == 1 then ElementInstance.Visible = false end
@@ -2970,7 +3938,7 @@ function Starlight:CreateWindow(WindowSettings)
 								end
 
 								ElementInstance.Switch.MouseEnter:Connect(function()
-									knobcolor = Color3.fromRGB(185, 185, 185)
+									knobcolor = Starlight.CurrentTheme.Foregrounds.MediumHover
 									if not Element.Values.CurrentValue then
 										Tween(ElementInstance.Switch, {BackgroundColor3 = knobcolor})
 										Tween(ElementInstance.Switch.Knob, {BackgroundColor3 = knobcolor})
@@ -2978,7 +3946,7 @@ function Starlight:CreateWindow(WindowSettings)
 									end
 								end)
 								ElementInstance.Switch.MouseLeave:Connect(function()
-									knobcolor = Color3.fromRGB(165, 165, 165)
+									knobcolor = Starlight.CurrentTheme.Foregrounds.Medium
 									if not Element.Values.CurrentValue then
 										Tween(ElementInstance.Switch, {BackgroundColor3 = knobcolor})
 										Tween(ElementInstance.Switch.Knob, {BackgroundColor3 = knobcolor})
@@ -3008,6 +3976,15 @@ function Starlight:CreateWindow(WindowSettings)
 										ElementInstance.Header.Text = ElementSettings.Name
 									end
 								end)
+
+								ThemeMethods.bindTheme(ElementInstance.Switch.Accent, "Color", "Accents.Main")
+								ThemeMethods.bindTheme(ElementInstance.Switch.UIStroke.Accent, "Color", "Accents.Main")
+								ThemeMethods.bindTheme(ElementInstance.Switch.DropShadowHolder.DropShadow.Accent, "Color", "Accents.Main")
+								ThemeMethods.bindTheme(ElementInstance.Switch.Knob, "BackgroundColor3", "Foregrounds.Active")
+								themeEvent.Event:Connect(function()
+									Set(Element.Values.CurrentValue)
+								end)
+
 							end
 
 							tooltips[i] = AddToolTip(Element.Values.Tooltip or "", ElementInstance)
@@ -3085,7 +4062,7 @@ function Starlight:CreateWindow(WindowSettings)
 								Element.Instance = ElementInstance.Visible and ElementInstance or Element.Instance
 
 							end
-							
+
 							for i,v in pairs(Element.NestedElements) do
 								if v.Class == "Bind" or v.Class == "ColorPicker" then
 									if v.Class == "Bind" then
@@ -3204,6 +4181,7 @@ function Starlight:CreateWindow(WindowSettings)
 
 					Divider.Instance = GroupboxTemplateInstance.Divider:Clone()
 					Divider.Instance.Parent = Groupbox.ParentingItem
+					ThemeMethods.bindTheme(Divider.Instance.PART_Line, "BackgroundColor3", "Miscellaneous.Divider")
 
 					function Divider:Destroy()
 						Divider.Instance:Destroy()
@@ -3510,7 +4488,18 @@ function Starlight:CreateWindow(WindowSettings)
 						end)
 
 						Set(Element.Values.CurrentValue)
-						Element.Instance.Value.max.Text = `{Element.Values.Suffix}` .. (not Element.Values.HideMax and `/{Element.Values.Range[2]}` or "")
+						Element.Instance.Value.max.Text = (not Element.Values.HideMax and `/{Element.Values.Range[2]}` or "") .. `{Element.Values.Suffix}`
+
+						ThemeMethods.bindTheme(Element.Instance.Header, "TextColor3", "Foregrounds.Light")
+						ThemeMethods.bindTheme(Element.Instance.Header.Icon, "ImageColor3", "Foregrounds.Light")
+						ThemeMethods.bindTheme(Element.Instance.Value.max, "TextColor3", "Foregrounds.Medium")
+						ThemeMethods.bindTheme(Element.Instance.Value.input, "TextColor3", "Foregrounds.Light")
+						ThemeMethods.bindTheme(Element.Instance.PART_Backdrop, "BackgroundColor3", "Backgrounds.Dark")
+						ThemeMethods.bindTheme(Element.Instance.PART_Backdrop.UIStroke, "Color", "Foregrounds.Dark")
+						ThemeMethods.bindTheme(Element.Instance.PART_Backdrop.PART_Progress.Accent, "Color", "Accents.Main")
+						ThemeMethods.bindTheme(Element.Instance.PART_Backdrop.PART_Progress.DropShadowHolder.DropShadow.Accent, "Color", "Accents.Main")
+						ThemeMethods.bindTheme(Element.Instance.PART_Backdrop.PART_Progress.Knob, "BackgroundColor3", "Foregrounds.Light")
+						ThemeMethods.bindTheme(Element.Instance.PART_Backdrop.PART_Progress.Knob.DropShadowHolder.DropShadow, "ImageColor3", "Foregrounds.Light")
 
 						function Element:Destroy()
 							Element.Instance:Destroy()
@@ -3548,7 +4537,7 @@ function Starlight:CreateWindow(WindowSettings)
 							tooltip.Text = Element.Values.Tooltip or tooltip.Text
 
 							Set(Element.Values.CurrentValue)
-							Element.Instance.Value.max.Text = `{Element.Values.Suffix}` .. not Element.Values.HideMax and `/{Element.Values.Range[2]}` or ""
+							Element.Instance.Value.max.Text = (not Element.Values.HideMax and `/{Element.Values.Range[2]}` or "") .. `{Element.Values.Suffix}`
 
 							Starlight.Window.TabSections[Name].Tabs[TabIndex].Groupboxes[GroupIndex].Elements[Index].Values = Element.Values
 
@@ -3642,15 +4631,16 @@ function Starlight:CreateWindow(WindowSettings)
 
 						end)
 
-						Element.Instance.PART_Backdrop.Interact.MouseButton1Down:Connect(function()
+						Element.Instance.PART_Backdrop.Interact.Focused:Connect(function()
+							Element.Instance.PART_Backdrop.Interact:ReleaseFocus()
 							Element.Instance.PART_Backdrop.PART_Input:CaptureFocus()
 						end)
 
 						Element.Instance.MouseEnter:Connect(function()
-							Tween(Element.Instance.PART_Backdrop.UIStroke, {Color = Color3.fromRGB(85, 86, 97)})
+							Tween(Element.Instance.PART_Backdrop.UIStroke, {Color = Starlight.CurrentTheme.Foregrounds.DarkHover})
 						end)
 						Element.Instance.MouseLeave:Connect(function()
-							Tween(Element.Instance.PART_Backdrop.UIStroke, {Color = Color3.fromRGB(65, 66, 77)})
+							Tween(Element.Instance.PART_Backdrop.UIStroke, {Color = Starlight.CurrentTheme.Foregrounds.Dark})
 						end)
 
 						if Element.Values.Numeric then
@@ -3710,6 +4700,13 @@ function Starlight:CreateWindow(WindowSettings)
 							Element.Instance.PART_Backdrop.PART_Input.Size = UDim2.new(0, Element.Instance.PART_Backdrop.PART_Input.TextBounds.X, 1,0)
 							Element.Instance.PART_Backdrop.Size = UDim2.new(0, Element.Instance.PART_Backdrop.PART_Input.TextBounds.X + 30, 0, Element.Instance.PART_Backdrop.Size.Y.Offset)
 						end)
+
+						ThemeMethods.bindTheme(Element.Instance.Header, "TextColor3", "Foregrounds.Light")
+						ThemeMethods.bindTheme(Element.Instance.Header.Icon, "ImageColor3", "Foregrounds.Light")
+						ThemeMethods.bindTheme(Element.Instance.PART_Backdrop, "BackgroundColor3", "Backgrounds.Dark")
+						ThemeMethods.bindTheme(Element.Instance.PART_Backdrop.UIStroke, "Color", "Foregrounds.Dark")
+						ThemeMethods.bindTheme(Element.Instance.PART_Backdrop.PART_Input, "PlaceholderColor3", "Foregrounds.Medium")
+						ThemeMethods.bindTheme(Element.Instance.PART_Backdrop.PART_Input, "TextColor3", "Foregrounds.Light")
 
 						tooltip = AddToolTip(Element.Values.Tooltip, Element.Instance)
 
@@ -3804,6 +4801,9 @@ function Starlight:CreateWindow(WindowSettings)
 						end
 						Element.Instance.Header.Icon.Image = not String.IsEmptyOrNull(Element.Values.Icon) and "rbxassetid://" .. Element.Values.Icon or ""
 
+						ThemeMethods.bindTheme(Element.Instance.Header, "TextColor3", "Foregrounds.Light")
+						ThemeMethods.bindTheme(Element.Instance.Header.Icon, "ImageColor3", "Foregrounds.Light")
+
 						tooltip = AddToolTip(Element.Values.Tooltip, Element.Instance)
 
 						function Element:Set(NewElementSettings , NewIndex)
@@ -3896,7 +4896,7 @@ function Starlight:CreateWindow(WindowSettings)
 							Class = "Bind",
 							IgnoreConfig = NestedSettings.IgnoreConfig
 						}
-						
+
 						task.spawn(function()
 							-- Current Value Validation
 
@@ -3930,7 +4930,7 @@ function Starlight:CreateWindow(WindowSettings)
 							end)
 
 							task.delay(.2, function()
-								NestedElement.Instance.Text = NestedElement.Values.CurrentValue == "No Bind" and `<font color="rgb(165,165,165)">No Bind</font>` or NestedElement.Values.CurrentValue
+								NestedElement.Instance.Text = NestedElement.Values.CurrentValue == "No Bind" and "<font color=\"rgb(" .. tostring(math.floor(Starlight.CurrentTheme.Foregrounds.Medium.R*255 + 0.5)).."," .. tostring(math.floor(Starlight.CurrentTheme.Foregrounds.Medium.G*255 + 0.5))..",".. tostring(math.floor(Starlight.CurrentTheme.Foregrounds.Medium.B*255 + 0.5)) .. ")\">No Bind</font>" or NestedElement.Values.CurrentValue
 							end)
 
 							NestedElement.Instance.Focused:Connect(function()
@@ -3939,18 +4939,19 @@ function Starlight:CreateWindow(WindowSettings)
 							end)
 
 							NestedElement.Instance.MouseEnter:Connect(function()
-								Tween(NestedElement.Instance.UIStroke, {Color = Color3.fromRGB(85,86,97)})
+								Tween(NestedElement.Instance.UIStroke, {Color = Starlight.CurrentTheme.Foregrounds.DarkHover})
 							end)
 							NestedElement.Instance.MouseLeave:Connect(function()
-								Tween(NestedElement.Instance.UIStroke, {Color = Color3.fromRGB(65,66,77)})
+								Tween(NestedElement.Instance.UIStroke, {Color = Starlight.CurrentTheme.Foregrounds.Dark})
 							end)
+
 
 							NestedElement.Instance.FocusLost:Connect(function(enter)
 								if not enter then
 									CheckingForKey = false
 									if String.IsEmptyOrNull(NestedElement.Instance.Text) then
 										NestedElement.Values.CurrentValue = "No Bind"
-										NestedElement.Instance.Text = `<font color="rgb(165,165,165)">No Bind</font>`
+										NestedElement.Instance.Text = "<font color=\"rgb(" .. tostring(math.floor(Starlight.CurrentTheme.Foregrounds.Medium.R*255 + 0.5)).."," .. tostring(math.floor(Starlight.CurrentTheme.Foregrounds.Medium.G*255 + 0.5))..",".. tostring(math.floor(Starlight.CurrentTheme.Foregrounds.Medium.B*255 + 0.5)) .. ")\">No Bind</font>"
 									end
 								end
 							end)
@@ -3986,6 +4987,8 @@ function Starlight:CreateWindow(WindowSettings)
 												Parent.Instance.Header.Text = ElementSettings.Name
 											end
 											NestedElement.Instance:ReleaseFocus()
+										else
+											Starlight.WindowKeybind = nil
 										end
 
 
@@ -4016,7 +5019,7 @@ function Starlight:CreateWindow(WindowSettings)
 											end
 											NestedElement.Instance:ReleaseFocus()
 										elseif input.KeyCode == Enum.KeyCode[Starlight.WindowKeybind] then
-											NestedElement.Instance.Text = NestedElement.Values.CurrentValue == "No Bind" and `<font color="rgb(165,165,165)">No Bind</font>` or NestedElement.Values.CurrentValue
+											NestedElement.Instance.Text = NestedElement.Values.CurrentValue == "No Bind" and "<font color=\"rgb(" .. tostring(math.floor(Starlight.CurrentTheme.Foregrounds.Medium.R*255 + 0.5)).."," .. tostring(math.floor(Starlight.CurrentTheme.Foregrounds.Medium.G*255 + 0.5))..",".. tostring(math.floor(Starlight.CurrentTheme.Foregrounds.Medium.B*255 + 0.5)) .. ")\">No Bind</font>" or NestedElement.Values.CurrentValue
 											NestedElement.Instance:ReleaseFocus()
 										end
 									else
@@ -4196,6 +5199,11 @@ function Starlight:CreateWindow(WindowSettings)
 								Parent.Instance.Header.Text = ElementSettings.Name
 							end
 
+							ThemeMethods.bindTheme(NestedElement.Instance, "BackgroundColor3", "Backgrounds.Dark")
+							ThemeMethods.bindTheme(NestedElement.Instance.UIStroke, "Color", "Foregrounds.Dark")
+							ThemeMethods.bindTheme(NestedElement.Instance, "TextColor3", "Foregrounds.Light")
+							ThemeMethods.bindTheme(NestedElement.Instance, "PlaceholderColor3", "Foregrounds.Medium")
+
 							function NestedElement:Destroy()
 								NestedElement.Instance:Destroy()
 								NestedElement = nil
@@ -4222,7 +5230,7 @@ function Starlight:CreateWindow(WindowSettings)
 
 								NestedElement.Instance.Name = "BIND_" .. NestedIndex
 
-								NestedElement.Instance.Text = NestedElement.Values.CurrentValue == "No Bind" and `<font color="rgb(165,165,165)">No Bind</font>` or NestedElement.Values.CurrentValue
+								NestedElement.Instance.Text = NestedElement.Values.CurrentValue == "No Bind" and "<font color=\"rgb(" .. tostring(math.floor(Starlight.CurrentTheme.Foregrounds.Medium.R*255 + 0.5)).."," .. tostring(math.floor(Starlight.CurrentTheme.Foregrounds.Medium.G*255 + 0.5))..",".. tostring(math.floor(Starlight.CurrentTheme.Foregrounds.Medium.B*255 + 0.5)) .. ")\">No Bind</font>" or NestedElement.Values.CurrentValue
 
 								local Success,Response = pcall(function()
 									NestedElement.Values.OnChangedCallback(NestedElement.Values.CurrentValue)
@@ -4252,7 +5260,7 @@ function Starlight:CreateWindow(WindowSettings)
 						return Starlight.Window.TabSections[Name].Tabs[TabIndex].Groupboxes[GroupIndex].Elements[ParentIndex].NestedElements[NestedIndex]
 					end
 
-					function Element:AddColorPicker(NestedSettings, NestedIndex, Parent, ParentIndex)  -- surprisingly done by me! tho like after initial release i had no idea what tf i was doing so yea - hue wont reset/is smooth but its result only lmao
+					function Element:AddColorPicker(NestedSettings, NestedIndex, Parent, ParentIndex) 
 
 						Parent = Parent or Element
 						ParentIndex = ParentIndex or Index
@@ -4295,11 +5303,11 @@ function Starlight:CreateWindow(WindowSettings)
 									NestedElement.Instances[2].AnchorPoint = Vector2.new(1,0)
 									NestedElement.Instances[2].Position = UDim2.fromOffset(math.ceil(NestedElement.Instances[1].AbsolutePosition.X) + 22, math.ceil(NestedElement.Instances[1].AbsolutePosition.Y) + 35)
 								end
-								
+
 								NestedElement.Instances[2].Container.Visible = false
 								NestedElement.Instances[2].TabSelector.Visible = false
 								NestedElement.Instances[2].Buttons.Visible = false
-								
+
 								Tween(NestedElement.Instances[2], {Size = UDim2.fromOffset(0, 0)}, function()
 									if NestedElement and NestedElement.Instances ~= nil then
 										NestedElement.Instances[2].Visible = false
@@ -4331,7 +5339,7 @@ function Starlight:CreateWindow(WindowSettings)
 									end)
 								end
 							end)
-							
+
 							NestedElement.Instances[1].MouseEnter:Connect(function()
 								hover = true
 							end)
@@ -4348,7 +5356,7 @@ function Starlight:CreateWindow(WindowSettings)
 										if OtherTabButton.Name == "UIListLayout" or OtherTabButton.Name == "UIPadding" then continue end
 										if OtherTabButton == TabButton then continue end
 
-										Tween(OtherTabButton, {BackgroundTransparency = 1, TextColor3 = Color3.fromRGB(165,165,165)})
+										Tween(OtherTabButton, {BackgroundTransparency = 1, TextColor3 = Starlight.CurrentTheme.Foregrounds.Medium})
 										OtherTabButton.Accent.Enabled = false
 									end
 									Tween(TabButton, {BackgroundTransparency = 0.8, TextColor3 = Color3.new(1,1,1)})
@@ -4396,11 +5404,13 @@ function Starlight:CreateWindow(WindowSettings)
 										})
 									end
 									wait(0.5)
-									Parent.Instance.Header.Text = ElementSettings.Name
+									Parent.Instance.Header.Text = Element.Values.Name
 								end
 							end
 
-							local function updateInstances(currentBox)
+							local function updateInstances(currentBox, ignoreCallback)
+
+								local oldValue = Color3.fromRGB(tonumber(NestedElement.Instances[2].Container.Values.HexRGB.Red.PART_Backdrop.PART_Input.Text), tonumber(NestedElement.Instances[2].Container.Values.HexRGB.Green.PART_Backdrop.PART_Input.Text), tonumber(NestedElement.Instances[2].Container.Values.HexRGB.Blue.PART_Backdrop.PART_Input.Text))
 
 								local h,s,v = NestedElement.Values.CurrentValue:ToHSV()
 								if currentBox == NestedElement.Instances[2].Container.Color.ColorPicker or
@@ -4440,16 +5450,19 @@ function Starlight:CreateWindow(WindowSettings)
 								NestedElement.Instances[2].Container.Color.ColorPicker.BackgroundColor3 = Color3.fromHSV(h, 1, 1)
 								NestedElement.Instances[2].Container.Color.TransparencySlider.Color.BackgroundColor3 = NestedElement.Values.CurrentValue
 								if s*255 < 30 then
-									if v*255 > 220 then
-										NestedElement.Instances[2].Container.Color.TransparencySlider.Value.Knob.ImageColor3 = Color3.new()
-										NestedElement.Instances[2].Container.Color.ColorPicker.Point.ImageColor3 = Color3.new()
-										return
+									if v*255 > 90 and v*255 < 180 then
+										NestedElement.Instances[2].Container.Color.ColorPicker.Point.UIStroke.Color = Color3.new(1,1,1)
+									else
+										NestedElement.Instances[2].Container.Color.ColorPicker.Point.UIStroke.Color = Color3.fromRGB(165,165,165)
 									end
-									NestedElement.Instances[2].Container.Color.TransparencySlider.Value.Knob.ImageColor3 = Color3.new(1,1,1)
-									NestedElement.Instances[2].Container.Color.ColorPicker.Point.ImageColor3 = Color3.new(1,1,1)
+									if v*255 > 250 then
+										NestedElement.Instances[2].Container.Color.TransparencySlider.Value.Knob.ImageColor3 = Color3.new()
+									else
+										NestedElement.Instances[2].Container.Color.TransparencySlider.Value.Knob.ImageColor3 = Color3.new(1,1,1)
+									end
 								else
 									NestedElement.Instances[2].Container.Color.TransparencySlider.Value.Knob.ImageColor3 = Color3.new(1,1,1)
-									NestedElement.Instances[2].Container.Color.ColorPicker.Point.ImageColor3 = Color3.new(1,1,1)
+									NestedElement.Instances[2].Container.Color.ColorPicker.Point.UIStroke.Color = Color3.fromRGB(165,165,165)
 								end
 
 								Tween(NestedElement.Instances[2].Container.Color.HueSlider.Value, {Size = UDim2.new(1,0,h,0)})
@@ -4524,7 +5537,9 @@ function Starlight:CreateWindow(WindowSettings)
 									NestedElement.Instances[2].Container.Color.OldColor.Position = UDim2.fromOffset(148,180)
 								end
 
-								safeCallback()
+								if not ignoreCallback then
+									safeCallback()
+								end
 
 							end
 
@@ -4539,6 +5554,10 @@ function Starlight:CreateWindow(WindowSettings)
 								local mainHover, sliderHover, transHover = false,false,false
 
 								local h,s,v = NestedElement.Values.CurrentValue:ToHSV()
+								
+								function NestedElement:__updateHsv()
+									h,s,v = NestedElement.Values.CurrentValue:ToHSV()
+								end
 
 								local color = Color3.fromHSV(h,s,v) 
 								local hex = string.format("#%02X%02X%02X",color.R*0xFF,color.G*0xFF,color.B*0xFF)
@@ -4546,10 +5565,10 @@ function Starlight:CreateWindow(WindowSettings)
 								UserInputService.InputEnded:Connect(function(input)
 									if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then 
 										if mainDragging then
-											Tween(NestedElement.Instances[2].Container.Color.ColorPicker.Point, {Size = mainHover and UDim2.new(0,12,0,12) or UDim2.new(0,9,0,9)})
+											Tween(NestedElement.Instances[2].Container.Color.ColorPicker.Point, {Size = mainHover and UDim2.new(0,10,0,10) or UDim2.new(0,7,0,7)})
 										end
 										if sliderDragging then
-											Tween(NestedElement.Instances[2].Container.Color.HueSlider.Value.Knob, {Size = sliderHover and UDim2.new(0,10,0,10) or UDim2.new(0,8,0,8)})
+											Tween(NestedElement.Instances[2].Container.Color.HueSlider.Value.Knob, {Size = sliderHover and UDim2.new(0,8,0,8) or UDim2.new(0,6,0,6)})
 										end
 										if transDragging then
 											Tween(NestedElement.Instances[2].Container.Color.TransparencySlider.Value.Knob, {Size = transHover and UDim2.new(0,10,0,10) or UDim2.new(0,8,0,8)})
@@ -4561,31 +5580,31 @@ function Starlight:CreateWindow(WindowSettings)
 								end)
 								NestedElement.Instances[2].Container.Color.ColorPicker.MouseButton1Down:Connect(function()
 									mainDragging = true 
-									Tween(NestedElement.Instances[2].Container.Color.ColorPicker.Point, {Size = UDim2.new(0,7,0,7)})
+									Tween(NestedElement.Instances[2].Container.Color.ColorPicker.Point, {Size = UDim2.new(0,5,0,5)})
 								end)
 								NestedElement.Instances[2].Container.Color.ColorPicker.MouseLeave:Connect(function()
 									mainHover = false
 									if mainDragging then return end
-									Tween(NestedElement.Instances[2].Container.Color.ColorPicker.Point, {Size = UDim2.new(0,9,0,9)})
+									Tween(NestedElement.Instances[2].Container.Color.ColorPicker.Point, {Size = UDim2.new(0,7,0,7)})
 								end)
 								NestedElement.Instances[2].Container.Color.ColorPicker.MouseEnter:Connect(function()
 									mainHover = true
 									if mainDragging then return end
-									Tween(NestedElement.Instances[2].Container.Color.ColorPicker.Point, {Size = UDim2.new(0,11,0,11)})
+									Tween(NestedElement.Instances[2].Container.Color.ColorPicker.Point, {Size = UDim2.new(0,9,0,9)})
 								end)
 								NestedElement.Instances[2].Container.Color.HueSlider.MouseButton1Down:Connect(function()
 									sliderDragging = true 
-									Tween(NestedElement.Instances[2].Container.Color.HueSlider.Value.Knob, {Size = UDim2.new(0,6,0,6)})
+									Tween(NestedElement.Instances[2].Container.Color.HueSlider.Value.Knob, {Size = UDim2.new(0,4,0,4)})
 								end)
 								NestedElement.Instances[2].Container.Color.HueSlider.MouseLeave:Connect(function()
 									sliderHover = false
 									if sliderDragging then return end
-									Tween(NestedElement.Instances[2].Container.Color.HueSlider.Value.Knob, {Size = UDim2.new(0,8,0,8)})
+									Tween(NestedElement.Instances[2].Container.Color.HueSlider.Value.Knob, {Size = UDim2.new(0,6,0,6)})
 								end)
 								NestedElement.Instances[2].Container.Color.HueSlider.MouseEnter:Connect(function()
 									sliderHover = true
 									if sliderDragging then return end
-									Tween(NestedElement.Instances[2].Container.Color.HueSlider.Value.Knob, {Size = UDim2.new(0,10,0,10)})
+									Tween(NestedElement.Instances[2].Container.Color.HueSlider.Value.Knob, {Size = UDim2.new(0,8,0,8)})
 								end)
 								NestedElement.Instances[2].Container.Color.TransparencySlider.MouseButton1Down:Connect(function()
 									transDragging = true 
@@ -4603,7 +5622,7 @@ function Starlight:CreateWindow(WindowSettings)
 								end)
 
 
-								RunService.RenderStepped:connect(function()
+								RunService.RenderStepped:Connect(function()
 									if mainDragging then 
 										local localX = math.clamp(Mouse.X-NestedElement.Instances[2].Container.Color.ColorPicker.AbsolutePosition.X,0,NestedElement.Instances[2].Container.Color.ColorPicker.AbsoluteSize.X)
 										local localY = math.clamp(Mouse.Y-NestedElement.Instances[2].Container.Color.ColorPicker.AbsolutePosition.Y,0,NestedElement.Instances[2].Container.Color.ColorPicker.AbsoluteSize.Y)
@@ -4626,9 +5645,9 @@ function Starlight:CreateWindow(WindowSettings)
 									end
 									if transDragging then
 										local localY = math.clamp(Mouse.Y-NestedElement.Instances[2].Container.Color.TransparencySlider.AbsolutePosition.Y,0,NestedElement.Instances[2].Container.Color.TransparencySlider.AbsoluteSize.Y)
-										h = localY / NestedElement.Instances[2].Container.Color.TransparencySlider.AbsoluteSize.Y
-										Tween(NestedElement.Instances[2].Container.Color.TransparencySlider.Value, {Size = UDim2.new(1,0,h,0)})
-										NestedElement.Values.Transparency = 1-h
+										local t = localY / NestedElement.Instances[2].Container.Color.TransparencySlider.AbsoluteSize.Y
+										Tween(NestedElement.Instances[2].Container.Color.TransparencySlider.Value, {Size = UDim2.new(1,0,t,0)})
+										NestedElement.Values.Transparency = 1-t
 										updateInstances()
 									end
 								end)
@@ -4769,13 +5788,49 @@ function Starlight:CreateWindow(WindowSettings)
 								end
 							end
 
+							ThemeMethods.bindTheme(NestedElement.Instances[2], "BackgroundColor3", "Backgrounds.Groupbox")
+							ThemeMethods.bindTheme(NestedElement.Instances[2].UIStroke, "Color", "Foregrounds.Dark")
+							ThemeMethods.bindTheme(NestedElement.Instances[2].Background, "BackgroundColor3", "Backgrounds.Dark")
+							for _, button in pairs(NestedElement.Instances[2].Buttons:GetChildren()) do
+								if button.ClassName ~= "TextButton" then continue end
+								ThemeMethods.bindTheme(button, "ImageColor3", "Foregrounds.Dark")
+							end
+							for _, button in pairs(NestedElement.Instances[2].TabSelector:GetChildren()) do
+								if button.ClassName ~= "TextButton" then continue end
+								ThemeMethods.bindTheme(button, "TextColor3", "Foregrounds.Medium")
+								ThemeMethods.bindTheme(button.Accent, "Color", "Accents.Main")
+							end
+							themeEvent.Event:Connect(function()
+								NestedElement.Instances[2].TabSelector[NestedElement.Instances[2].Container.UIPageLayout.CurrentPage.Name].TextColor3 = Color3.new(1,1,1)
+							end)
+							for _, shadow in pairs(NestedElement.Instances[2].DropShadowHolder:GetChildren()) do
+								ThemeMethods.bindTheme(shadow, "ImageColor3", "Miscellaneous.LighterShadow")
+							end
+							for _, side in pairs(NestedElement.Instances[2].Container.Values:GetChildren()) do
+								if side.ClassName ~= "Frame" then continue end
+								for _, input in pairs(side:GetChildren()) do
+									if input.ClassName ~= "Frame" then continue end
+									ThemeMethods.bindTheme(input.Header, "TextColor3", "Foregrounds.Light")
+									ThemeMethods.bindTheme(input.PART_Backdrop, "BackgroundColor3", "Backgrounds.Dark")
+									ThemeMethods.bindTheme(input.PART_Backdrop.UIStroke, "Color", "Foregrounds.Dark")
+									ThemeMethods.bindTheme(input.PART_Backdrop.PART_Input, "TextColor3", "Foregrounds.Light")
+									ThemeMethods.bindTheme(input.PART_Backdrop.PART_Input, "PlaceholderColor3", "Foregrounds.Medium")
+								end
+							end
+							acrylicEvent.Event:Connect(function()
+								NestedElement.Instances[2].BackgroundTransparency = 0.5
+							end)
+							local AcrylicObject = Acrylic.AcrylicPaint()
+							AcrylicObject.AddParent(NestedElement.Instances[2])
+							AcrylicObject.Frame.Parent = NestedElement.Instances[2]
+
 							function NestedElement:Destroy()
 								NestedElement.Instances[1]:Destroy()
 								NestedElement.Instances[2]:Destroy()
 								NestedElement = nil
 							end
 
-							function NestedElement:Set(NewNestedSettings, NewNestedIndex)
+							function NestedElement:Set(NewNestedSettings, NewNestedIndex, ignoreCallback : boolean?)
 								NewNestedIndex = NewNestedIndex or NestedIndex
 
 								for i,v in pairs(NestedElement.Values) do
@@ -4792,7 +5847,8 @@ function Starlight:CreateWindow(WindowSettings)
 
 								NestedElement.Instances[2].Container.Values.AlphaHSV.Hue.PART_Backdrop.PART_Input.Text = tostring(math.floor((h*255)+0.5))
 
-								updateInstances()
+								updateInstances(nil, ignoreCallback)
+								NestedElement:__updateHsv()
 
 								Starlight.Window.TabSections[Name].Tabs[TabIndex].Groupboxes[GroupIndex].Elements[ParentIndex].NestedElements[NestedIndex].Values = NestedElement.Values
 							end
@@ -4819,7 +5875,7 @@ function Starlight:CreateWindow(WindowSettings)
 							Callback = function(table),
 						}
 						]]
-						
+
 						local additionSize = Parent.Instance.DropdownHolder:FindFirstChild("Dropdown") and 36 or 34
 						local localConnections = {}
 
@@ -4837,7 +5893,7 @@ function Starlight:CreateWindow(WindowSettings)
 						task.spawn(function()
 							local hover = false
 							local height = 175
-							
+
 							NestedElement.Instances[1] = Element.Instance.DropdownHolder.Dropdown:Clone()
 							NestedElement.Instances[1].Visible = true
 							NestedElement.Instances[1].Parent = Parent.Instance.DropdownHolder
@@ -4866,7 +5922,7 @@ function Starlight:CreateWindow(WindowSettings)
 								end
 							end
 
-							local function close()
+							local function updPos()
 								if NestedElement.Instances[1].AbsolutePosition.Y + 35 + height >= Camera.ViewportSize.Y - (GuiInset+20) then
 									NestedElement.Instances[2].AnchorPoint = Vector2.new(0,1)
 									NestedElement.Instances[2].Position = UDim2.fromOffset(math.ceil(NestedElement.Instances[1].AbsolutePosition.X), math.ceil(NestedElement.Instances[1].AbsolutePosition.Y) - 5)
@@ -4874,8 +5930,9 @@ function Starlight:CreateWindow(WindowSettings)
 									NestedElement.Instances[2].AnchorPoint = Vector2.new(0,0)
 									NestedElement.Instances[2].Position = UDim2.fromOffset(math.ceil(NestedElement.Instances[1].AbsolutePosition.X), math.ceil(NestedElement.Instances[1].AbsolutePosition.Y) + 35)
 								end
-								
-								NestedElement.Instances[2].List.Size = UDim2.new(1,0,0,0)
+							end
+							local function close()
+								Tween(NestedElement.Instances[2].List, {Size = UDim2.new(1,0,0,0)}, nil, Tween.Info(nil, nil, 0.18))
 								Tween(NestedElement.Instances[2], {Size = UDim2.fromOffset(NestedElement.Instances[2].Size.X.Offset, 0)}, function()
 									if NestedElement and NestedElement.Instances ~= nil then
 										NestedElement.Instances[2].Visible = false
@@ -4883,6 +5940,9 @@ function Starlight:CreateWindow(WindowSettings)
 								end, Tween.Info(nil, nil, 0.18))
 							end
 							NestedElement.Instances[1]:GetPropertyChangedSignal("AbsolutePosition"):Connect(close)
+							NestedElement.Instances[1]:GetPropertyChangedSignal("AbsolutePosition"):Connect(updPos)
+							updPos()
+							close()
 
 							NestedElement.Instances[1]:GetPropertyChangedSignal("AbsoluteSize"):Connect(function()
 								NestedElement.Instances[2].Size = UDim2.fromOffset(math.ceil(NestedElement.Instances[1].AbsoluteSize.X), NestedElement.Instances[2].Size.Y.Offset)
@@ -4896,6 +5956,7 @@ function Starlight:CreateWindow(WindowSettings)
 								else
 									NestedElement.Instances[2].Visible = true
 									height = NestedElement.Instances[2].List.AbsoluteCanvasSize.Y >= 175 and 175 or NestedElement.Instances[2].List.AbsoluteCanvasSize.Y
+									updPos()
 									NestedElement.Instances[2].List.Size = UDim2.new(1,0,0,0)
 									NestedElement.Instances[2].List.ScrollBarImageTransparency = 1
 									Tween(NestedElement.Instances[2], {Size = UDim2.fromOffset(NestedElement.Instances[2].Size.X.Offset, height)})
@@ -4914,13 +5975,13 @@ function Starlight:CreateWindow(WindowSettings)
 							end)
 
 							local function hover()
-								Tween(NestedElement.Instances[1].UIStroke, {Color = Color3.fromRGB(85,86,97)})
-								Tween(NestedElement.Instances[2].UIStroke, {Color = Color3.fromRGB(85,86,97)})
+								Tween(NestedElement.Instances[1].UIStroke, {Color = Starlight.CurrentTheme.Foregrounds.DarkHover})
+								Tween(NestedElement.Instances[2].UIStroke, {Color = Starlight.CurrentTheme.Foregrounds.DarkHover})
 								hover = true
 							end
 							local function leave()
-								Tween(NestedElement.Instances[1].UIStroke, {Color = Color3.fromRGB(65,66,77)})
-								Tween(NestedElement.Instances[2].UIStroke, {Color = Color3.fromRGB(65,66,77)})
+								Tween(NestedElement.Instances[1].UIStroke, {Color = Starlight.CurrentTheme.Foregrounds.Dark})
+								Tween(NestedElement.Instances[2].UIStroke, {Color = Starlight.CurrentTheme.Foregrounds.Dark})
 								hover = false
 							end
 
@@ -4965,19 +6026,23 @@ function Starlight:CreateWindow(WindowSettings)
 							--// ENDSUBSECTION
 
 							local function Activate(option)
-								Tween(option, {BackgroundTransparency = 0.5})
-								Tween(option.header, {TextColor3 = Color3.new(1,1,1)})
-								Tween(option.UIPadding, {PaddingLeft = UDim.new(0,12)}, nil, Tween.Info(nil, nil, 0.2))
-								Tween(option.Indicator, {Size = UDim2.fromOffset(4,17)}, nil, Tween.Info(nil, nil, 0.2))
-								option:SetAttribute("Active", true)
+								pcall(function()
+									Tween(option, {BackgroundTransparency = 0.5})
+									Tween(option.header, {TextColor3 = Starlight.CurrentTheme.Foregrounds.Light})
+									Tween(option.UIPadding, {PaddingLeft = UDim.new(0,12)}, nil, Tween.Info(nil, nil, 0.2))
+									Tween(option.Indicator, {Size = UDim2.fromOffset(4,17)}, nil, Tween.Info(nil, nil, 0.2))
+									option:SetAttribute("Active", true)
+								end)
 							end
 
 							local function Deactivate(option)
-								Tween(option, {BackgroundTransparency = 1})
-								Tween(option.header, {TextColor3 = Color3.fromRGB(165,165,165)})
-								Tween(option.UIPadding, {PaddingLeft = UDim.new(0,8)}, nil, Tween.Info(nil, nil, 0.2))
-								Tween(option.Indicator, {Size = UDim2.fromOffset(4,0)}, nil, Tween.Info(nil, nil, 0.2))
-								option:SetAttribute("Active", false)
+								pcall(function()
+									Tween(option, {BackgroundTransparency = 1})
+									Tween(option.header, {TextColor3 = Starlight.CurrentTheme.Foregrounds.Medium})
+									Tween(option.UIPadding, {PaddingLeft = UDim.new(0,8)}, nil, Tween.Info(nil, nil, 0.2))
+									Tween(option.Indicator, {Size = UDim2.fromOffset(4,0)}, nil, Tween.Info(nil, nil, 0.2))
+									option:SetAttribute("Active", false)
+								end)
 							end
 
 							local function ToggleOption(option)
@@ -5066,6 +6131,16 @@ function Starlight:CreateWindow(WindowSettings)
 									optioninstance.Name = "OPTION_" .. option
 									optioninstance.header.Text = option
 									optioninstance:SetAttribute("Active", false)
+									ThemeMethods.bindTheme(optioninstance, "BackgroundColor3", "Backgrounds.Popup")
+									ThemeMethods.bindTheme(optioninstance.Indicator.AccentBrighter, "Color", "Accents.Brighter")
+									ThemeMethods.bindTheme(optioninstance.header, "TextColor3", "Foregrounds.Medium")
+									themeEvent.Event:Connect(function()
+										if optioninstance:GetAttribute("Active") then
+											Activate(optioninstance)
+										else
+											Deactivate(optioninstance)
+										end
+									end)
 
 									optioninstance.Interact.MouseButton1Click:Connect(function()
 										ToggleOption(optioninstance)
@@ -5074,13 +6149,13 @@ function Starlight:CreateWindow(WindowSettings)
 									optioninstance.MouseEnter:Connect(function()
 										if optioninstance:GetAttribute("Active") == false then
 											Tween(optioninstance, {BackgroundTransparency = 0.8})
-											Tween(optioninstance.header, {TextColor3 = Color3.new(1,1,1)})
+											Tween(optioninstance.header, {TextColor3 = Starlight.CurrentTheme.Foregrounds.Light})
 										end
 									end)
 									optioninstance.MouseLeave:Connect(function()
 										if optioninstance:GetAttribute("Active") == false then
 											Tween(optioninstance, {BackgroundTransparency = 1})
-											Tween(optioninstance.header, {TextColor3 = Color3.fromRGB(165,165,165)})
+											Tween(optioninstance.header, {TextColor3 = Starlight.CurrentTheme.Foregrounds.Medium})
 										end
 									end)
 								end
@@ -5110,6 +6185,26 @@ function Starlight:CreateWindow(WindowSettings)
 								Teams.ChildAdded:Connect(Refresh)
 								Teams.ChildAdded:Connect(Refresh)
 							end
+
+							ThemeMethods.bindTheme(NestedElement.Instances[2], "BackgroundColor3", "Backgrounds.Groupbox")
+							ThemeMethods.bindTheme(NestedElement.Instances[2].UIStroke, "Color", "Foregrounds.Dark")
+							ThemeMethods.bindTheme(NestedElement.Instances[2].Background, "BackgroundColor3", "Backgrounds.Dark")
+							for _, shadow in pairs(NestedElement.Instances[2].DropShadowHolder:GetChildren()) do
+								ThemeMethods.bindTheme(shadow, "ImageColor3", "Miscellaneous.LighterShadow")
+							end
+							ThemeMethods.bindTheme(NestedElement.Instances[2].List, "ScrollBarImageColor3", "Foregrounds.Medium")
+							ThemeMethods.bindTheme(NestedElement.Instances[1], "BackgroundColor3", "Backgrounds.Dark")
+							ThemeMethods.bindTheme(NestedElement.Instances[1].UIStroke, "Color", "Foregrounds.Dark")
+							ThemeMethods.bindTheme(NestedElement.Instances[1].Icon, "ImageColor3", "Foregrounds.Light")
+							ThemeMethods.bindTheme(NestedElement.Instances[1].Truncater, "TextColor3", "Foregrounds.Light")
+							ThemeMethods.bindTheme(NestedElement.Instances[1].Header, "TextColor3", "Foregrounds.Light")
+							ThemeMethods.bindTheme(NestedElement.Instances[1].Header, "PlaceholderColor3", "Foregrounds.Medium")
+							acrylicEvent.Event:Connect(function()
+								NestedElement.Instances[2].BackgroundTransparency = 0.5
+							end)
+							local AcrylicObject = Acrylic.AcrylicPaint()
+							AcrylicObject.AddParent(NestedElement.Instances[2])
+							AcrylicObject.Frame.Parent = NestedElement.Instances[2]
 
 							function NestedElement:Destroy()
 								NestedElement.Instances[1]:Destroy()
@@ -5217,6 +6312,11 @@ function Starlight:CreateWindow(WindowSettings)
 						Element.Instance.Header.Icon.Image = not String.IsEmptyOrNull(Element.Values.Icon) and "rbxassetid://" .. Element.Values.Icon or ""
 						Element.Instance.Content.Text = Element.Values.Content
 
+						ThemeMethods.bindTheme(Element.Instance.Header, "TextColor3", "Foregrounds.Light")
+						ThemeMethods.bindTheme(Element.Instance.Content, "TextColor3", "Foregrounds.Medium")
+						ThemeMethods.bindTheme(Element.Instance.Header.Icon, "ImageColor3", "Foregrounds.Light")
+
+
 						function Element:Set(NewElementSettings , NewIndex)
 							NewIndex = NewIndex or Index
 
@@ -5285,9 +6385,764 @@ function Starlight:CreateWindow(WindowSettings)
 
 			--end
 
-			function Tab:BuildConfigGroupbox(Column, Style, ButtonsCentered)
+			function Tab:BuildThemeGroupbox(Column, Style, ButtonsCentered)
 
-				Starlight.ConfigSystem:BuildFolderTree(root ~= nil and true or false, root or "", folder)
+				if ButtonsCentered == nil then
+					ButtonsCentered = false
+				end
+
+				local themesPath = WindowSettings.FileSettings.ThemesInRoot and `{Starlight.FileSystem.Folder}/{root}/themes` or `{Starlight.FileSystem.Folder}/{folderpath}/themes`
+
+				local instance = Tab:CreateGroupbox({
+					Name = "Themes",
+					Icon = 6031625148,
+					Column = Column,
+					Style = Style or 1
+				}, "__prebuiltThemeGroupbox")
+
+				local themesArray = {
+					"Starlight", "Hollywood Dark", "Hollywood Light", "Orca", "Glacier", "Pacific", "Neo", "Neo (Dark)", "Crimson", "Nebula", "Evergreen", "Luna", "OperaGX", "BBot", "Ubuntu", "Tokyo Night", "Hollywood Fluent"
+				}
+				local customThemes = not isStudio and Starlight.FileSystem:RefreshConfigList(themesPath) or {}
+				for _, v in pairs(customThemes) do
+					table.insert(themesArray, v)
+				end
+				
+				instance:CreateToggle({
+					Name = "Acrylic",
+					CurrentValue = false,
+					Tooltip = "Enables The Glass And Acrylic Style for the main UI",
+					Icon = 6031371068,
+					Callback = function(v)
+						mainAcrylic = v
+						acrylicEvent:Fire()
+					end,
+				}, "mainacrylic")
+				instance:CreateToggle({
+					Name = "Notification Acrylic",
+					CurrentValue = true,
+					Tooltip = "Enables The Glass And Acrylic Style for notifications",
+					Icon = 6031488930,
+					Callback = function(v)
+						notificationAcrylic = v
+						notificationAcrylicEvent:Fire()
+					end,
+				}, "notitficationacrylic")
+				
+				instance:CreateDivider()
+
+				local colorpickers = {} do
+					colorpickers.bg = instance:CreateLabel({
+						Name = "Backgrounds"
+					}, "colorpicker_bg")
+					colorpickers.fg = instance:CreateLabel({
+						Name = "Foregrounds"
+					}, "colorpicker_fg")
+					colorpickers.fga = instance:CreateLabel({
+						Name = "Foreground Hovers"
+					}, "colorpicker_fga")
+					colorpickers.divider = instance:CreateLabel({
+						Name = "Divider"
+					}, "colorpicker_divider")
+					colorpickers.shadows = instance:CreateLabel({
+						Name = "Shadows"
+					}, "colorpicker_shadows")
+					colorpickers.accent = instance:CreateLabel({
+						Name = "Accent"
+					}, "colorpicker_accents")
+					colorpickers.accent2 = instance:CreateLabel({
+						Name = "Accent Brighter"
+					}, "colorpicker_accents")
+				end 
+
+				-- backgrounds
+				do
+					do
+						local debounce = false
+						local cp = colorpickers.bg:AddColorPicker({
+							IgnoreConfig = true,
+							CurrentValue = Starlight.CurrentTheme.Backgrounds.Dark,
+							Callback = function(c)
+								debounce = true
+								Starlight.CurrentTheme.Backgrounds.Dark = c
+								themeEvent:Fire()
+								task.wait(6/60)
+								debounce = false
+							end,
+						}, "dark")
+						themeEvent.Event:Connect(function()
+							if not debounce then
+								cp:Set({ CurrentValue = Starlight.CurrentTheme.Backgrounds.Dark }, nil, true)
+							end
+						end)
+					end
+					do
+						local debounce = false
+						local cp = colorpickers.bg:AddColorPicker({
+							IgnoreConfig = true,
+							CurrentValue = Starlight.CurrentTheme.Backgrounds.Medium,
+							Callback = function(c)
+								debounce = true
+								Starlight.CurrentTheme.Backgrounds.Medium = c
+								themeEvent:Fire()
+								task.wait(6/60)
+								debounce = false
+							end,
+						}, "medium")
+						themeEvent.Event:Connect(function()
+							if not debounce then
+								cp:Set({ CurrentValue = Starlight.CurrentTheme.Backgrounds.Medium }, nil, true)
+							end
+						end)
+					end
+					do
+						local debounce = false
+						local cp = colorpickers.bg:AddColorPicker({
+							IgnoreConfig = true,
+							CurrentValue = Starlight.CurrentTheme.Backgrounds.Light,
+							Callback = function(c)
+								debounce = true
+								Starlight.CurrentTheme.Backgrounds.Light = c
+								themeEvent:Fire()
+								task.wait(6/60)
+								debounce = false
+							end,
+						}, "light")
+						themeEvent.Event:Connect(function()
+							if not debounce then
+								cp:Set({ CurrentValue = Starlight.CurrentTheme.Backgrounds.Light }, nil, true)
+							end
+						end)
+					end
+					do
+						local debounce = false
+						local cp = colorpickers.bg:AddColorPicker({
+							IgnoreConfig = true,
+							CurrentValue = Starlight.CurrentTheme.Backgrounds.Groupbox,
+							Callback = function(c)
+								debounce = true
+								Starlight.CurrentTheme.Backgrounds.Groupbox = c
+								themeEvent:Fire()
+								task.wait(6/60)
+								debounce = false
+							end,
+						}, "gb")
+						themeEvent.Event:Connect(function()
+							if not debounce then
+								cp:Set({ CurrentValue = Starlight.CurrentTheme.Backgrounds.Groupbox }, nil, true)
+							end
+						end)
+					end
+					do
+						local debounce = false
+						local cp = colorpickers.bg:AddColorPicker({
+							IgnoreConfig = true,
+							CurrentValue = Starlight.CurrentTheme.Backgrounds.Popup,
+							Callback = function(c)
+								debounce = true
+								Starlight.CurrentTheme.Backgrounds.Popup = c
+								themeEvent:Fire()
+								task.wait(6/60)
+								debounce = false
+							end,
+						}, "popup")
+						themeEvent.Event:Connect(function()
+							if not debounce then
+								cp:Set({ CurrentValue = Starlight.CurrentTheme.Backgrounds.Popup }, nil, true)
+							end
+						end)
+					end
+				end
+				
+				-- foregrounds
+				do
+					do
+						local debounce = false
+						local cp = colorpickers.fg:AddColorPicker({
+							IgnoreConfig = true,
+							CurrentValue = Starlight.CurrentTheme.Foregrounds.Dark,
+							Callback = function(c)
+								debounce = true
+								Starlight.CurrentTheme.Foregrounds.Dark = c
+								themeEvent:Fire()
+								task.wait(6/60)
+								debounce = false
+							end,
+						}, "dark")
+						themeEvent.Event:Connect(function()
+							if not debounce then
+								cp:Set({ CurrentValue = Starlight.CurrentTheme.Foregrounds.Dark }, nil, true)
+							end
+						end)
+					end
+					do
+						local debounce = false
+						local cp = colorpickers.fg:AddColorPicker({
+							IgnoreConfig = true,
+							CurrentValue = Starlight.CurrentTheme.Foregrounds.Medium,
+							Callback = function(c)
+								debounce = true
+								Starlight.CurrentTheme.Foregrounds.Medium = c
+								themeEvent:Fire()
+								task.wait(6/60)
+								debounce = false
+							end,
+						}, "medium")
+						themeEvent.Event:Connect(function()
+							if not debounce then
+								cp:Set({ CurrentValue = Starlight.CurrentTheme.Foregrounds.Medium }, nil, true)
+							end
+						end)
+					end
+					do
+						local debounce = false
+						local cp = colorpickers.fg:AddColorPicker({
+							IgnoreConfig = true,
+							CurrentValue = Starlight.CurrentTheme.Foregrounds.Light,
+							Callback = function(c)
+								debounce = true
+								Starlight.CurrentTheme.Foregrounds.Light = c
+								themeEvent:Fire()
+								task.wait(6/60)
+								debounce = false
+							end,
+						}, "light")
+						themeEvent.Event:Connect(function()
+							if not debounce then
+								cp:Set({ CurrentValue = Starlight.CurrentTheme.Foregrounds.Light }, nil, true)
+							end
+						end)
+					end
+					do
+						local debounce = false
+						local cp = colorpickers.fg:AddColorPicker({
+							IgnoreConfig = true,
+							CurrentValue = Starlight.CurrentTheme.Foregrounds.Active,
+							Callback = function(c)
+								debounce = true
+								Starlight.CurrentTheme.Foregrounds.Active = c
+								themeEvent:Fire()
+								task.wait(6/60)
+								debounce = false
+							end,
+						}, "active")
+						themeEvent.Event:Connect(function()
+							if not debounce then
+								cp:Set({ CurrentValue = Starlight.CurrentTheme.Foregrounds.Active }, nil, true)
+							end
+						end)
+					end
+					do
+						local debounce = false
+						local cp = colorpickers.fga:AddColorPicker({
+							IgnoreConfig = true,
+							CurrentValue = Starlight.CurrentTheme.Foregrounds.DarkHover,
+							Callback = function(c)
+								debounce = true
+								Starlight.CurrentTheme.Foregrounds.DarkHover = c
+								themeEvent:Fire()
+								task.wait(6/60)
+								debounce = false
+							end,
+						}, "dark")
+						themeEvent.Event:Connect(function()
+							if not debounce then
+								cp:Set({ CurrentValue = Starlight.CurrentTheme.Foregrounds.DarkHover }, nil, true)
+							end
+						end)
+					end
+					do
+						local debounce = false
+						local cp = colorpickers.fga:AddColorPicker({
+							IgnoreConfig = true,
+							CurrentValue = Starlight.CurrentTheme.Foregrounds.MediumHover,
+							Callback = function(c)
+								debounce = true
+								Starlight.CurrentTheme.Foregrounds.MediumHover = c
+								themeEvent:Fire()
+								task.wait(6/60)
+								debounce = false
+							end,
+						}, "medium")
+						themeEvent.Event:Connect(function()
+							if not debounce then
+								cp:Set({ CurrentValue = Starlight.CurrentTheme.Foregrounds.MediumHover }, nil, true)
+							end
+						end)
+					end
+				end
+				
+				-- divider
+				do
+					local debounce = false
+					local cp = colorpickers.divider:AddColorPicker({
+						IgnoreConfig = true,
+						CurrentValue = Starlight.CurrentTheme.Miscellaneous.Divider,
+						Callback = function(c)
+							debounce = true
+							Starlight.CurrentTheme.Miscellaneous.Divider = c
+							themeEvent:Fire()
+							task.wait(6/60)
+							debounce = false
+						end,
+					}, "dark")
+					themeEvent.Event:Connect(function()
+						if not debounce then
+							cp:Set({ CurrentValue = Starlight.CurrentTheme.Miscellaneous.Divider }, nil, true)
+						end
+					end)
+				end
+				
+				-- shadows
+				do
+					do
+						local debounce = false
+						local cp = colorpickers.shadows:AddColorPicker({
+							IgnoreConfig = true,
+							CurrentValue = Starlight.CurrentTheme.Miscellaneous.Shadow,
+							Callback = function(c)
+								debounce = true
+								Starlight.CurrentTheme.Miscellaneous.Shadow = c
+								themeEvent:Fire()
+								task.wait(6/60)
+								debounce = false
+							end,
+						}, "dark")
+						themeEvent.Event:Connect(function()
+							if not debounce then
+								cp:Set({ CurrentValue = Starlight.CurrentTheme.Miscellaneous.Shadow }, nil, true)
+							end
+						end)
+					end
+					do
+						local debounce = false
+						local cp = colorpickers.shadows:AddColorPicker({
+							IgnoreConfig = true,
+							CurrentValue = Starlight.CurrentTheme.Miscellaneous.LighterShadow,
+							Callback = function(c)
+								debounce = true
+								Starlight.CurrentTheme.Miscellaneous.LighterShadow = c
+								themeEvent:Fire()
+								task.wait(6/60)
+								debounce = false
+							end,
+						}, "light")
+						themeEvent.Event:Connect(function()
+							if not debounce then
+								cp:Set({ CurrentValue = Starlight.CurrentTheme.Miscellaneous.LighterShadow }, nil, true)
+							end
+						end)
+					end
+				end
+				
+				-- accents
+				do
+					-- main
+					do
+						do
+							local debounce = false
+							local cp = colorpickers.accent:AddColorPicker({
+								IgnoreConfig = true,
+								CurrentValue = Starlight.CurrentTheme.Accents.Main.Keypoints[1].Value,
+								Callback = function(c)
+									debounce = true
+									local keypoints = Starlight.CurrentTheme.Accents.Main.Keypoints
+									Starlight.CurrentTheme.Accents.Main = ColorSequence.new {
+										ColorSequenceKeypoint.new(keypoints[1].Time, c),
+										keypoints[2],
+										keypoints[3],
+									}
+									themeEvent:Fire()
+									task.wait(6/60)
+									debounce = false
+								end,
+							}, "1")
+							themeEvent.Event:Connect(function()
+								if not debounce then
+									cp:Set({ CurrentValue = Starlight.CurrentTheme.Accents.Main.Keypoints[1].Value }, nil, true)
+								end
+							end)
+						end
+						do
+							local debounce = false
+							local cp = colorpickers.accent:AddColorPicker({
+								IgnoreConfig = true,
+								CurrentValue = Starlight.CurrentTheme.Accents.Main.Keypoints[2].Value,
+								Callback = function(c)
+									debounce = true
+									local keypoints = Starlight.CurrentTheme.Accents.Main.Keypoints
+									Starlight.CurrentTheme.Accents.Main = ColorSequence.new {
+										keypoints[1],
+										ColorSequenceKeypoint.new(keypoints[2].Time, c),
+										keypoints[3],
+									}
+									themeEvent:Fire()
+									task.wait(6/60)
+									debounce = false
+								end,
+							}, "2")
+							themeEvent.Event:Connect(function()
+								if not debounce then
+									cp:Set({ CurrentValue = Starlight.CurrentTheme.Accents.Main.Keypoints[2].Value }, nil, true)
+								end
+							end)
+						end
+						do
+							local debounce = false
+							local cp = colorpickers.accent:AddColorPicker({
+								IgnoreConfig = true,
+								CurrentValue = Starlight.CurrentTheme.Accents.Main.Keypoints[3].Value,
+								Callback = function(c)
+									debounce = true
+									local keypoints = Starlight.CurrentTheme.Accents.Main.Keypoints
+									Starlight.CurrentTheme.Accents.Main = ColorSequence.new {
+										keypoints[1],
+										keypoints[2],
+										ColorSequenceKeypoint.new(keypoints[3].Time, c),
+									}
+									themeEvent:Fire()
+									task.wait(6/60)
+									debounce = false
+								end,
+							}, "3")
+							themeEvent.Event:Connect(function()
+								if not debounce then
+									cp:Set({ CurrentValue = Starlight.CurrentTheme.Accents.Main.Keypoints[3].Value }, nil, true)
+								end
+							end)
+						end
+					end
+					-- brighter
+					do
+						do
+							local debounce = false
+							local cp = colorpickers.accent2:AddColorPicker({
+								IgnoreConfig = true,
+								CurrentValue = Starlight.CurrentTheme.Accents.Brighter.Keypoints[1].Value,
+								Callback = function(c)
+									debounce = true
+									local keypoints = Starlight.CurrentTheme.Accents.Brighter.Keypoints
+									Starlight.CurrentTheme.Accents.Brighter = ColorSequence.new {
+										ColorSequenceKeypoint.new(keypoints[1].Time, c),
+										keypoints[2],
+										keypoints[3],
+									}
+									themeEvent:Fire()
+									task.wait(6/60)
+									debounce = false
+								end,
+							}, "1")
+							themeEvent.Event:Connect(function()
+								if not debounce then
+									cp:Set({ CurrentValue = Starlight.CurrentTheme.Accents.Brighter.Keypoints[1].Value }, nil, true)
+								end
+							end)
+						end
+						do
+							local debounce = false
+							local cp = colorpickers.accent2:AddColorPicker({
+								IgnoreConfig = true,
+								CurrentValue = Starlight.CurrentTheme.Accents.Brighter.Keypoints[2].Value,
+								Callback = function(c)
+									debounce = true
+									local keypoints = Starlight.CurrentTheme.Accents.Brighter.Keypoints
+									Starlight.CurrentTheme.Accents.Brighter = ColorSequence.new {
+										keypoints[1],
+										ColorSequenceKeypoint.new(keypoints[2].Time, c),
+										keypoints[3],
+									}
+									themeEvent:Fire()
+									task.wait(6/60)
+									debounce = false
+								end,
+							}, "2")
+							themeEvent.Event:Connect(function()
+								if not debounce then
+									cp:Set({ CurrentValue = Starlight.CurrentTheme.Accents.Brighter.Keypoints[2].Value }, nil, true)
+								end
+							end)
+						end
+						do
+							local debounce = false
+							local cp = colorpickers.accent2:AddColorPicker({
+								IgnoreConfig = true,
+								CurrentValue = Starlight.CurrentTheme.Accents.Brighter.Keypoints[3].Value,
+								Callback = function(c)
+									debounce = true
+									local keypoints = Starlight.CurrentTheme.Accents.Brighter.Keypoints
+									Starlight.CurrentTheme.Accents.Brighter = ColorSequence.new {
+										keypoints[1],
+										keypoints[2],
+										ColorSequenceKeypoint.new(keypoints[3].Time, c),
+									}
+									themeEvent:Fire()
+									task.wait(6/60)
+									debounce = false
+								end,
+							}, "3")
+							themeEvent.Event:Connect(function()
+								if not debounce then
+									cp:Set({ CurrentValue = Starlight.CurrentTheme.Accents.Brighter.Keypoints[3].Value }, nil, true)
+								end
+							end)
+						end
+					end
+				end
+
+				instance:CreateDivider()
+				
+				local newName = ""
+				instance:CreateInput({
+					Name = "New Theme Name",
+					PlaceholderText = "Name",
+					RemoveTextOnFocus = true,
+					Callback = function(v)
+						newName = v
+					end,
+				}, "newthemename")
+				instance:CreateButton({
+					Name = "Create New Theme",
+					Icon = 6031471484,
+					CenteredContent = ButtonsCentered,
+					Callback = function()	
+						if not newName or String.IsEmptyOrNull(newName) then
+							Starlight:Notification({
+								Title = "Theme Error",
+								Icon = 129398364168201,
+								Content = "Theme name cannot be empty."
+							})
+							return
+						end
+						newName = string.gsub(newName, "/", " ")
+						newName = string.gsub(newName, "\\", " ")
+
+						if isfile(`{themesPath}/{newName}{Starlight.FileSystem.FileExtension}`) or themesArray[newName] then
+							Starlight:Notification({
+								Title = "Theme Exists",
+								Icon = 129398364168201,
+								Content = "Theme with the provided name exists already. Overwrite it with overwrite theme below."
+							})
+							return
+						end
+
+						local success, returned = pcall(function()
+							if isStudio or (not isfile) then return "File System unavailable." end
+
+							local fullPath = `{themesPath}/{newName}{Starlight.FileSystem.FileExtension}`
+
+							local success, encoded = ThemeMethods.encodeTheme(Starlight.CurrentTheme)
+							if not success then
+								return false, "Unable to encode into JSON data"
+							end
+
+							writefile(fullPath, encoded)
+						end)
+						if not success then
+							Starlight:Notification({
+								Title = "Theme Error",
+								Icon = 6031071057,
+								Content = "Unable to save Theme, return error: " .. returned
+							})
+							return
+						end
+
+						themesArray = {
+							"Starlight", "Hollywood Dark", "Hollywood Light", "Orca", "Glacier", "Pacific", "Neo", "Neo (Dark)", "Crimson", "Nebula", "Evergreen", "Luna", "OperaGX", "BBot", "Ubuntu", "Tokyo Night", "Hollywood Fluent"
+						}
+						local customThemes = not isStudio and Starlight.FileSystem:RefreshConfigList(themesPath) or {}
+						for _, v in pairs(customThemes) do
+							table.insert(themesArray, v)
+						end
+						instance.Elements.themedropdownlabel.NestedElements.themedropdown:Set({
+							Options = themesArray
+						})
+						Starlight:Notification({
+							Title = "Theme Created",
+							Icon = 6026568227,
+							Content = string.format("Created Theme %q", newName),
+						})
+					end,
+				}, "newtheme")
+				
+				local newThemeToApply
+				local themeDropdown = instance:CreateLabel({
+					Name = "Themes List",
+				}, "themedropdownlabel"):AddDropdown({
+					Options = themesArray,
+					CurrentOption = "Starlight",
+					Required = true,
+					Callback = function(newTheme)
+						newThemeToApply = newTheme[1]
+					end,
+				}, "themedropdown")
+				themeEvent.Event:Connect(function()
+					for key, theme in pairs(Themes) do
+						if theme == Starlight.CurrentTheme then
+							--themeDropdown:Set({ CurrentOption = tostring(key) })
+						end
+					end
+				end)
+				
+				instance:CreateButton({
+					Name = "Apply Theme",
+					Icon = 6034439635,
+					CenteredContent = ButtonsCentered,
+					Style = 1,
+					Callback = function()
+						if Themes[newThemeToApply] ~= nil then
+							Starlight:SetTheme(Themes[newThemeToApply])
+						else
+							Starlight:SetTheme(ThemeMethods.decodeTheme(readfile(`{themesPath}/{newThemeToApply}{Starlight.FileSystem.FileExtension}`)))
+						end
+					end,
+				}, "applytheme")
+				
+				instance:CreateButton({
+					Name = "Overwrite Theme",
+					CenteredContent = ButtonsCentered,
+					Icon = 6031225810,
+					Callback = function()
+						if newThemeToApply == nil then
+							Starlight:Notification({
+								Title = "Null Selection",
+								Icon = 129398364168201,
+								Content = "Theme Must Be Selected!"
+							})
+							return
+						end
+						if Themes[newThemeToApply] then
+							Starlight:Notification({
+								Title = "Preset Theme",
+								Icon = 129398364168201,
+								Content = "Only A Custom Theme Can Be Overwritten!"
+							})
+							return
+						end
+
+						local success, returned = pcall(function()
+							if isStudio or (not isfile) then return "File System unavailable." end
+
+							local fullPath = `{themesPath}/{newThemeToApply}{Starlight.FileSystem.FileExtension}`
+
+							local success, encoded = pcall(HttpService.JSONEncode, HttpService, Starlight.CurrentTheme)
+							if not success then
+								return false, "Unable to encode into JSON data"
+							end
+
+							writefile(fullPath, encoded)
+						end)
+						if not success then
+							Starlight:Notification({
+								Title = "Theme Error",
+								Icon = 6031071057,
+								Content = "Unable to overwrite theme, return error: " .. returned
+							})
+							return
+						end
+
+						Starlight:Notification({
+							Title = "Theme Updated",
+							Icon = 6026568227,
+							Content = string.format("Overwrote theme %q", newThemeToApply),
+						})
+					end,
+				}, "overwritetheme")
+
+				local loadlabel = instance:CreateParagraph({
+					Name = "Current Autoload Theme:",
+					Content = not isStudio and (isfile(`{themesPath}/autoload.txt`) and readfile(`{themesPath}/autoload.txt`)) or "Starlight",
+				}, "autoloadlabel")
+
+				instance:CreateButton({
+					Name = "Autoload Theme",
+					Icon = 6023565901,
+					CenterContent = ButtonsCentered,
+					Callback = function()
+						if newThemeToApply == nil then
+							Starlight:Notification({
+								Title = "Null Selection",
+								Icon = 129398364168201,
+								Content = "Theme Must Be Selected!"
+							})
+							return
+						end
+						local name = newThemeToApply
+						pcall(function()
+							writefile(`{themesPath}/autoload.txt`, name)
+						end)
+						loadlabel:Set({ Content = name })
+
+						Starlight:Notification({
+							Title = "Theme Updated",
+							Icon = 6026568227,
+							Content = string.format("Set %q to be automatically loaded on your future sessions.", newThemeToApply),
+						})
+					end,
+					Style = 1,
+				}, "autoloadtheme")
+				
+				instance:CreateButton({
+					Name = "Reset Autoload",
+					Icon = 6034767619,
+					CenteredContent = ButtonsCentered,
+					Callback = function()
+						if isfile(`{themesPath}/autoload.txt`) then delfile(`{themesPath}/autoload.txt`) end
+						loadlabel:Set({ Content = "None" })
+
+						Starlight:Notification({
+							Title = "Autoload Cleared",
+							Icon = 6026568227,
+							Content = string.format("Disabled current autoload.", newThemeToApply),
+						})
+					end,
+				}, "clearautoload")
+
+				instance:CreateButton({
+					Name = "Delete Theme",
+					Icon = 115577765236264,
+					CenteredContent = ButtonsCentered,
+					Callback = function()
+						if newThemeToApply == nil then
+							Starlight:Notification({
+								Title = "Null Selection",
+								Icon = 129398364168201,
+								Content = "Theme Must Be Selected!"
+							})
+							return
+						end
+						if isfile(`{themesPath}/{newThemeToApply}{Starlight.FileSystem.FileExtension}`) then
+							delfile(`{themesPath}/{newThemeToApply}{Starlight.FileSystem.FileExtension}`)
+						end
+
+						if loadlabel.Values.Content ==  newThemeToApply then
+							if isfile(`{themesPath}/autoload.txt`) then delfile(`{themesPath}/autoload.txt`) end
+							loadlabel:Set({ Content = "None" })
+						end
+
+						themesArray = {
+							"Starlight", "Hollywood Dark", "Hollywood Light", "Orca", "Glacier", "Pacific", "Neo", "Neo (Dark)","Crimson", "Nebula", "Evergreen", "Luna", "OperaGX", "BBot", "Ubuntu", "Tokyo Night", "Hollywood Fluent"
+						}
+						local customThemes = not isStudio and Starlight.FileSystem:RefreshConfigList(themesPath) or {}
+						for _, v in pairs(customThemes) do
+							table.insert(themesArray, v)
+						end
+						themeDropdown:Set({ 
+							Options = themesArray,
+							CurrentOption = "",
+						})
+
+						Starlight:Notification({
+							Title = "Theme Deleted",
+							Icon = 6026568227,
+							Content = string.format("Deleted Configuration %q", newThemeToApply),
+						})
+						if newThemeToApply then newThemeToApply = nil end
+					end,
+				}, "deletetheme")
+
+			end
+
+			function Tab:BuildConfigGroupbox(Column, Style, ButtonsCentered)
 
 				if ButtonsCentered == nil then
 					ButtonsCentered = false
@@ -5335,7 +7190,7 @@ function Starlight:CreateWindow(WindowSettings)
 					CenterContent = ButtonsCentered,
 					Tooltip = "Create a configuration to access any time with all your current settings.",
 					Callback = function()
-						if not inputPath or string.gsub(inputPath, " ", "") == "" then
+						if not inputPath or String.IsEmptyOrNull(inputPath) then
 							Starlight:Notification({
 								Title = "Configuration Error",
 								Icon = 129398364168201,
@@ -5343,8 +7198,10 @@ function Starlight:CreateWindow(WindowSettings)
 							})
 							return
 						end
-						
-						if isfile(`{Starlight.Folder}/Configurations/{folderpath}/{inputPath}{Starlight.ConfigSystem.FileExtension}`) then
+						inputPath = string.gsub(inputPath, "/", " ")
+						inputPath = string.gsub(inputPath, "\\", " ")
+
+						if isfile(`{Starlight.FileSystem.Folder}/{folderpath}/configs/{inputPath}{Starlight.FileSystem.FileExtension}`) then
 							Starlight:Notification({
 								Title = "Configuration Exists",
 								Icon = 129398364168201,
@@ -5353,7 +7210,7 @@ function Starlight:CreateWindow(WindowSettings)
 							return
 						end
 
-						local success, returned = Starlight.ConfigSystem:SaveConfig(inputPath, `{Starlight.Folder}/Configurations/{folderpath}/`)
+						local success, returned = Starlight.FileSystem:SaveConfig(inputPath, `{Starlight.FileSystem.Folder}/{folderpath}/configs/`)
 						if not success then
 							Starlight:Notification({
 								Title = "Configuration Error",
@@ -5368,7 +7225,7 @@ function Starlight:CreateWindow(WindowSettings)
 							Content = string.format("Created config %q", inputPath),
 						})
 
-						instance.Elements["__prebuiltConfigSelector_lbl"].NestedElements["__prebuiltConfigSelector_lbl"]:Set({ Options = Starlight.ConfigSystem:RefreshConfigList(`{Starlight.Folder}/Configurations/{folderpath}`) })
+						instance.Elements["__prebuiltConfigSelector_lbl"].NestedElements["__prebuiltConfigSelector_lbl"]:Set({ Options = Starlight.FileSystem:RefreshConfigList(`{Starlight.FileSystem.Folder}/{folderpath}/configs`) })
 					end,
 					Style = 1,
 				}, "__prebuiltConfigCreator")
@@ -5379,7 +7236,7 @@ function Starlight:CreateWindow(WindowSettings)
 					Name = "Select Config",
 					Tooltip = "Select a config for this section to work on.",
 				}, "__prebuiltConfigSelector_lbl"):AddDropdown({
-					Options = Starlight.ConfigSystem:RefreshConfigList(`{Starlight.Folder}/Configurations/{folderpath}`),
+					Options = Starlight.FileSystem:RefreshConfigList(`{Starlight.FileSystem.Folder}/{folderpath}/configs`),
 					CurrentOption = nil,
 					MultipleOptions = false,
 					Callback = function(val)
@@ -5402,7 +7259,7 @@ function Starlight:CreateWindow(WindowSettings)
 							return
 						end
 
-						local success, returned = Starlight.ConfigSystem:LoadConfig(selectedConfig, `{Starlight.Folder}/Configurations/{folderpath}/`)
+						local success, returned = Starlight.FileSystem:LoadConfig(selectedConfig, `{Starlight.FileSystem.Folder}/{folderpath}/configs/`)
 						if not success then
 							Starlight:Notification({
 								Title = "Configuration Error",
@@ -5436,7 +7293,7 @@ function Starlight:CreateWindow(WindowSettings)
 							return
 						end
 
-						local success, returned = Starlight.ConfigSystem:SaveConfig(selectedConfig, `{Starlight.Folder}/Configurations/{folderpath}/`)
+						local success, returned = Starlight.FileSystem:SaveConfig(selectedConfig, `{Starlight.FileSystem.Folder}/{folderpath}/configs/`)
 						if not success then
 							Starlight:Notification({
 								Title = "Configuration Error",
@@ -5461,14 +7318,14 @@ function Starlight:CreateWindow(WindowSettings)
 					CenterContent = ButtonsCentered,
 					Tooltip = "Manually refresh the list of configurations incase of any errors.",
 					Callback = function()
-						instance.Elements["__prebuiltConfigSelector_lbl"].NestedElements["__prebuiltConfigSelector_lbl"]:Set({ Options = Starlight.ConfigSystem:RefreshConfigList(`{Starlight.Folder}/Configurations/{folderpath}`) })
+						instance.Elements["__prebuiltConfigSelector_lbl"].NestedElements["__prebuiltConfigSelector_lbl"]:Set({ Options = Starlight.FileSystem:RefreshConfigList(`{Starlight.FileSystem.Folder}/{folderpath}/configs`) })
 					end,
 					Style = 2,
 				}, "__prebuiltConfigRefresher")
-				
+
 				local loadlabel = instance:CreateParagraph({
 					Name = "Current Autoload Config:",
-						Content = isfile(`{Starlight.Folder}/Configurations/{folderpath}/autoload.txt`) and readfile(`{Starlight.Folder}/Configurations/{folderpath}/autoload.txt`) or "None",
+					Content = isfile(`{Starlight.FileSystem.Folder}/{folderpath}/configs/autoload.txt`) and readfile(`{Starlight.FileSystem.Folder}/{folderpath}/configs/autoload.txt`) or "None",
 				}, "__prebuiltConfigAutoloadLabel")
 
 				instance:CreateButton({
@@ -5487,7 +7344,7 @@ function Starlight:CreateWindow(WindowSettings)
 						end
 						local name = selectedConfig
 						pcall(function()
-							writefile(`{Starlight.Folder}/Configurations/{folderpath}/autoload.txt`, name)
+							writefile(`{Starlight.FileSystem.Folder}/{folderpath}/configs/autoload.txt`, name)
 						end)
 						loadlabel:Set({ Content = name })
 
@@ -5523,27 +7380,27 @@ function Starlight:CreateWindow(WindowSettings)
 							})
 							return
 						end
-						if isfile(`{Starlight.Folder}/Configurations/{folderpath}/{selectedConfig}{Starlight.ConfigSystem.FileExtension}`) then
-							delfile(`{Starlight.Folder}/Configurations/{folderpath}/{selectedConfig}{Starlight.ConfigSystem.FileExtension}`)
+						if isfile(`{Starlight.FileSystem.Folder}/{folderpath}/configs/{selectedConfig}{Starlight.FileSystem.FileExtension}`) then
+							delfile(`{Starlight.FileSystem.Folder}/{folderpath}/configs/{selectedConfig}{Starlight.FileSystem.FileExtension}`)
 						end
-						
+
 						if loadlabel.Values.Content == selectedConfig then
-							if isfile(`{Starlight.Folder}/Configurations/{folderpath}/autoload.txt`) then delfile(`{Starlight.Folder}/Configurations/{folderpath}/autoload.txt`) end
+							if isfile(`{Starlight.FileSystem.Folder}/{folderpath}/configs/autoload.txt`) then delfile(`{Starlight.FileSystem.Folder}/{folderpath}/configs/autoload.txt`) end
 							loadlabel:Set({ Content = "None" })
 						end
-						
+
 						instance.Elements["__prebuiltConfigSelector_lbl"].NestedElements["__prebuiltConfigSelector_lbl"]:Set({ 
-							Options = Starlight.ConfigSystem:RefreshConfigList(`{Starlight.Folder}/Configurations/{folderpath}`),
+							Options = Starlight.FileSystem:RefreshConfigList(`{Starlight.FileSystem.Folder}/{folderpath}/configs`),
 							CurrentOption = "",
 						})
-						if selectedConfig then selectedConfig = nil end
-						
+
 						Starlight:Notification({
 							Title = "Configuration Deleted",
 							Icon = 6026568227,
 							Content = string.format("Deleted Configuration %q", selectedConfig),
 						})
-						
+						if selectedConfig then selectedConfig = nil end
+
 					end,
 					Style = 2,
 				}, "__prebuiltConfigDeleter")
@@ -5554,7 +7411,7 @@ function Starlight:CreateWindow(WindowSettings)
 					CenterContent = ButtonsCentered,
 					Tooltip = "Removes the autoloading of the current autoload config.",
 					Callback = function()
-						if isfile(`{Starlight.Folder}/Configurations/{folderpath}/autoload.txt`) then delfile(`{Starlight.Folder}/Configurations/{folderpath}/autoload.txt`) end
+						if isfile(`{Starlight.FileSystem.Folder}/{folderpath}/configs/autoload.txt`) then delfile(`{Starlight.FileSystem.Folder}/{folderpath}/configs/autoload.txt`) end
 						loadlabel:Set({ Content = "None" })
 
 						Starlight:Notification({
@@ -5589,79 +7446,86 @@ function Starlight:CreateWindow(WindowSettings)
 	--// SUBSECTION : Window Functionability
 	do
 		mainWindow.Content.Topbar.NotificationCenterIcon["MouseEnter"]:Connect(function()
-			Tween(mainWindow.Content.Topbar.NotificationCenterIcon, {ImageColor3 = Resources.Themes[Starlight.CurrentTheme]['Fore_Medium'].Value})
+			Tween(mainWindow.Content.Topbar.NotificationCenterIcon, {ImageColor3 = Starlight.CurrentTheme.Foregrounds.DarkHover})
 		end)
 		mainWindow.Content.Topbar.NotificationCenterIcon["MouseLeave"]:Connect(function()
-			Tween(mainWindow.Content.Topbar.NotificationCenterIcon, {ImageColor3 = Resources.Themes[Starlight.CurrentTheme]['Fore_Dark'].Value})
+			Tween(mainWindow.Content.Topbar.NotificationCenterIcon, {ImageColor3 = Starlight.CurrentTheme.Foregrounds.Dark})
 		end)
 
+		local notifdebounce = false
 		mainWindow.Content.Topbar.NotificationCenterIcon["MouseButton1Click"]:Connect(function()
-			if Starlight.NotificationsOpen then
-				for i,newNotification in pairs(CollectionService:GetTagged("__starlight_ExpiredNotification")) do
+			if not notifdebounce then
+				notifdebounce = true
+				if Starlight.NotificationsOpen then
+					for i,newNotification in pairs(CollectionService:GetTagged("__starlight_ExpiredNotification")) do
 
-					newNotification.Icon.Visible = false
-					TweenService:Create(newNotification, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {BackgroundTransparency = 1}):Play()
-					TweenService:Create(newNotification.UIStroke, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {Transparency = 1}):Play()
-					TweenService:Create(newNotification.Shadow.antumbraShadow, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {ImageTransparency = 1}):Play()
-					TweenService:Create(newNotification.Shadow.penumbraShadow, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {ImageTransparency = 1}):Play()
-					TweenService:Create(newNotification.Shadow.umbraShadow, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {ImageTransparency = 1}):Play()
-					TweenService:Create(newNotification.Title, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {TextTransparency = 1}):Play()
-					TweenService:Create(newNotification.Description, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {TextTransparency = 1}):Play()
-					TweenService:Create(newNotification.Time, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {TextTransparency = 1}):Play()
+						newNotification.Icon.Visible = false
+						TweenService:Create(newNotification, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {BackgroundTransparency = 1}):Play()
+						TweenService:Create(newNotification.UIStroke, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {Transparency = 1}):Play()
+						TweenService:Create(newNotification.Shadow.antumbraShadow, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {ImageTransparency = 1}):Play()
+						TweenService:Create(newNotification.Shadow.penumbraShadow, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {ImageTransparency = 1}):Play()
+						TweenService:Create(newNotification.Shadow.umbraShadow, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {ImageTransparency = 1}):Play()
+						TweenService:Create(newNotification.Title, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {TextTransparency = 1}):Play()
+						TweenService:Create(newNotification.Description, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {TextTransparency = 1}):Play()
+						TweenService:Create(newNotification.Time, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {TextTransparency = 1}):Play()
 
-					TweenService:Create(newNotification, TweenInfo.new(1, Enum.EasingStyle.Exponential), {Size = UDim2.new(1, -90, 0, 0)}):Play()
+						TweenService:Create(newNotification, TweenInfo.new(1, Enum.EasingStyle.Exponential), {Size = UDim2.new(1, -90, 0, 0)}):Play()
 
-					Tween(newNotification, {Size = UDim2.new(1, -90, 0, -StarlightUI.Notifications:FindFirstChild("UIListLayout").Padding.Offset)}, function()
-						newNotification.Visible = false
-					end, TweenInfo.new(1, Enum.EasingStyle.Exponential))
+						Tween(newNotification, {Size = UDim2.new(1, -90, 0, -StarlightUI.Notifications:FindFirstChild("UIListLayout").Padding.Offset)}, function()
+							newNotification.Visible = false
+						end, TweenInfo.new(1, Enum.EasingStyle.Exponential))
+
+					end
+				else
+					for i,newNotification in pairs(CollectionService:GetTagged("__starlight_ExpiredNotification")) do
+
+						task.spawn(function()
+							newNotification.Icon.Visible = true
+
+							newNotification.Size = UDim2.new(1, 0, 0, -StarlightUI.Notifications:FindFirstChild("UIListLayout").Padding.Offset)
+
+							newNotification.Icon.Size = UDim2.new(0, 28, 0, 28)
+
+							newNotification.Visible = true
+
+							newNotification.Description.Size = UDim2.new(1, -65, 0, math.huge)
+							local bounds = newNotification.Description.TextBounds.Y + 50
+							newNotification.Description.Size = UDim2.new(1,-65,0, bounds - 30)
+							newNotification.Size = UDim2.new(1, 0, 0, -StarlightUI.Notifications:FindFirstChild("UIListLayout").Padding.Offset)
+							TweenService:Create(newNotification, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {Size = UDim2.new(1, 0, 0, bounds)}):Play()
+
+							task.wait(0.15)
+							TweenService:Create(newNotification, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {BackgroundTransparency = notificationAcrylic and (mainAcrylic and 0.75 or 0.397) or 0}):Play()
+							TweenService:Create(newNotification.Shadow.antumbraShadow, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {ImageTransparency = 0.94}):Play()
+							TweenService:Create(newNotification.Shadow.penumbraShadow, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {ImageTransparency = 0.55}):Play()
+							TweenService:Create(newNotification.Shadow.umbraShadow, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {ImageTransparency = 0.4}):Play()
+							TweenService:Create(newNotification.Title, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {TextTransparency = 0}):Play()
+
+							task.wait(0.05)
+
+							TweenService:Create(newNotification.Icon, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {ImageTransparency = 0}):Play()
+
+							task.wait(0.05)
+							TweenService:Create(newNotification.Description, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {TextTransparency = 0.35}):Play()
+							TweenService:Create(newNotification.Time, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {TextTransparency = 0.35}):Play()
+							TweenService:Create(newNotification.UIStroke, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {Transparency = 0.95}):Play()
+						end)
+
+					end
 
 				end
-			else
-				for i,newNotification in pairs(CollectionService:GetTagged("__starlight_ExpiredNotification")) do
-
-					task.spawn(function()
-						newNotification.Icon.Visible = true
-
-						newNotification.Size = UDim2.new(1, 0, 0, -StarlightUI.Notifications:FindFirstChild("UIListLayout").Padding.Offset)
-
-						newNotification.Icon.Size = UDim2.new(0, 28, 0, 28)
-
-						newNotification.Visible = true
-
-						newNotification.Description.Size = UDim2.new(1, -65, 0, math.huge)
-						local bounds = newNotification.Description.TextBounds.Y + 50
-						newNotification.Description.Size = UDim2.new(1,-65,0, bounds - 30)
-						newNotification.Size = UDim2.new(1, 0, 0, -StarlightUI.Notifications:FindFirstChild("UIListLayout").Padding.Offset)
-						TweenService:Create(newNotification, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {Size = UDim2.new(1, 0, 0, bounds)}):Play()
-
-						task.wait(0.15)
-						TweenService:Create(newNotification, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0.38}):Play()
-						TweenService:Create(newNotification.Shadow.antumbraShadow, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {ImageTransparency = 0.94}):Play()
-						TweenService:Create(newNotification.Shadow.penumbraShadow, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {ImageTransparency = 0.55}):Play()
-						TweenService:Create(newNotification.Shadow.umbraShadow, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {ImageTransparency = 0.4}):Play()
-						TweenService:Create(newNotification.Title, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {TextTransparency = 0}):Play()
-
-						task.wait(0.05)
-
-						TweenService:Create(newNotification.Icon, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {ImageTransparency = 0}):Play()
-
-						task.wait(0.05)
-						TweenService:Create(newNotification.Description, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {TextTransparency = 0.35}):Play()
-						TweenService:Create(newNotification.Time, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {TextTransparency = 0.35}):Play()
-						TweenService:Create(newNotification.UIStroke, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {Transparency = 0.95}):Play()
-					end)
-
-				end
+				Starlight.NotificationsOpen = not Starlight.NotificationsOpen
+				task.wait(1)
+				notifdebounce = false
 			end
-			Starlight.NotificationsOpen = not Starlight.NotificationsOpen
 		end)
 
 
 		mainWindow.Content.Topbar.Search["MouseEnter"]:Connect(function()
-			Tween(mainWindow.Content.Topbar.Search, {ImageColor3 = Resources.Themes[Starlight.CurrentTheme]['Fore_Medium'].Value})
+			Tween(mainWindow.Content.Topbar.Search, {ImageColor3 = Starlight.CurrentTheme.Foregrounds.DarkHover})
 		end)
 		mainWindow.Content.Topbar.Search["MouseLeave"]:Connect(function()
-			Tween(mainWindow.Content.Topbar.Search, {ImageColor3 = Resources.Themes[Starlight.CurrentTheme]['Fore_Dark'].Value})
+			Tween(mainWindow.Content.Topbar.Search, {ImageColor3 = Starlight.CurrentTheme.Foregrounds.Dark})
 		end)
 
 		for _, Button in pairs(mainWindow.Content.Topbar.Controls:GetChildren()) do
@@ -5673,7 +7537,7 @@ function Starlight:CreateWindow(WindowSettings)
 
 				Button["MouseLeave"]:Connect(function()
 					Tween(Button.Fill, {BackgroundTransparency = 1})
-					Tween(Button.Fill.Icon, {Position = UDim2.fromScale(.5,1.5)})
+					Tween(Button.Fill.Icon, {Position = UDim2.fromScale(.5,1.8)})
 				end)
 			end
 		end
@@ -5681,7 +7545,7 @@ function Starlight:CreateWindow(WindowSettings)
 		mainWindow.Content.Topbar.Controls.Close["MouseButton1Click"]:Connect(function()
 			Starlight:Destroy()
 			--[[ 
-			Starlight.Window:PromptPopup({
+			Starlight.Window:Prompt({
 				Name = "Are you sure?",
 				Content = "Are you sure you wish to exit the Interface?",
 				Actions = {
@@ -5706,28 +7570,43 @@ function Starlight:CreateWindow(WindowSettings)
 				Maximize(mainWindow)
 			end
 		end)
+
+		local debounce = false
+
 		mainWindow.Content.Topbar.Controls.Minimize["MouseButton1Click"]:Connect(function()
-			Hide(mainWindow, false, true, Starlight.WindowKeybind)
-			Hide(StarlightUI.Drag, false, false, Starlight.WindowKeybind)
-			Resources["un-fps"].Modal = false
-			Resources["un-fps"].Visible = false
+			if not debounce then
+				debounce = true
+				Hide(mainWindow, false, true, Starlight.WindowKeybind)
+				Hide(StarlightUI.Drag, false, false, Starlight.WindowKeybind)
+				task.delay(.4, function()
+					debounce = false
+				end)
+			end
 		end)
 
 		connections["__windowKeybindHidingBindConnection"] = UserInputService.InputBegan:Connect(function(input, gpe)
 			if gpe then return end
 			if input.KeyCode == Enum.KeyCode[Starlight.WindowKeybind] then
 				if Starlight.Minimized == true then
-					Unhide(mainWindow)
-					Unhide(StarlightUI.Drag)
-					Resources["un-fps"].Modal = true
-					Resources["un-fps"].Visible = true
-					Tween(mainWindow.Content.Topbar.Controls.Minimize.Fill.Icon, {Position = UDim2.fromScale(.5,1.5)})
-					Tween(mainWindow.Content.Topbar.Controls.Minimize.Fill, {BackgroundTransparency = 1})
+					if not debounce then
+						debounce = true
+						Unhide(mainWindow)
+						Unhide(StarlightUI.Drag)
+						Tween(mainWindow.Content.Topbar.Controls.Minimize.Fill.Icon, {Position = UDim2.fromScale(.5,1.5)})
+						Tween(mainWindow.Content.Topbar.Controls.Minimize.Fill, {BackgroundTransparency = 1})
+						task.delay(.4, function()
+							debounce = false
+						end)
+					end
 				elseif Starlight.Minimized == false then
-					Hide(mainWindow, false, true, Starlight.WindowKeybind)
-					Hide(StarlightUI.Drag, false, false, Starlight.WindowKeybind)
-					Resources["un-fps"].Modal = false
-					Resources["un-fps"].Visible = false
+					if not debounce then
+						debounce = true
+						Hide(mainWindow, false, true, Starlight.WindowKeybind)
+						Hide(StarlightUI.Drag, false, false, Starlight.WindowKeybind)
+						task.delay(.4, function()
+							debounce = false
+						end)
+					end
 				end
 			end
 		end)
@@ -5741,27 +7620,37 @@ end
 
 --// SECTION : Config System
 
-function Starlight.ConfigSystem:BuildFolderTree(hasRoot : boolean, Root : string, Folder : string)
+function Starlight.FileSystem:BuildFolderTree(hasRoot : boolean, Root : string, Folder : string, hasTheme : boolean?)
+	-- Revamp since beta 4 since we are storing stuff within like scripts for both themes and such
 	if isStudio or (not isfolder) then return "Config system unavailable." end
+	local path = hasRoot and `{Root}/{Folder}` or `{Folder}`
 	local paths = {
-		Starlight.Folder,
-		Starlight.Folder .. "/Configurations",
+		[1] = Starlight.FileSystem.Folder,
+		[3] = `{Starlight.FileSystem.Folder}/{path}`,
+		[4] = `{Starlight.FileSystem.Folder}/{path}/configs`
 	}
 	if hasRoot then
-		table.insert(paths, Starlight.Folder .. "/Configurations/".. Root)
-		table.insert(paths, Starlight.Folder .. "/Configurations/".. Root .. "/" .. Folder)
-	else
-		table.insert(paths, Starlight.Folder .. "/Configurations/".. Folder)
+		paths[2] = `{Starlight.FileSystem.Folder}/{Root}`
 	end
 
-	for i, str in pairs(paths) do
+	if hasTheme ~= nil then
+		table.insert(paths, `{Starlight.FileSystem.Folder}/{path}/themes`)
+	else
+		table.insert(paths, `{Starlight.FileSystem.Folder}/{Root}/themes`)
+	end
+
+	for i, str in ipairs(paths) do
 		if not isfolder(str) then
 			makefolder(str)
 		end
 	end
+
+	if isfolder(`{Starlight.FileSystem.Folder}/Configurations/{path}`) then
+		ConfigMethods.UpdateOld(`{Starlight.FileSystem.Folder}/Configurations/{path}`, `{Starlight.FileSystem.Folder}/{path}/configs`)
+	end
 end
 
-function Starlight.ConfigSystem:SaveConfig(file, path)
+function Starlight.FileSystem:SaveConfig(file, path)
 
 	if isStudio or (not isfile) then return "Config system unavailable." end
 
@@ -5769,34 +7658,36 @@ function Starlight.ConfigSystem:SaveConfig(file, path)
 		return false, "Please select a config file."
 	end
 
-	local fullPath = `{path}{file}{Starlight.ConfigSystem.FileExtension}`
+	local fullPath = `{path}{file}{Starlight.FileSystem.FileExtension}`
 
 	local data = {
 		objects = {}
 	}
-	
+
 	for tsecidx, tabsection in next, Starlight.Window.TabSections do 
-	for tidx, tab in next, tabsection.Tabs do
-	for grpidx, groupbox in next, tab.Groupboxes do
-		if groupbox.ClassName and groupbox.ClassName ~= "TabBox" then
-			for idx, object in next, groupbox.Elements do
-				if object.IgnoreConfig then continue end
+		for tidx, tab in next, tabsection.Tabs do
+			for grpidx, groupbox in next, tab.Groupboxes do
+				if groupbox.ClassName and groupbox.ClassName ~= "TabBox" then
+					for idx, object in next, groupbox.Elements do
+						if object.IgnoreConfig then continue end
 
-				local fullidx = `{tsecidx}.Tabs.{tidx}.Groupboxes.{grpidx}.Elements.{idx}`
+						local fullidx = `{tsecidx}.Tabs.{tidx}.Groupboxes.{grpidx}.Elements.{idx}`
 
-				table.insert(data.objects, ConfigMethods.Save(fullidx, object.Values))
+						table.insert(data.objects, ConfigMethods.Save(fullidx, object.Values, object.Class))
 
-				if object.Class == "Toggle" or object.Class == "Label" --[[or object.Class == "Input"]] then
-				for nestedidx, nestedobject in next, object.NestedElements do
+						if object.Class == "Toggle" or object.Class == "Label" --[[or object.Class == "Input"]] then
+							for nestedidx, nestedobject in next, object.NestedElements do
 
-					table.insert(data.objects, ConfigMethods.Save(`{fullidx}.NestedElements.{nestedidx}`, nestedobject.Values))
+								if nestedobject.IgnoreConfig then continue end
 
-				end end
-		end end
-		
+								table.insert(data.objects, ConfigMethods.Save(`{fullidx}.NestedElements.{nestedidx}`, nestedobject.Values))
+
+							end end
+					end end
+
 				-- will add tabbox in future
 
-	end	end end	
+			end	end end	
 
 	local success, encoded = pcall(HttpService.JSONEncode, HttpService, data)
 	if not success then
@@ -5808,7 +7699,7 @@ function Starlight.ConfigSystem:SaveConfig(file, path)
 
 end
 
-function Starlight.ConfigSystem:LoadConfig(file, path)
+function Starlight.FileSystem:LoadConfig(file, path)
 
 	if isStudio or (not isfile) then return "Config system unavailable." end
 
@@ -5816,7 +7707,7 @@ function Starlight.ConfigSystem:LoadConfig(file, path)
 		return false, "Please select a config file."
 	end
 
-	local fullPath = `{path}{file}{Starlight.ConfigSystem.FileExtension}`
+	local fullPath = `{path}{file}{Starlight.FileSystem.FileExtension}`
 	if not isfile(fullPath) then return false, "Invalid file." end
 
 	local success, decoded = pcall(HttpService.JSONDecode, HttpService, readfile(fullPath))
@@ -5832,7 +7723,7 @@ function Starlight.ConfigSystem:LoadConfig(file, path)
 
 end
 
-function Starlight.ConfigSystem:RefreshConfigList(path)
+function Starlight.FileSystem:RefreshConfigList(path)
 
 	if isStudio or (not isfile) then return "Config system unavailable." end
 
@@ -5841,8 +7732,8 @@ function Starlight.ConfigSystem:RefreshConfigList(path)
 	local configs = {}
 	for i = 1, #list do
 		local file = list[i]
-		if file:sub(-#Starlight.ConfigSystem.FileExtension) == Starlight.ConfigSystem.FileExtension then
-			local pos = file:find(Starlight.ConfigSystem.FileExtension, 1, true)
+		if file:sub(-#Starlight.FileSystem.FileExtension) == Starlight.FileSystem.FileExtension then
+			local pos = file:find(Starlight.FileSystem.FileExtension, 1, true)
 			local start = pos
 
 			local char = file:sub(pos, pos)
@@ -5864,14 +7755,15 @@ function Starlight.ConfigSystem:RefreshConfigList(path)
 
 end
 
+
 function Starlight:LoadAutoloadConfig()
 	if isStudio or (not isfile) then return "Config system unavailable." end
 
-	if Starlight.ConfigSystem.AutoloadPath and isfile(Starlight.ConfigSystem.AutoloadPath .. "autoload.txt") then
+	if Starlight.FileSystem.AutoloadConfigPath and isfile(Starlight.FileSystem.AutoloadConfigPath .. "autoload.txt") then
 
-		local name = readfile(Starlight.ConfigSystem.AutoloadPath .. "autoload.txt")
+		local name = readfile(Starlight.FileSystem.AutoloadConfigPath .. "autoload.txt")
 
-		local success, err = Starlight.ConfigSystem:LoadConfig(name, Starlight.ConfigSystem.AutoloadPath)
+		local success, err = Starlight.FileSystem:LoadConfig(name, Starlight.FileSystem.AutoloadConfigPath)
 		if not success then 
 			Starlight:Notification({
 				Title = "Autoloading Error",
@@ -5890,6 +7782,37 @@ function Starlight:LoadAutoloadConfig()
 	end 
 end
 
+function Starlight:SetTheme(newTheme)
+	
+	local themeToCopy = newTheme
+	if type(themeToCopy) == "string" then
+		themeToCopy = Starlight.Themes[themeToCopy]
+	end
+
+	Starlight.CurrentTheme = deepCopy(themeToCopy)
+	themeEvent:Fire()
+
+end
+
+function Starlight:LoadAutoloadTheme()
+	if isStudio or (not isfile) then return "Config system unavailable." end
+
+	if Starlight.FileSystem.AutoloadThemePath and isfile(Starlight.FileSystem.AutoloadThemePath .. "autoload.txt") then
+
+		local name = readfile(Starlight.FileSystem.AutoloadThemePath .. "autoload.txt")
+
+		if Themes[name] then
+			Starlight:SetTheme(name)
+		else
+			local content = readfile(Starlight.FileSystem.AutoloadThemePath .. name .. Starlight.FileSystem.FileExtension)
+			local success, decoded = pcall(HttpService.JSONDecode, HttpService, content)
+			if not success then return false, "Unable to decode JSON data." end
+
+			Starlight:SetTheme(decoded)
+		end
+
+	end 
+end
 
 --// ENDSECTION
 
@@ -5902,6 +7825,8 @@ StarlightUI.Enabled = true
 
 local enabled = true
 if isStudio and enabled then
+	--Starlight:SetTheme("Hollywood Dark")
+
 	local win = Starlight:CreateWindow({
 		Name = "Window",
 		Subtitle = "this is an optional subtitle",
@@ -5987,7 +7912,7 @@ if isStudio and enabled then
 		Tooltip = "Button 2!",
 		CenterContent = true, 
 		Style = 1,
-	}, "btn2"):Lock("this is a reason")
+	}, "btn2")
 
 	local hi = g2:CreateButton({
 		Name = "Button",
@@ -6003,7 +7928,7 @@ if isStudio and enabled then
 		Name = "Flat Button",
 		Icon = NebulaIcons:GetIcon("locate", "Lucide"),
 		Callback = function()
-			g2.Elements["tgglemix"]:Set({ Style = 2 })
+			g.Elements.btn2:Lock("this is a reason")
 		end,
 		Tooltip = "flat Button!"
 	}, "btn3")
@@ -6047,7 +7972,7 @@ if isStudio and enabled then
 		HideMax = true,
 		Tooltip = "Hi",
 		CurrentValue = .2,
-		Increment = 0.0002,
+		Increment = 0.002,
 		Suffix = "km/h",
 		Callback = function(v) print(v) end
 	}, "sldr2")
@@ -6064,7 +7989,7 @@ if isStudio and enabled then
 		Tooltip = "Hi",
 		Callback = function() end
 	}, "nmrcinpt")
-	
+
 	--g:CreateBind({
 	--	Name = "bind",
 	--	CurrentValue = "Q",
@@ -6081,7 +8006,7 @@ if isStudio and enabled then
 			print(v)
 		end,
 	}, "bnd")
-	
+
 	g2:CreateLabel({
 		Tooltip = "Hi",
 		Name = "Window Bind"
@@ -6091,7 +8016,7 @@ if isStudio and enabled then
 		Tooltip = "Hi",
 		WindowSetting = true,
 		Callback = function()
-			
+
 		end,
 	}, "wndwbnd")
 
@@ -6171,7 +8096,7 @@ if isStudio and enabled then
 			p.Transparency = v
 		end
 	}, "cp")
-	
+
 	g:CreateLabel({
 		Name = "Color Picker No Alpha",
 		Icon = NebulaIcons:GetIcon("color_lens", "Material"),
@@ -6180,7 +8105,7 @@ if isStudio and enabled then
 		CurrentValue = Color3.new(),
 		Callback = function() end
 	}, "cp")
-	
+
 	g:CreateSlider({
 		Name = "slider test",
 		Range = {0,255},
@@ -6219,7 +8144,12 @@ if isStudio and enabled then
 		Icon = NebulaIcons:GetIcon("bell-simple-ringing", "Phosphor-Filled")
 	})
 
-	local configg = t:BuildConfigGroupbox(1)
+	--[[task.delay(4, function()
+		Starlight:SetTheme("Starlight")
+	end)]]
+
+	local configg = t:BuildConfigGroupbox(2)
+	local themeg = t:BuildThemeGroupbox(1)
 
 	Starlight:LoadAutoloadConfig()
 end
