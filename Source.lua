@@ -68,12 +68,12 @@ by Nebula Softworks
 
 --// SECTION : Core Variables
 
-local Release = "Prerelease Beta 4" 
+local Release = "Prerelease Beta 4.01" 
 local debugV = false 
 
 local Starlight = {
 
-	InterfaceBuild = "B4B0", -- Beta 4 Build 0
+	InterfaceBuild = "B4B2", -- Beta 4 Build 2
 	
 	WindowKeybind = "K",
 	
@@ -132,7 +132,7 @@ local notificationAcrylicEvent = Instance.new("BindableEvent")
 
 local isStudio = RunService:IsStudio() or false
 local website = "nebulasoftworks.xyz/starlight"
-local Acrylic = isStudio and require(ReplicatedStorage.Acrylic) or loadstring(game:HttpGet("https://raw." .. website .. "/AcrylicModule.luau"))
+local Acrylic = isStudio and require(ReplicatedStorage.AcrylicBundled) or loadstring(game:HttpGet("https://raw." .. website .. "/AcrylicModule.luau"))()
 Acrylic.Init()
 
 local Request = (syn and syn.request) or (fluxus and fluxus.request) or (http and http.request) or http_request or request
@@ -2004,22 +2004,32 @@ function Starlight:CreateWindow(WindowSettings)
 			if mainAcrylic then
 				Tween(mainWindow, {BackgroundTransparency = 0.8})
 				Tween(mainWindow.Content.ContentMain, {BackgroundTransparency = 1})
-				Tween(mainWindow.Content.ContentMain.CornerRepairHorizontal, {BackgroundTransparency = 1})
-				Tween(mainWindow.Content.ContentMain.CornerRepairVertical, {BackgroundTransparency = 1})
-				Tween(mainWindow.Content.Topbar, {BackgroundTransparency = 1})
-				Tween(mainWindow.Content.Topbar.CornerRepairHorizontal, {BackgroundTransparency = 1})
-				Tween(mainWindow.Content.Topbar.CornerRepairVertical, {BackgroundTransparency = 1})
+				for _, cornerrepair in pairs(mainWindow.Content.ContentMain.CornerRepairs:GetChildren()) do
+					Tween(cornerrepair, {ImageTransparency = 1})
+				end
+				Tween(mainWindow.Content.Topbar, {BackgroundTransparency = 0.8})
+				for _, cornerrepair in pairs(mainWindow.Content.Topbar.CornerRepairs:GetChildren()) do
+					Tween(cornerrepair, {ImageTransparency = 0.8})
+				end
 				Tween(mainWindow.Sidebar, {BackgroundTransparency = 0.6})
-				Tween(mainWindow.Sidebar.CornerRepair, {BackgroundTransparency = 0.95})
+				for _, cornerrepair in pairs(mainWindow.Sidebar.CornerRepairs:GetChildren()) do
+					Tween(cornerrepair, {ImageTransparency = 0.6})
+				end
 				AcrylicObject.Frame.shadow.Visible = true
 			else
 				Tween(mainWindow, {BackgroundTransparency = 0})
 				Tween(mainWindow.Content.ContentMain, {BackgroundTransparency = 0})
-				Tween(mainWindow.Content.ContentMain.CornerRepairHorizontal, {BackgroundTransparency = 0})
-				Tween(mainWindow.Content.ContentMain.CornerRepairVertical, {BackgroundTransparency = 0})
+				for _, cornerrepair in pairs(mainWindow.Content.ContentMain.CornerRepairs:GetChildren()) do
+					Tween(cornerrepair, {ImageTransparency = 0})
+				end
 				Tween(mainWindow.Content.Topbar, {BackgroundTransparency = 0})
-				Tween(mainWindow.Content.Topbar.CornerRepairHorizontal, {BackgroundTransparency = 0})
-				Tween(mainWindow.Content.Topbar.CornerRepairVertical, {BackgroundTransparency = 0})
+				for _, cornerrepair in pairs(mainWindow.Content.Topbar.CornerRepairs:GetChildren()) do
+					Tween(cornerrepair, {ImageTransparency = 0})
+				end
+				Tween(mainWindow.Sidebar, {BackgroundTransparency = 0})
+				for _, cornerrepair in pairs(mainWindow.Sidebar.CornerRepairs:GetChildren()) do
+					Tween(cornerrepair, {ImageTransparency = 0})
+				end
 				AcrylicObject.Frame.shadow.Visible = false
 			end
 		end)
@@ -2089,7 +2099,9 @@ function Starlight:CreateWindow(WindowSettings)
 			end
 			ThemeMethods.bindTheme(mainWindow.ModalOverlay, "BackgroundColor3", "Backgrounds.Popup")
 			ThemeMethods.bindTheme(mainWindow.Sidebar, "BackgroundColor3", "Backgrounds.Light")
-			ThemeMethods.bindTheme(mainWindow.Sidebar.CornerRepair, "BackgroundColor3", "Backgrounds.Light")
+			for _, cornerrepair in pairs(mainWindow.Sidebar.CornerRepairs:GetChildren()) do
+				ThemeMethods.bindTheme(cornerrepair,"ImageColor3", "Backgrounds.Light")
+			end
 			ThemeMethods.bindTheme(mainWindow.Sidebar.DropShadowHolder.DropShadow, "ImageColor3", "Foregrounds.Dark")
 			ThemeMethods.bindTheme(mainWindow.Sidebar.Header, "TextColor3", "Foregrounds.Light")
 			ThemeMethods.bindTheme(mainWindow.Sidebar.Player.PlayerIcon, "BackgroundColor3", "Backgrounds.Groupbox")
@@ -2097,8 +2109,9 @@ function Starlight:CreateWindow(WindowSettings)
 			ThemeMethods.bindTheme(mainWindow.Sidebar.Player.Header.Icon.Accent, "Color", "Accents.Main")
 			ThemeMethods.bindTheme(mainWindow.Sidebar.Player.subheader, "TextColor3", "Foregrounds.Medium")
 			ThemeMethods.bindTheme(mainWindow.Content.Topbar, "BackgroundColor3", "Backgrounds.Medium")
-			ThemeMethods.bindTheme(mainWindow.Content.Topbar.CornerRepairHorizontal, "BackgroundColor3", "Backgrounds.Medium")
-			ThemeMethods.bindTheme(mainWindow.Content.Topbar.CornerRepairVertical, "BackgroundColor3", "Backgrounds.Medium")
+			for _, cornerrepair in pairs(mainWindow.Content.Topbar.CornerRepairs:GetChildren()) do
+				ThemeMethods.bindTheme(cornerrepair,"ImageColor3", "Backgrounds.Medium")
+			end
 			ThemeMethods.bindTheme(mainWindow.Content.Topbar.Headers.Subheader, "TextColor3", "Foregrounds.Medium")
 			for _, control in pairs(mainWindow.Content.Topbar.Controls:GetChildren()) do
 				if control.ClassName ~= "TextButton" then continue end
@@ -2107,8 +2120,9 @@ function Starlight:CreateWindow(WindowSettings)
 			ThemeMethods.bindTheme(mainWindow.Content.Topbar.NotificationCenterIcon, "ImageColor3", "Foregrounds.Dark")
 			ThemeMethods.bindTheme(mainWindow.Content.Topbar.Search, "ImageColor3", "Foregrounds.Dark")
 			ThemeMethods.bindTheme(mainWindow.Content.ContentMain, "BackgroundColor3", "Backgrounds.Dark")
-			ThemeMethods.bindTheme(mainWindow.Content.ContentMain.CornerRepairHorizontal, "BackgroundColor3", "Backgrounds.Dark")
-			ThemeMethods.bindTheme(mainWindow.Content.ContentMain.CornerRepairVertical, "BackgroundColor3", "Backgrounds.Dark")
+			for _, cornerrepair in pairs(mainWindow.Content.ContentMain.CornerRepairs:GetChildren()) do
+				ThemeMethods.bindTheme(cornerrepair,"ImageColor3", "Backgrounds.Dark")
+			end
 
 			ThemeMethods.bindTheme(StarlightUI.Drag.DragCosmetic, "BackgroundColor3", "Foregrounds.Light")
 
@@ -2126,29 +2140,6 @@ function Starlight:CreateWindow(WindowSettings)
 			end
 			ThemeMethods.bindTheme(mainWindow["New Loading Screen"].Frame.ImageLabel.Player, "BackgroundColor3", "Backgrounds.Groupbox")
 		end
-
-		--[[if Starlight.BlurEnabled then
-			mainWindow.Sidebar.BackgroundTransparency = 1
-			mainWindow.Sidebar.CornerRepair.BackgroundTransparency = 1
-
-			mainWindow.Content.Topbar.BackgroundTransparency = 1
-			mainWindow.Content.Topbar.CornerRepairHorizontal.BackgroundTransparency = 1
-			mainWindow.Content.Topbar.CornerRepairVertical.BackgroundTransparency = 1
-
-			mainWindow.BackgroundTransparency = 1
-
-			mainWindow.Content.ContentMain.CornerRepairHorizontal.BackgroundTransparency = 0.8
-			mainWindow.Content.ContentMain.CornerRepairVertical.BackgroundTransparency = 0.8
-			mainWindow.Content.ContentMain.BackgroundTransaprency = 0.8
-
-			BlurModule(mainWindow)
-		end]]
-		--[[task.delay(5/60, function()
-			Hide(StarlightUI)
-			task.delay(3/60, function()
-				Unhide(StarlightUI)
-			end)
-		end)]]
 
 		if WindowSettings.LoadingEnabled then
 
