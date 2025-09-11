@@ -68,7 +68,7 @@ by Nebula Softworks
 
 --// SECTION : Core Variables
 
-local Release = "Prerelease Beta 4.01" 
+local Release = "Prerelease Beta 4.01a" 
 local debugV = false 
 
 local Starlight = {
@@ -1820,7 +1820,7 @@ function Starlight:Notification(data)
 		TweenService:Create(newNotification, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {Size = UDim2.new(1, 0, 0, bounds + 50)}):Play()
 
 		task.wait(0.15)
-		TweenService:Create(newNotification, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {BackgroundTransparency = notificationAcrylic and (mainAcrylic and 0.75 or 0.397) or 0}):Play()
+		TweenService:Create(newNotification, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {BackgroundTransparency = notificationAcrylic and (mainAcrylic and 0.7 or 0.375) or 0}):Play()
 		TweenService:Create(newNotification.Acrylic.shadow, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {ImageTransparency = 0.7}):Play()
 		TweenService:Create(newNotification.Acrylic.tint, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {ImageTransparency = 0.98}):Play()
 		TweenService:Create(newNotification.Acrylic.Noise, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {ImageTransparency = 0.9}):Play()
@@ -7486,7 +7486,7 @@ function Starlight:CreateWindow(WindowSettings)
 							TweenService:Create(newNotification, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {Size = UDim2.new(1, 0, 0, bounds)}):Play()
 
 							task.wait(0.15)
-							TweenService:Create(newNotification, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {BackgroundTransparency = notificationAcrylic and (mainAcrylic and 0.75 or 0.397) or 0}):Play()
+							TweenService:Create(newNotification, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {BackgroundTransparency = notificationAcrylic and (mainAcrylic and 0.7 or 0.375) or 0}):Play()
 							TweenService:Create(newNotification.Shadow.antumbraShadow, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {ImageTransparency = 0.94}):Play()
 							TweenService:Create(newNotification.Shadow.penumbraShadow, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {ImageTransparency = 0.55}):Play()
 							TweenService:Create(newNotification.Shadow.umbraShadow, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {ImageTransparency = 0.4}):Play()
