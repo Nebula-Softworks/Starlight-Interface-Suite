@@ -1794,7 +1794,7 @@ function Starlight:Notification(data)
 
 		notificationAcrylicEvent.Event:Connect(function()
 			if newNotification.BackgroundTransparency == 1 then	return end
-			TweenService:Create(newNotification, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {BackgroundTransparency = notificationAcrylic and (mainAcrylic and 0.75 or 0.397) or 0}):Play()
+			TweenService:Create(newNotification, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {BackgroundTransparency = notificationAcrylic and (mainAcrylic and 0.7 or 0.375) or 0}):Play()
 		end)
 
 		-- Set Data
