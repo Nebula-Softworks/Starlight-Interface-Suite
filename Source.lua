@@ -68,12 +68,12 @@ by Nebula Softworks
 
 --// SECTION : Core Variables
 
-local Release = "Prerelease Beta 4.01a" 
+local Release = "Prerelease Beta 4.02" 
 local debugV = false 
 
 local Starlight = {
 
-	InterfaceBuild = "B4B2", -- Beta 4 Build 2
+	InterfaceBuild = "B4B3", -- Beta 4 Build 3
 	
 	WindowKeybind = "K",
 	
@@ -1732,6 +1732,12 @@ function Starlight:Destroy()
 	for i,v in pairs(Starlight) do
 		v = nil
 	end
+	if Camera:FindFirstChild("Starlight Blur Elements") then
+		for _, blur in pairs(Camera:FindFirstChild("Starlight Blur Elements"):GetChildren()) do
+			blur:Destroy()
+		end
+		Camera:FindFirstChild("Starlight Blur Elements"):Destroy()
+	end
 end
 
 function Starlight:Notification(data)
@@ -1820,36 +1826,40 @@ function Starlight:Notification(data)
 		TweenService:Create(newNotification, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {Size = UDim2.new(1, 0, 0, bounds + 50)}):Play()
 
 		task.wait(0.15)
-		TweenService:Create(newNotification, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {BackgroundTransparency = notificationAcrylic and (mainAcrylic and 0.7 or 0.375) or 0}):Play()
-		TweenService:Create(newNotification.Acrylic.shadow, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {ImageTransparency = 0.7}):Play()
-		TweenService:Create(newNotification.Acrylic.tint, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {ImageTransparency = 0.98}):Play()
-		TweenService:Create(newNotification.Acrylic.Noise, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {ImageTransparency = 0.9}):Play()
-		TweenService:Create(newNotification.Shadow.antumbraShadow, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {ImageTransparency = 0.94}):Play()
-		TweenService:Create(newNotification.Shadow.penumbraShadow, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {ImageTransparency = 0.55}):Play()
-		TweenService:Create(newNotification.Shadow.umbraShadow, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {ImageTransparency = 0.4}):Play()
-		TweenService:Create(newNotification.Title, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {TextTransparency = 0}):Play()
+		pcall(function()
+			TweenService:Create(newNotification, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {BackgroundTransparency = notificationAcrylic and (mainAcrylic and 0.7 or 0.375) or 0}):Play()
+			pcall(function()
+				TweenService:Create(newNotification.Acrylic.shadow, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {ImageTransparency = 0.7}):Play()
+				TweenService:Create(newNotification.Acrylic.tint, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {ImageTransparency = 0.98}):Play()
+				TweenService:Create(newNotification.Acrylic.Noise, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {ImageTransparency = 0.9}):Play()
+			end)
+			TweenService:Create(newNotification.Shadow.antumbraShadow, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {ImageTransparency = 0.94}):Play()
+			TweenService:Create(newNotification.Shadow.penumbraShadow, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {ImageTransparency = 0.55}):Play()
+			TweenService:Create(newNotification.Shadow.umbraShadow, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {ImageTransparency = 0.4}):Play()
+			TweenService:Create(newNotification.Title, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {TextTransparency = 0}):Play()
 
-		task.wait(0.05)
+			task.wait(0.05)
 
-		TweenService:Create(newNotification.Icon, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {ImageTransparency = 0}):Play()
+			TweenService:Create(newNotification.Icon, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {ImageTransparency = 0}):Play()
 
-		task.wait(0.05)
-		TweenService:Create(newNotification.Description, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {TextTransparency = 0.35}):Play()
-		TweenService:Create(newNotification.Time, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {TextTransparency = 0.35}):Play()
-		TweenService:Create(newNotification.UIStroke, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {Transparency = 0.95}):Play()
+			task.wait(0.05)
+			TweenService:Create(newNotification.Description, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {TextTransparency = 0.35}):Play()
+			TweenService:Create(newNotification.Time, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {TextTransparency = 0.35}):Play()
+			TweenService:Create(newNotification.UIStroke, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {Transparency = 0.95}):Play()
 
-		-- Theme Binding
-		do
-			ThemeMethods.bindTheme(newNotification, "BackgroundColor3", "Backgrounds.Medium")
-			ThemeMethods.bindTheme(newNotification.UIStroke, "Color", "Foregrounds.Dark")
-			for _, shadow in pairs(newNotification.Shadow:GetChildren()) do
-				ThemeMethods.bindTheme(shadow, "ImageColor3", "Miscellaneous.LighterShadow")
+			-- Theme Binding
+			do
+				ThemeMethods.bindTheme(newNotification, "BackgroundColor3", "Backgrounds.Medium")
+				ThemeMethods.bindTheme(newNotification.UIStroke, "Color", "Foregrounds.Dark")
+				for _, shadow in pairs(newNotification.Shadow:GetChildren()) do
+					ThemeMethods.bindTheme(shadow, "ImageColor3", "Miscellaneous.LighterShadow")
+				end
+				ThemeMethods.bindTheme(newNotification.Icon, "ImageColor3", "Foregrounds.Light")
+				ThemeMethods.bindTheme(newNotification.Description, "TextColor3", "Foregrounds.Light")
+				ThemeMethods.bindTheme(newNotification.Title, "TextColor3", "Foregrounds.Light")
+				ThemeMethods.bindTheme(newNotification.Time, "TextColor3", "Foregrounds.Light")
 			end
-			ThemeMethods.bindTheme(newNotification.Icon, "ImageColor3", "Foregrounds.Light")
-			ThemeMethods.bindTheme(newNotification.Description, "TextColor3", "Foregrounds.Light")
-			ThemeMethods.bindTheme(newNotification.Title, "TextColor3", "Foregrounds.Light")
-			ThemeMethods.bindTheme(newNotification.Time, "TextColor3", "Foregrounds.Light")
-		end
+		end)
 
 		data.Duration = data.Duration or math.min(math.max((#newNotification.Description.Text * 0.1) + 2.5, 3), 10)
 		if data.Duration >= 0 then
@@ -1937,7 +1947,7 @@ function Starlight:CreateWindow(WindowSettings)
 	
 	]]--
 
-	if not correctBuild and not warned and WindowSettings.BuildWarnings then
+	if not correctBuild and not warned and (WindowSettings.BuildWarnings == nil and true or WindowSettings.BuildWarnings) then
 		warned = true
 		warn('Starlight | Build Mismatch')
 		warn('Starlight may run into issues as it seems you are running an incompatible interface version ('.. (StarlightUI.Resources:FindFirstChild("Build") and StarlightUI.Resources:FindFirstChild("Build").Value or 'No Build') ..'). of Starlight\n\nThis version of Starlight is intended for interface build '..Starlight.InterfaceBuild..'.\nTry rerunning the script. If the issue persists, join our discord for support.')
@@ -2003,9 +2013,9 @@ function Starlight:CreateWindow(WindowSettings)
 			notificationAcrylicEvent:Fire()
 			if mainAcrylic then
 				Tween(mainWindow, {BackgroundTransparency = 0.8})
-				Tween(mainWindow.Content.ContentMain, {BackgroundTransparency = 1})
+				Tween(mainWindow.Content.ContentMain, {BackgroundTransparency = 0.8})
 				for _, cornerrepair in pairs(mainWindow.Content.ContentMain.CornerRepairs:GetChildren()) do
-					Tween(cornerrepair, {ImageTransparency = 1})
+					Tween(cornerrepair, {ImageTransparency = 0.8})
 				end
 				Tween(mainWindow.Content.Topbar, {BackgroundTransparency = 0.8})
 				for _, cornerrepair in pairs(mainWindow.Content.Topbar.CornerRepairs:GetChildren()) do
@@ -5803,13 +5813,19 @@ function Starlight:CreateWindow(WindowSettings)
 									if input.ClassName ~= "Frame" then continue end
 									ThemeMethods.bindTheme(input.Header, "TextColor3", "Foregrounds.Light")
 									ThemeMethods.bindTheme(input.PART_Backdrop, "BackgroundColor3", "Backgrounds.Dark")
-									ThemeMethods.bindTheme(input.PART_Backdrop.UIStroke, "Color", "Foregrounds.Dark")
+									pcall(function()
+										ThemeMethods.bindTheme(input.PART_Backdrop.UIStroke, "Color", "Foregrounds.Dark")
+									end)
 									ThemeMethods.bindTheme(input.PART_Backdrop.PART_Input, "TextColor3", "Foregrounds.Light")
 									ThemeMethods.bindTheme(input.PART_Backdrop.PART_Input, "PlaceholderColor3", "Foregrounds.Medium")
 								end
 							end
 							acrylicEvent.Event:Connect(function()
-								NestedElement.Instances[2].BackgroundTransparency = 0.5
+								if mainAcrylic then
+									NestedElement.Instances[2].BackgroundTransparency = 0.5
+								else
+									NestedElement.Instances[2].BackgroundTransparency = 0
+								end
 							end)
 							local AcrylicObject = Acrylic.AcrylicPaint()
 							AcrylicObject.AddParent(NestedElement.Instances[2])
@@ -6191,7 +6207,11 @@ function Starlight:CreateWindow(WindowSettings)
 							ThemeMethods.bindTheme(NestedElement.Instances[1].Header, "TextColor3", "Foregrounds.Light")
 							ThemeMethods.bindTheme(NestedElement.Instances[1].Header, "PlaceholderColor3", "Foregrounds.Medium")
 							acrylicEvent.Event:Connect(function()
-								NestedElement.Instances[2].BackgroundTransparency = 0.5
+								if mainAcrylic then
+									NestedElement.Instances[2].BackgroundTransparency = 0.5
+								else
+									NestedElement.Instances[2].BackgroundTransparency = 0
+								end
 							end)
 							local AcrylicObject = Acrylic.AcrylicPaint()
 							AcrylicObject.AddParent(NestedElement.Instances[2])
@@ -6257,7 +6277,7 @@ function Starlight:CreateWindow(WindowSettings)
 						end)
 
 						Starlight.Window.TabSections[Name].Tabs[TabIndex].Groupboxes[GroupIndex].Elements[ParentIndex].NestedElements[NestedIndex] = NestedElement
-						return Starlight.Window.TabSections[Name].Tabs[TabIndex].Groupboxes[GroupIndex].Elements[ParentIndex].NestedElements[NestedIndex]
+						return NestedElement
 
 					end
 
@@ -6273,11 +6293,9 @@ function Starlight:CreateWindow(WindowSettings)
 					ElementSettings = {
 						Name = string,
 						Icon = number, **
-						ImageSource = string, **
 						Content = string,
 					}
 					]]
-					ElementSettings.ImageSource = ElementSettings.ImageSource or "Material"
 
 					local Element = {
 						Values = ElementSettings,
@@ -7460,6 +7478,12 @@ function Starlight:CreateWindow(WindowSettings)
 						TweenService:Create(newNotification.Description, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {TextTransparency = 1}):Play()
 						TweenService:Create(newNotification.Time, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {TextTransparency = 1}):Play()
 
+						pcall(function()
+							TweenService:Create(newNotification.Acrylic.shadow, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {ImageTransparency = 0.7}):Play()
+							TweenService:Create(newNotification.Acrylic.tint, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {ImageTransparency = 0.98}):Play()
+							TweenService:Create(newNotification.Acrylic.Noise, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {ImageTransparency = 0.9}):Play()
+						end)
+
 						TweenService:Create(newNotification, TweenInfo.new(1, Enum.EasingStyle.Exponential), {Size = UDim2.new(1, -90, 0, 0)}):Play()
 
 						Tween(newNotification, {Size = UDim2.new(1, -90, 0, -StarlightUI.Notifications:FindFirstChild("UIListLayout").Padding.Offset)}, function()
@@ -7815,6 +7839,7 @@ StarlightUI.Enabled = true
 --// SECTION : Testing
 
 local enabled = true
+
 if isStudio and enabled then
 	--Starlight:SetTheme("Hollywood Dark")
 
@@ -8058,9 +8083,12 @@ if isStudio and enabled then
 			print(v)
 		end,
 	}, 'drpdwn2')
+	dropdown2:Set({
+		Options = {"noooo"}
+	})
 
 	local mix = g2:CreateToggle({Name = "Dropdown On Toggle",CurrentValue = false,Callback = function() end}, "tgglemix")
-	mix:AddDropdown({
+	local id = mix:AddDropdown({
 		Options = {"hi","heeh","huh"},
 		CurrentOption = {"wsp", "huh"},
 		Tooltip = "Hi",
@@ -8143,7 +8171,7 @@ if isStudio and enabled then
 	local themeg = t:BuildThemeGroupbox(1)
 
 	Starlight:LoadAutoloadConfig()
-end
+end--]=]
 
 --// ENDSECTION
 
