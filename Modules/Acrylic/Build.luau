@@ -367,10 +367,9 @@ local function createAcrylic()
 		if getgenv().SecureMode then
 			flag = false
 		end
-	else
-		if isStudio then
-			flag = true
-		end
+	end
+	if game:GetService("RunService"):IsStudio() then
+		flag = true
 	end
 	if not flag then return end
 	
@@ -421,10 +420,9 @@ local function createAcrylicBlur(distance)
 		if getgenv().SecureMode then
 			flag = false
 		end
-	else
-		if isStudio then
+	end
+	if game:GetService("RunService"):IsStudio() then
 			flag = true
-		end
 	end
 	if not flag then return end
 	local cleanups = {}
