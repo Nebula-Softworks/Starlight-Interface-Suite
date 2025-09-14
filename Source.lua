@@ -7742,6 +7742,7 @@ function Starlight.FileSystem:RefreshConfigList(path)
 
 	if isStudio or (not isfile) then return "Config system unavailable." end
 
+	if not isfolder(path) then makefolder(path) end
 	local list = listfiles(path) or {}
 
 	local configs = {}
