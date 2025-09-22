@@ -68,12 +68,12 @@ by Nebula Softworks
 
 --// SECTION : Core Variables
 
-local Release = "Prerelease Beta 4.1" 
+local Release = "Prerelease Beta 4.2" 
 local debugV = false
 
 local Starlight = {
 
-	InterfaceBuild = "B4B6", -- Beta 4 Build 6
+	InterfaceBuild = "B4B8",
 	
 	WindowKeybind = "K",
 	
@@ -103,21 +103,23 @@ local Starlight = {
 --// SECTION : Services And Variables
 
 -- Services
-local Lighting = game:GetService("Lighting") 
-local Players = game:GetService("Players")
-local Teams = game:GetService("Teams")
-local RunService = game:GetService("RunService") 
-local UserInputService = game:GetService("UserInputService") 
-local TweenService = game:GetService("TweenService") 
-local HttpService = game:GetService("HttpService")
-local Localization = game:GetService("LocalizationService")
-local CollectionService = game:GetService("CollectionService")
-local TextService = game:GetService("TextService")
-local GuiService = game:GetService("GuiService")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local ContentProvider = game:GetService("ContentProvider")
-local CoreGui = game:GetService("CoreGui")
-local StarterGui = game:GetService("StarterGui")
+local function GetService(serviceName) return cloneref ~= nil and cloneref(game:GetService(serviceName)) or game:GetService(serviceName) end
+
+local Lighting = GetService("Lighting") 
+local Players = GetService("Players")
+local Teams = GetService("Teams")
+local RunService = GetService("RunService") 
+local UserInputService = GetService("UserInputService") 
+local TweenService = GetService("TweenService") 
+local HttpService = GetService("HttpService")
+local Localization = GetService("LocalizationService")
+local CollectionService = GetService("CollectionService")
+local TextService = GetService("TextService")
+local GuiService = GetService("GuiService")
+local ReplicatedStorage = GetService("ReplicatedStorage")
+local ContentProvider = GetService("ContentProvider")
+local CoreGui = GetService("CoreGui")
+local StarterGui = GetService("StarterGui")
 
 local Player = Players.LocalPlayer
 local Camera = workspace.CurrentCamera
@@ -956,6 +958,7 @@ function Color.Pack(Color : table)
 	return Color3.fromRGB(Color.R, Color.G, Color.B)
 end
 
+-- Deprecated with the new AcrylicModule system.
 --[=[
 -- Creates the BlurBehind Effect for the transparent theme
 local function BlurModule(Frame : Frame)
@@ -1197,7 +1200,7 @@ setmetatable(TransparencyValues, {
 
 local oldSizeX, oldSizeY, oldPosX, oldPosY
 
--- Hides the given MainWindow
+-- Hides the given object
 local function Hide(Interface , JustHide : boolean?, Notify : boolean?, Bind : string?)
 
 	JustHide = JustHide or false
@@ -1325,17 +1328,25 @@ local function Hide(Interface , JustHide : boolean?, Notify : boolean?, Bind : s
 	end
 
 	if Notify then
-		Starlight:Notification({
-			Title = "Interface Hidden",
-			Icon = 87575513726659,
-			Content = "The Interface Has Been Hidden. You May Reopen It By Pressing The " .. Bind .. " Key.  " 
-		}) 
+		if Starlight.Instance.MobileToggle.Visible then
+			Starlight:Notification({
+				Title = "Interface Hidden",
+				Icon = 87575513726659,
+				Content = "The Interface Has Been Hidden. You May Reopen It By Pressing The Small Icon Button. " 
+			}) 
+		else
+			Starlight:Notification({
+				Title = "Interface Hidden",
+				Icon = 87575513726659,
+				Content = "The Interface Has Been Hidden. You May Reopen It By Pressing The " .. Bind .. " Key.  " 
+			})
+		end
 	end
 
 	Starlight.Minimized = true
 end
 
--- Unhides the given window which has been hidden by hide
+-- Unhides the given object which has been hidden by hide
 local function Unhide(Interface)
 	if Interface.ClassName == "ScreenGui" then
 		Interface.Enabled = true
@@ -1441,7 +1452,7 @@ local function AddToolTip(InfoStr, HoverInstance)
 	label.TextSize = 15
 	label.TextXAlignment = Enum.TextXAlignment.Left
 	label.FontFace = Font.fromId(12187365364, Enum.FontWeight.Regular) 
-	label.TextWrapped = false
+	label.TextWrapped = true
 	label.BackgroundTransparency= 1
 	label.TextColor3 = Color3.new(1,1,1)
 
@@ -1452,8 +1463,12 @@ local function AddToolTip(InfoStr, HoverInstance)
 
 	label.ZIndex = tooltip.ZIndex + 1
 	label.Parent = tooltip
+	label.Size = UDim2.fromOffset(math.huge, math.huge)
+	if label.TextBounds.X > 180 then
+		label.Size = UDim2.fromOffset(180, math.huge)
+	end
 	label.Size = UDim2.fromOffset(label.TextBounds.X, label.TextBounds.Y)
-	tooltip.Size = UDim2.fromOffset(label.TextBounds.X + 8, label.TextBounds.Y + 6)
+	tooltip.Size = UDim2.fromOffset(label.Size.X.Offset + 8, label.Size.Y.Offset + 6)
 
 	tooltip.Visible = false
 
@@ -1597,10 +1612,12 @@ local function makeDraggable(Bar, Window : Frame, dragBar, enableTaptic, tapticO
 				local newMainPosition = UDim2.new(FramePos.X.Scale, FramePos.X.Offset + Delta.X, FramePos.Y.Scale, FramePos.Y.Offset + Delta.Y)
 				Tween(Window, {Position = newMainPosition}, nil, TweenInfo.new(0.35, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out))
 
-				local newDragBarPosition = UDim2.new(FramePos.X.Scale, FramePos.X.Offset + Delta.X + Window.Size.X.Offset/2, FramePos.Y.Scale, FramePos.Y.Offset + Delta.Y + Window.Size.Y.Offset +10)
-				Tween(dragBar, {Position = newDragBarPosition}, function()
-					debounce = false
-				end, TweenInfo.new(0.35, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out))
+				if dragBar then
+					local newDragBarPosition = UDim2.new(FramePos.X.Scale, FramePos.X.Offset + Delta.X + Window.Size.X.Offset/2, FramePos.Y.Scale, FramePos.Y.Offset + Delta.Y + Window.Size.Y.Offset +10)
+					Tween(dragBar, {Position = newDragBarPosition}, function()
+						debounce = false
+					end, TweenInfo.new(0.35, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out))
+				end
 				
 			end
 		end)
@@ -1718,7 +1735,21 @@ local tabs : Frame = mainWindow.Content.ContentMain.Elements
 local Resizing = false -- Not Implemented as of Alpha Release 2
 local ResizePos = false -- Not Implemented as of Alpha Release 2
 
+local GUICanvasSize = { X = Camera.ViewportSize.X, Y = Camera.ViewportSize.Y - GuiInset }
+
 --// ENDSUBSECTION 
+
+if Player.PlayerGui:FindFirstChild("TouchGui") then
+	function check()
+		if Player.PlayerGui:FindFirstChild("TouchGui").TouchControlFrame.JumpButton.Visible then
+			StarlightUI.Notifications.Position = UDim2.new(1,-20,1,-(24 + Player.PlayerGui:FindFirstChild("TouchGui").TouchControlFrame.JumpButton.AbsoluteSize.Y))
+		else
+	StarlightUI.Notifications.Position = UDim2.new(1,-20,1,-20)
+		end
+	end
+	Player.PlayerGui:FindFirstChild("TouchGui").TouchControlFrame.JumpButton:GetPropertyChangedSignal("Visible"):Connect(check)
+	check()
+end
 
 --// ENDSECTION
 
@@ -1812,7 +1843,7 @@ function Starlight:Notification(data)
 
 		notificationAcrylicEvent.Event:Connect(function()
 			if newNotification.BackgroundTransparency == 1 then	return end
-			TweenService:Create(newNotification, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {BackgroundTransparency = notificationAcrylic and (mainAcrylic and 0.7 or 0.375) or 0}):Play()
+			TweenService:Create(newNotification, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {BackgroundTransparency = notificationAcrylic and (mainAcrylic and 0.55 or 0.375) or 0}):Play()
 		end)
 
 		-- Set Data
@@ -1839,7 +1870,7 @@ function Starlight:Notification(data)
 
 		task.wait(0.15)
 		pcall(function()
-			TweenService:Create(newNotification, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {BackgroundTransparency = notificationAcrylic and (mainAcrylic and 0.7 or 0.375) or 0}):Play()
+			TweenService:Create(newNotification, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {BackgroundTransparency = notificationAcrylic and (mainAcrylic and 0.55 or 0.375) or 0}):Play()
 			pcall(function()
 				TweenService:Create(newNotification.Acrylic.shadow, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {ImageTransparency = 0.7}):Play()
 				TweenService:Create(newNotification.Acrylic.tint, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {ImageTransparency = 0.98}):Play()
@@ -2015,28 +2046,34 @@ function Starlight:CreateWindow(WindowSettings)
 	--// SUBSECTION : Initial Code
 	do
 		local AcrylicObject = Acrylic.AcrylicPaint()
+		local AcrylicObject2 = Acrylic.AcrylicPaint()
 		pcall(function()
 			AcrylicObject.AddParent(mainWindow)
 			AcrylicObject.Frame.Parent = mainWindow
 			AcrylicObject.Model.Size = Vector3.new(1.0,1.032,0.001)
+			AcrylicObject2.AddParent(StarlightUI.MobileToggle)
+			AcrylicObject2.Frame.Parent = StarlightUI.MobileToggle
+			AcrylicObject2.Model.Size = Vector3.new(1.0,1.0,0.001)
 		end)
 		
 		acrylicEvent.Event:Connect(function()
 			notificationAcrylicEvent:Fire()
 			if mainAcrylic then
-				Tween(mainWindow, {BackgroundTransparency = 0.8})
-				Tween(mainWindow.Content.ContentMain, {BackgroundTransparency = 0.9})
+				Tween(mainWindow, {BackgroundTransparency = 0.6})
+				Tween(mainWindow.Content.ContentMain, {BackgroundTransparency = 0.6})
 				for _, cornerrepair in pairs(mainWindow.Content.ContentMain.CornerRepairs:GetChildren()) do
-					Tween(cornerrepair, {ImageTransparency = 0.9})
-				end
-				Tween(mainWindow.Content.Topbar, {BackgroundTransparency = 0.75})
-				for _, cornerrepair in pairs(mainWindow.Content.Topbar.CornerRepairs:GetChildren()) do
-					Tween(cornerrepair, {ImageTransparency = 0.75})
-				end
-				Tween(mainWindow.Sidebar, {BackgroundTransparency = 0.6})
-				for _, cornerrepair in pairs(mainWindow.Sidebar.CornerRepairs:GetChildren()) do
 					Tween(cornerrepair, {ImageTransparency = 0.6})
 				end
+				Tween(mainWindow.Content.Topbar, {BackgroundTransparency = 0.5})
+				for _, cornerrepair in pairs(mainWindow.Content.Topbar.CornerRepairs:GetChildren()) do
+					Tween(cornerrepair, {ImageTransparency = 0.5})
+				end
+				Tween(mainWindow.Sidebar, {BackgroundTransparency = 0.45})
+				for _, cornerrepair in pairs(mainWindow.Sidebar.CornerRepairs:GetChildren()) do
+					Tween(cornerrepair, {ImageTransparency = 0.45})
+				end
+				Tween(StarlightUI.MobileToggle.Backdrop, {BackgroundTransparency = 0.5})
+				Tween(StarlightUI.MobileToggle.Backdrop.UIStroke, {Transparency = 0.5})
 				AcrylicObject.Frame.shadow.Visible = true
 			else
 				Tween(mainWindow, {BackgroundTransparency = 0})
@@ -2052,6 +2089,8 @@ function Starlight:CreateWindow(WindowSettings)
 				for _, cornerrepair in pairs(mainWindow.Sidebar.CornerRepairs:GetChildren()) do
 					Tween(cornerrepair, {ImageTransparency = 0})
 				end
+				Tween(StarlightUI.MobileToggle.Backdrop, {BackgroundTransparency = 0})
+				Tween(StarlightUI.MobileToggle.Backdrop.UIStroke, {Transparency = 0})
 				AcrylicObject.Frame.shadow.Visible = false
 			end
 		end)
@@ -2063,13 +2102,18 @@ function Starlight:CreateWindow(WindowSettings)
 		mainWindow.ModalOverlay.Visible = true
 
 		mainWindow.Size = WindowSettings.DefaultSize ~= nil and WindowSettings.DefaultSize or mainWindow.Size
+		if (GUICanvasSize.X - 50) <= mainWindow.AbsoluteSize.X then
+			mainWindow.Size = UDim2.new(0, GUICanvasSize.X - 50, mainWindow.Size.Y.Scale, mainWindow.Size.Y.Offset)
+		end
+		if (GUICanvasSize.Y - 50) <= mainWindow.AbsoluteSize.Y then
+			mainWindow.Size = UDim2.new(mainWindow.Size.X.Scale, mainWindow.Size.X.Offset, 0, GUICanvasSize.Y - 50)
+		end
 
 		mainWindow.Sidebar.Icon.Image = WindowSettings.Icon ~= nil and "rbxassetid://" .. WindowSettings.Icon or ""
 		mainWindow.Sidebar.Header.Text = WindowSettings.Name or ""
 		mainWindow.Content.Topbar.Headers.Subheader.Text = WindowSettings.Subtitle or ""
+		StarlightUI.MobileToggle.Image = WindowSettings.Icon ~= nil and "rbxassetid://" .. WindowSettings.Icon or "rbxassetid://6031097229"
 
-		mainWindow.Visible = true
-		StarlightUI.Drag.Visible = true
 		local size = mainWindow.Size
 		mainWindow.Size = WindowSettings.LoadingEnabled and UDim2.fromOffset(500,325) or mainWindow.Size
 		StarlightUI.MainWindow.Position = UDim2.fromOffset(
@@ -2116,6 +2160,12 @@ function Starlight:CreateWindow(WindowSettings)
 
 		-- Theme Binding
 		do
+			ThemeMethods.bindTheme(StarlightUI.MobileToggle.Backdrop, "BackgroundColor3", "Backgrounds.Dark")
+			ThemeMethods.bindTheme(StarlightUI.MobileToggle.Backdrop.UIStroke, "Color", "Foregrounds.Dark")
+			for _, shadow in pairs(StarlightUI.MobileToggle.Backdrop.DropShadowHolder:GetChildren()) do
+				ThemeMethods.bindTheme(shadow, "ImageColor3", "Miscellaneous.Shadow")
+			end
+			
 			ThemeMethods.bindTheme(mainWindow, "BackgroundColor3", "Backgrounds.Dark")
 			ThemeMethods.bindTheme(mainWindow.UIStroke.Accent, "Color", "Accents.Brighter")
 			for _, shadow in pairs(mainWindow.DropShadowHolder:GetChildren()) do
@@ -2164,6 +2214,10 @@ function Starlight:CreateWindow(WindowSettings)
 			end
 			ThemeMethods.bindTheme(mainWindow["New Loading Screen"].Frame.ImageLabel.Player, "BackgroundColor3", "Backgrounds.Groupbox")
 		end
+		
+		mainWindow.Visible = true
+		StarlightUI.Drag.Visible = true
+		StarlightUI.MobileToggle.Visible = UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled
 
 		if WindowSettings.LoadingEnabled then
 
@@ -2303,6 +2357,7 @@ function Starlight:CreateWindow(WindowSettings)
 
 		makeDraggable(mainWindow.Content.Topbar, mainWindow, StarlightUI.Drag)
 		makeDraggable(mainWindow.Sidebar, mainWindow, StarlightUI.Drag)
+		makeDraggable(StarlightUI.MobileToggle, StarlightUI.MobileToggle, nil)
 		if StarlightUI.Drag then makeDraggable(StarlightUI.Drag.Interact, mainWindow, StarlightUI.Drag, true, nil, StarlightUI.Drag) end
 
 		--if not WindowSettings.LoadingEnabled then task.wait(.15) end
@@ -2708,6 +2763,16 @@ function Starlight:CreateWindow(WindowSettings)
 				end
 			end)
 
+			Tab.Instances.Page.InputBegan:Connect(function(input)
+				if input.KeyCode == Enum.KeyCode.LeftShift or input.KeyCode == Enum.KeyCode.RightShift or input.UserInputType == Enum.UserInputType.Touch then
+					Tab.Instances.Page.ScrollingEnabled = true
+				end
+			end)
+			Tab.Instances.Page.InputEnded:Connect(function(input)
+				if input.KeyCode == Enum.KeyCode.LeftShift or input.KeyCode == Enum.KeyCode.RightShift or input.UserInputType == Enum.UserInputType.Touch then
+					Tab.Instances.Page.ScrollingEnabled = false
+				end
+			end)
 
 			for i=1, TabSettings.Columns do
 				local column = tabs["Tab_TEMPLATE"].ScrollingCollumnTemplate:Clone()
@@ -2715,7 +2780,7 @@ function Starlight:CreateWindow(WindowSettings)
 				column.LayoutOrder = i
 				column.Name = "Column_" .. i
 				for i,v in column:GetChildren() do
-					if v.ClassName ~= "UIListLayout" then
+					if v.ClassName == "Frame" then
 						v:Destroy()
 					end
 				end
@@ -2756,7 +2821,7 @@ function Starlight:CreateWindow(WindowSettings)
 				end
 				acrylicEvent.Event:Connect(function()
 					if mainAcrylic then
-						basetrans = 0.75
+						basetrans = 0.7
 						updTop()
 						updBottom()
 					else
@@ -3874,7 +3939,7 @@ function Starlight:CreateWindow(WindowSettings)
 
 								UserInputService.InputEnded:Connect(function(input, processed)
 									if not hover then return end
-									if input.UserInputType == Enum.UserInputType.MouseButton1 then
+									if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
 										Tween(ElementInstance["PART_Backdrop"]["PART_BackdropHover"], {BackgroundTransparency = 1})
 										hover = false
 									end
@@ -6688,6 +6753,10 @@ function Starlight:CreateWindow(WindowSettings)
 
 				local themesPath = WindowSettings.FileSettings.ThemesInRoot and `{Starlight.FileSystem.Folder}/{root}/themes` or `{Starlight.FileSystem.Folder}/{folderpath}/themes`
 
+				if not isStudio and not isfolder(themesPath) then
+					Starlight.FileSystem:BuildFolderTree()
+				end
+
 				local instance = Tab:CreateGroupbox({
 					Name = "Themes",
 					Icon = 6031625148,
@@ -7796,7 +7865,7 @@ function Starlight:CreateWindow(WindowSettings)
 							TweenService:Create(newNotification, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {Size = UDim2.new(1, 0, 0, bounds)}):Play()
 
 							task.wait(0.15)
-							TweenService:Create(newNotification, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {BackgroundTransparency = notificationAcrylic and (mainAcrylic and 0.7 or 0.375) or 0}):Play()
+							TweenService:Create(newNotification, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {BackgroundTransparency = notificationAcrylic and (mainAcrylic and 0.55 or 0.375) or 0}):Play()
 							TweenService:Create(newNotification.Shadow.antumbraShadow, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {ImageTransparency = 0.94}):Play()
 							TweenService:Create(newNotification.Shadow.penumbraShadow, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {ImageTransparency = 0.55}):Play()
 							TweenService:Create(newNotification.Shadow.umbraShadow, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {ImageTransparency = 0.4}):Play()
@@ -7884,6 +7953,30 @@ function Starlight:CreateWindow(WindowSettings)
 				end)
 			end
 		end)
+		
+		StarlightUI.MobileToggle.MouseButton1Click:Connect(function()
+			if Starlight.Minimized == true then
+				if not debounce then
+					debounce = true
+					Unhide(mainWindow)
+					Unhide(StarlightUI.Drag)
+					Tween(mainWindow.Content.Topbar.Controls.Minimize.Fill.Icon, {Position = UDim2.fromScale(.5,1.5)})
+					Tween(mainWindow.Content.Topbar.Controls.Minimize.Fill, {BackgroundTransparency = 1})
+					task.delay(.4, function()
+						debounce = false
+					end)
+				end
+			elseif Starlight.Minimized == false then
+				if not debounce then
+					debounce = true
+					Hide(mainWindow, false, true, Starlight.WindowKeybind)
+					Hide(StarlightUI.Drag, false, false, Starlight.WindowKeybind)
+					task.delay(.4, function()
+						debounce = false
+					end)
+				end
+			end
+		end)
 
 		connections["__windowKeybindHidingBindConnection"] = UserInputService.InputBegan:Connect(function(input, gpe)
 			if gpe then return end
@@ -7934,7 +8027,7 @@ function Starlight.FileSystem:BuildFolderTree(hasRoot : boolean, Root : string, 
 		paths[2] = `{Starlight.FileSystem.Folder}/{Root}`
 	end
 
-	if hasTheme ~= nil then
+	if not hasTheme then
 		table.insert(paths, `{Starlight.FileSystem.Folder}/{path}/themes`)
 	else
 		table.insert(paths, `{Starlight.FileSystem.Folder}/{Root}/themes`)
