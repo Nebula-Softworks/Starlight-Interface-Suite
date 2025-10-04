@@ -68,12 +68,12 @@ by Nebula Softworks
 
 --// SECTION : Core Variables
 
-local Release = "Prerelease Beta 4.2" 
+local Release = "Prerelease Beta 5" 
 local debugV = false
 
 local Starlight = {
 
-	InterfaceBuild = "B4B8",
+	InterfaceBuild = "B5B1",
 	
 	WindowKeybind = "K",
 	
@@ -103,8 +103,10 @@ local Starlight = {
 --// SECTION : Services And Variables
 
 -- Services
-local function GetService(serviceName) return cloneref ~= nil and cloneref(game:GetService(serviceName)) or game:GetService(serviceName) end
 
+local function GetService(serviceName) 
+	return cloneref ~= nil and cloneref(game:GetService(serviceName)) or game:GetService(serviceName) 
+end
 local Lighting = GetService("Lighting") 
 local Players = GetService("Players")
 local Teams = GetService("Teams")
@@ -119,9 +121,9 @@ local GuiService = GetService("GuiService")
 local ReplicatedStorage = GetService("ReplicatedStorage")
 local ContentProvider = GetService("ContentProvider")
 local CoreGui = GetService("CoreGui")
-local StarterGui = GetService("StarterGui")
 
 local Player = Players.LocalPlayer
+local PlayerGui = Player:WaitForChild("PlayerGui")
 local Camera = workspace.CurrentCamera
 local Mouse = Player:GetMouse()
 local GuiInset, _ = GuiService:GetGuiInset() ; GuiInset = GuiInset.Y-20
@@ -705,14 +707,14 @@ local Themes = {
 	},
 	["Hollywood Fluent"] = {
 		Backgrounds = {
-			Dark = Color3.fromRGB(32,32,32),
-			Medium = Color3.fromRGB(30,30,30),
-			Light = Color3.fromRGB(40,40,40),
-			Groupbox = Color3.fromRGB(45,45,45),
-			Highlight = Color3.fromRGB(25,25,25)
+			Dark = Color3.fromRGB(25,25,25),
+			Medium = Color3.fromRGB(36,36,36),
+			Light = Color3.fromRGB(36,36,36),
+			Groupbox = Color3.fromRGB(30,30,30),
+			Highlight = Color3.fromRGB(40,40,40)
 		},
 		Foregrounds = {
-			Active = Color3.fromRGB(255,255,255),
+			Active = Color3.fromRGB(26,34,42),
 			Light = Color3.fromRGB(255,255,255),
 			Medium = Color3.fromRGB(165,165,165),
 			Dark = Color3.fromRGB(77, 77, 77),
@@ -722,18 +724,18 @@ local Themes = {
 		Miscellaneous = {
 			Divider = Color3.fromRGB(180, 180, 180), 
 			Shadow = Color3.fromRGB(42, 42, 42), 
-			LighterShadow = Color3.fromRGB(50,50,50), 
+			LighterShadow = Color3.fromRGB(35,35,35), 
 		},
 		Accents = {
 			Main = ColorSequence.new {
-				ColorSequenceKeypoint.new(0.0, Color3.fromRGB(107, 208, 255)), 
-				ColorSequenceKeypoint.new(0.5, Color3.fromRGB(89, 176, 214)), 
-				ColorSequenceKeypoint.new(1.0, Color3.fromRGB(107, 208, 255)) 
+				ColorSequenceKeypoint.new(0.0, Color3.fromRGB(174, 216, 232)), 
+				ColorSequenceKeypoint.new(0.5, Color3.fromRGB(160, 210, 232)), 
+				ColorSequenceKeypoint.new(1.0, Color3.fromRGB(174, 216, 232)) 
 			},
 			Brighter = ColorSequence.new {
-				ColorSequenceKeypoint.new(0.0, Color3.fromRGB(107, 208, 255)), 
-				ColorSequenceKeypoint.new(0.5, Color3.fromRGB(116, 185, 214)), 
-				ColorSequenceKeypoint.new(1.0, Color3.fromRGB(107, 208, 255)) 
+				ColorSequenceKeypoint.new(0.0, Color3.fromRGB(187, 219, 232)), 
+				ColorSequenceKeypoint.new(0.5, Color3.fromRGB(176, 214, 232)), 
+				ColorSequenceKeypoint.new(1.0, Color3.fromRGB(187, 219, 232)) 
 			}
 		}
 	},
@@ -1624,8 +1626,8 @@ local function makeDraggable(Bar, Window : Frame, dragBar, enableTaptic, tapticO
 		
 		Window:GetPropertyChangedSignal("AbsoluteSize"):Connect(function()
 			if not debounce then
-				local newMainPosition = UDim2.new(FramePos.X.Scale, FramePos.X.Offset, FramePos.Y.Scale, FramePos.Y.Offset)
-				local newDragBarPosition = UDim2.new(FramePos.X.Scale, FramePos.X.Offset + Window.Size.X.Offset/2, FramePos.Y.Scale, FramePos.Y.Offset  + Window.Size.Y.Offset +10)
+				local newMainPosition = UDim2.new(Window.Position.X.Scale, Window.Position.X.Offset, Window.Position.Y.Scale, Window.Position.Y.Offset)
+				local newDragBarPosition = UDim2.new(Window.Position.X.Scale, Window.Position.X.Offset + Window.Size.X.Offset/2, Window.Position.Y.Scale, Window.Position.Y.Offset  + Window.Size.Y.Offset +10)
 				Tween(dragBar, {Position = newDragBarPosition}, nil, TweenInfo.new(0.35, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out))
 			end
 		end)
@@ -1650,13 +1652,13 @@ local warned = false
 
 repeat
 
-	if StarlightUI.Resources:FindFirstChild("Build") and StarlightUI.Resources:FindFirstChild("Build").Value == Starlight.InterfaceBuild then
+	if StarlightUI.Resources:FindFirstChild('Build') and StarlightUI.Resources.Build.Value == Starlight.InterfaceBuild then
 		correctBuild = true
 		break
 	end
 
-	if StarlightUI and not isStudio then StarlightUI:Destroy() end
-	StarlightUI = isStudio and script.Parent:WaitForChild("Starlight V2") or game:GetObjects("rbxassetid://" .. modelId)[1]
+	toDestroy, StarlightUI = StarlightUI, isStudio and script.Parent:FindFirstChild('Starlight V2') or game:GetObjects("rbxassetid://" .. modelId)[1]
+	if toDestroy and not isStudio then toDestroy:Destroy() end
 
 	buildAttempts += 1
 
@@ -1712,6 +1714,14 @@ elseif not isStudio then
 			Interface:Destroy()
 		end
 	end
+else
+	for _, Interface in ipairs(PlayerGui:GetChildren()) do
+		if Interface.Name == StarlightUI.Name and Interface ~= StarlightUI then
+			Hide(Interface, true)
+			--task.wait()
+			Interface:Destroy()
+		end
+	end
 end
 
 -- sets the starting variables
@@ -1738,16 +1748,20 @@ local ResizePos = false -- Not Implemented as of Alpha Release 2
 local GUICanvasSize = { X = Camera.ViewportSize.X, Y = Camera.ViewportSize.Y - GuiInset }
 
 --// ENDSUBSECTION 
+ 
+if UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled then
+	StarlightUI.Notifications.Interactable = false
+end
 
-if Player.PlayerGui:FindFirstChild("TouchGui") then
+if PlayerGui:FindFirstChild("TouchGui") then
 	function check()
-		if Player.PlayerGui:FindFirstChild("TouchGui").TouchControlFrame.JumpButton.Visible then
-			StarlightUI.Notifications.Position = UDim2.new(1,-20,1,-(24 + Player.PlayerGui:FindFirstChild("TouchGui").TouchControlFrame.JumpButton.AbsoluteSize.Y))
+		if PlayerGui:FindFirstChild("TouchGui").TouchControlFrame.JumpButton.Visible then
+			StarlightUI.Notifications.Position = UDim2.new(1,-20,1,-(24 + PlayerGui:FindFirstChild("TouchGui").TouchControlFrame.JumpButton.AbsoluteSize.Y))
 		else
 	StarlightUI.Notifications.Position = UDim2.new(1,-20,1,-20)
 		end
 	end
-	Player.PlayerGui:FindFirstChild("TouchGui").TouchControlFrame.JumpButton:GetPropertyChangedSignal("Visible"):Connect(check)
+	PlayerGui:FindFirstChild("TouchGui").TouchControlFrame.JumpButton:GetPropertyChangedSignal("Visible"):Connect(check)
 	check()
 end
 
@@ -1765,6 +1779,8 @@ end
 function Starlight:Destroy()
 	task.wait()
 	StarlightUI:Destroy()
+end 
+StarlightUI.Destroying:Connect(function()
 	pcall(Starlight.DestroyFunction)
 	for i,v in pairs(connections) do
 		v:Disconnect()
@@ -1781,7 +1797,7 @@ function Starlight:Destroy()
 		end
 		Camera:FindFirstChild("Starlight Blur Elements"):Destroy()
 	end
-end
+end)
 
 function Starlight:Notification(data)
 
@@ -2150,7 +2166,8 @@ function Starlight:CreateWindow(WindowSettings)
 			"rbxassetid://123097456061373", -- minimise
 			"rbxassetid://114684871091583", -- maximise
 			"rbxassetid://6034304908", -- notification
-			"rbxassetid://8445471332", -- search,
+			"rbxassetid://8445471332", -- search
+			"rbxassetid://92421933997743", -- Corner Repair
 			"rbxassetid://80990588449079" -- loading circle
 		}, function(asset)
 			if debugV then
@@ -2614,6 +2631,346 @@ function Starlight:CreateWindow(WindowSettings)
 		
 	end
 	
+
+
+	local prebuiltTabSection = nil
+
+	local homeTabCalled : boolean? = false
+	function Starlight.Window:CreateHomeTab(TabSettings)
+
+		TabSettings.UnsupportedExecutors = TabSettings.UnsupportedExecutors or {}
+		TabSettings.SupportedExecutors = TabSettings.SupportedExecutors or {}
+		TabSettings.DiscordInvite = TabSettings.DiscordInvite or ""
+		TabSettings.Changelog = TabSettings.Changelog or {}
+		TabSettings.IconStyle = TabSettings.IconStyle or 1
+
+		if homeTabCalled then return end
+		homeTabCalled = true
+
+		local Tab = {
+			Instances = {},
+			Values = TabSettings,
+			Groupboxes = {},
+			Index = "prebuilthometab",
+
+			Active = false,
+			Hover = false,
+		}
+
+		if not prebuiltTabSection then
+			prebuiltTabSection = Starlight.Window:CreateTabSection()
+			prebuiltTabSection.Instance.LayoutOrder = -1
+		end
+		
+		local executorname = identifyexecutor and identifyexecutor() or "Roblox Studio"
+		
+		Tab.Instances.Button = navigation.NavigationSectionTemplate.TabButtonTemplate:Clone()
+		Tab.Instances.Button.Visible = true
+
+		Tab.Instances.Button.Header.Text = "Dashboard"
+		Tab.Instances.Button.Name = "HomeTab"
+
+		Tab.Instances.Button.Icon.Image = Tab.Values.IconStyle == 1 and "rbxassetid://97461687077117" or "rbxassetid://11295288868"
+
+		Tab.Instances.Page = tabs["HomeTab"]
+		Tab.Instances.Page.Visible = true
+
+		Tab.Instances.Page.LayoutOrder = -1
+
+		local function Activate() -- so i dont have to rewrite shit again
+
+			Tween(Tab.Instances.Button, {BackgroundTransparency = 0.5})
+			Tween(Tab.Instances.Button.Icon, {ImageColor3 = Starlight.CurrentTheme.Foregrounds.Light})
+			Tween(Tab.Instances.Button.Header, {TextColor3 = Starlight.CurrentTheme.Foregrounds.Light})
+			Tab.Instances.Button.Icon.AccentBrighter.Enabled = true
+			Tab.Instances.Button.Header.AccentBrighter.Enabled = true
+
+
+			for i,v in pairs(Starlight.Window.TabSections) do
+				for _, tab in pairs(v.Tabs) do
+					tab.Active = false
+				end
+			end
+
+			for _, OtherTabSection in pairs(navigation:GetChildren()) do
+				for _, OtherTab in pairs(OtherTabSection:GetChildren()) do
+					if OtherTab.ClassName == "Frame" and OtherTab ~= Tab.Instances.Button then
+						Tween(OtherTab, {BackgroundTransparency = 1})
+						Tween(OtherTab.Icon, {ImageColor3 = Starlight.CurrentTheme.Foregrounds.Medium})
+						Tween(OtherTab.Header, {TextColor3 = Starlight.CurrentTheme.Foregrounds.Medium})
+						OtherTab.Icon.AccentBrighter.Enabled = false
+						OtherTab.Header.AccentBrighter.Enabled = false
+					end
+				end
+			end
+
+			Tab.Active = true
+			Starlight.Window.CurrentTab = Tab
+			tabs.UIPageLayout:JumpTo(Tab.Instances.Page)
+
+		end
+
+		repeat
+			task.wait()
+		until Tab.Instances.Page.Parent == tabs
+		Activate()
+
+		Tab.Instances.Button.Interact["MouseButton1Click"]:Connect(Activate)
+
+		Tab.Instances.Button.MouseEnter:Connect(function()
+			Tab.Hover = true
+			if not Tab.Active then
+				Tween(Tab.Instances.Button.Icon, {ImageColor3 = Starlight.CurrentTheme.Foregrounds.Light})
+				Tween(Tab.Instances.Button.Header, {TextColor3 = Starlight.CurrentTheme.Foregrounds.Light})
+			end
+		end)
+
+		Tab.Instances.Button.MouseLeave:Connect(function()
+			Tab.Hover = false
+			if not Tab.Active then
+				Tween(Tab.Instances.Button.Icon, {ImageColor3 = Starlight.CurrentTheme.Foregrounds.Medium})
+				Tween(Tab.Instances.Button.Header, {TextColor3 = Starlight.CurrentTheme.Foregrounds.Medium})
+			end
+		end)
+
+		Tab.Instances.Page.InputBegan:Connect(function(input)
+			if input.KeyCode == Enum.KeyCode.LeftShift or input.KeyCode == Enum.KeyCode.RightShift or input.UserInputType == Enum.UserInputType.Touch then
+				Tab.Instances.Page.ScrollingEnabled = true
+			end
+		end)
+		Tab.Instances.Page.InputEnded:Connect(function(input)
+			if input.KeyCode == Enum.KeyCode.LeftShift or input.KeyCode == Enum.KeyCode.RightShift or input.UserInputType == Enum.UserInputType.Touch then
+				Tab.Instances.Page.ScrollingEnabled = false
+			end
+		end)
+
+		if TabSettings.Backdrop then
+			if TabSettings.Backdrop == 0 then
+				Tab.Instances.Page.ImageBackdrop.Image = "https://www.roblox.com/asset-thumbnail/image?assetId=".. game.PlaceId .."&width=768&height=432&format=png"
+			else
+				Tab.Instances.Page.ImageBackdrop.Image = "rbxassetid://" .. TabSettings.Backdrop
+				Tab.Instances.Page.ImageBackdrop.Visible = not Tab.Instances.Page.ImageBackdrop.Visible
+				Tab.Instances.Page.ImageBackdrop.Visible = not Tab.Instances.Page.ImageBackdrop.Visible
+			end
+		else
+			Tab.Instances.Page.ImageBackdrop.Image = "rbxassetid://78881404248017"
+		end
+		
+		Tab.Instances.Page.playerDisplay.Text = `Welcome, {Player.DisplayName}`
+		Tab.Instances.Page.Thumbnail.ImageLabel.Image = Players:GetUserThumbnailAsync(Player.UserId, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size100x100)
+		
+		task.defer(function()
+			connections.__homeTabTime = RunService.RenderStepped:Connect(function()
+				local t = os.date("*t")
+				local hour = t.hour
+
+				local formatted = string.format("%02d : %02d : %02d", hour, t.min, t.sec)
+				local greetingString = ""
+				if hour >= 4 and hour < 12 then
+					greetingString = "Good Morning!"
+				elseif hour >= 12 and hour < 19 then
+					greetingString = "How's Your Day Going?"
+				elseif hour >= 19 and hour <= 23 then
+					greetingString = "Sweet Dreams."
+				else
+					greetingString = "Jeez you should be asleep..."
+				end
+				Tab.Instances.Page.playerUser.Text = `{greetingString} | {Player.Name}`
+
+				Tab.Instances.Page.clock.Text = `{formatted}\n{string.format("%02d / %02d / %02d", t.day, t.month, t.year % 100)}`
+			end)
+		end)
+		
+		for _, column in pairs(Tab.Instances.Page.Holder:GetChildren()) do
+			if column.ClassName ~= "Frame" then continue end
+			
+			for _, button in pairs(column:GetChildren()) do
+				if button.ClassName ~= "Frame" then continue end
+				
+				button.Interact.MouseEnter:Connect(function()
+					Tween(button.Hover, {BackgroundTransparency = 0})
+				end)
+				button.Interact.MouseLeave:Connect(function()
+					Tween(button.Hover, {BackgroundTransparency = 1})
+				end)
+			end
+		end
+		Tab.Instances.Page.Holder.Left.Discord.Interact.MouseButton1Click:Connect(function()
+			setclipboard(tostring("https://discord.gg/"..TabSettings.DiscordInvite))
+			if Request then
+				pcall(function()
+					Request({
+						Url = 'http://127.0.0.1:6463/rpc?v=1',
+						Method = 'POST',
+						Headers = {
+							['Content-Type'] = 'application/json',
+							Origin = 'https://discord.com'
+						},
+						Body = HttpService:JSONEncode({
+							cmd = 'INVITE_BROWSER',
+							nonce = HttpService:GenerateGUID(false),
+							args = {code = TabSettings.DiscordInvite}
+						})
+					})
+				end)
+			end
+		end)
+		
+		table.insert(TabSettings.UnsupportedExecutors, "Roblox Studio")
+		
+		Tab.Instances.Page.Holder.Center.Executor.Header.Text = executorname
+		if table.find(TabSettings.SupportedExecutors, executorname) then
+			Tab.Instances.Page.Holder.Center.Executor.Subheader.Text = "Your Executor Is Supported By \nThis Script."
+		end
+		if table.find(TabSettings.UnsupportedExecutors, executorname) then
+			Tab.Instances.Page.Holder.Center.Executor.Subheader.Text = "Your Executor Is Unsupported \nBy This Script."
+		end
+		
+		Tab.Instances.Page.Holder.Left.Server.Subheader.Text = "Currently Playing ".. game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name
+		Tab.Instances.Page.Holder.Left.Server.Frame.serverregion.Text = "<font size=\"14\" color=\"#FFF\" weight=\"semibold\">Region</font>\n".. Localization:GetCountryRegionForPlayerAsync(Player)
+		local function updatePlayerCount()
+			Tab.Instances.Page.Holder.Left.Server.Frame.playercount.Text = "<font size=\"14\" color=\"#FFF\" weight=\"semibold\">Players</font>\n".. #Players:GetChildren() .. (#Players:GetChildren()>1 and " Players" or " Player") .. " In\nThis Server"
+			Tab.Instances.Page.Holder.Left.Server.Frame.maxplayers.Text = "<font size=\"14\" color=\"#FFF\" weight=\"semibold\">Capacity</font>\n".. Players.MaxPlayers .. (Players.MaxPlayers>1 and " Players" or " Player") .. " In\ncan join."
+		end
+		local function protectedUpdate() -- apparently creating less funcs and locals help with memory so im doing this
+			pcall(updatePlayerCount)
+		end
+		updatePlayerCount()
+		local localconnections = { Players.ChildAdded:Connect(protectedUpdate), Players.ChildRemoved:Connect(protectedUpdate) }
+		Tab.Instances.Page.Holder.Left.Server.Frame.playercount.Destroying:Connect(function()
+			for _, connection in pairs(localconnections) do
+				connection:Disconnect()
+			end
+		end)
+		for _, connection in pairs(localconnections) do
+			table.insert(connections, connection)
+		end
+		
+		local function getPing() return math.round((Players.LocalPlayer:GetNetworkPing() * 2 ) / 0.01) end
+		local TimeFunction = RunService:IsRunning() and time or os.clock 
+
+		local LastIteration, Start
+		local FrameUpdateTable = {}
+		
+		local friendsCooldown = 0
+		local function checkFriends()
+			if friendsCooldown == 0 then
+
+				friendsCooldown = 25
+
+				local playersFriends = {}
+				local friendsInTotal = 0
+				local onlineFriends = #Player:GetFriendsOnline() 
+				local friendsInGame = 0 
+
+				local list = Players:GetFriendsAsync(Player.UserId)
+				while true do 
+					for _, data in list:GetCurrentPage() do
+						friendsInTotal +=1
+						table.insert(playersFriends, data)
+					end
+
+					if list.IsFinished then
+						-- stop the loop since this is the last page
+						break
+					else 
+						-- go to the next page
+						list:AdvanceToNextPageAsync()
+					end
+				end 
+				for i,v in pairs(playersFriends) do
+					if Players:FindFirstChild(v.Username) then
+						friendsInGame += 1
+					end
+				end
+
+				Tab.Instances.Page.Holder.Right.Friends.Frame.total.Text = '<font size="14" color="#FFF" weight="semibold">Total</font>\n' .. tostring(friendsInTotal).." friends"
+				Tab.Instances.Page.Holder.Right.Friends.Frame.offline.Text = '<font size="14" color="#FFF" weight="semibold">Offline</font>\n' .. tostring(friendsInTotal - onlineFriends).." friends"
+				Tab.Instances.Page.Holder.Right.Friends.Frame.online.Text = '<font size="14" color="#FFF" weight="semibold">Online</font>\n' .. tostring(onlineFriends).." friends"
+				Tab.Instances.Page.Holder.Right.Friends.Frame.inserver.Text = '<font size="14" color="#FFF" weight="semibold">In Server</font>\n' .. tostring(friendsInGame).." friends"
+
+			else
+				friendsCooldown -= 1
+			end
+		end
+
+		local function HeartbeatUpdate()
+			LastIteration = TimeFunction()
+			for Index = #FrameUpdateTable, 1, -1 do
+				FrameUpdateTable[Index + 1] = FrameUpdateTable[Index] >= LastIteration - 1 and FrameUpdateTable[Index] or nil
+			end
+
+			FrameUpdateTable[1] = LastIteration
+			Tab.Instances.Page.Holder.Left.Server.Frame.latency.Text = `<font size="14" color="#FFF" weight="semibold">Latency</font>\n{tostring(math.floor(TimeFunction() - Start >= 1 and #FrameUpdateTable or #FrameUpdateTable / (TimeFunction() - Start)))} FPS\n{getPing()}ms`
+			
+
+			local function convertToHMS(elapsed)
+				if elapsed <= 4 then
+					return "now"
+				elseif elapsed < 60 then
+					return math.floor(elapsed) .. "s"
+				elseif elapsed < 3600 then
+					return  math.floor(elapsed/60) .. "m"
+				else
+					return math.floor(elapsed/3600) .. "h"
+				end 
+			end
+
+			Tab.Instances.Page.Holder.Left.Server.Frame.time.Text = "<font size=\"14\" color=\"#FFF\" weight=\"semibold\">Players</font>\n" .. convertToHMS(time())
+		end
+
+		checkFriends()
+		Start = TimeFunction()
+		connections.__fpscheck = RunService.Heartbeat:Connect(HeartbeatUpdate)
+		
+		ThemeMethods.bindTheme(Tab.Instances.Button, "BackgroundColor3", "Backgrounds.Dark")
+		ThemeMethods.bindTheme(Tab.Instances.Button.Accent, "Color", "Accents.Main")
+		ThemeMethods.bindTheme(Tab.Instances.Button.Icon.AccentBrighter, "Color", "Accents.Brighter")
+		ThemeMethods.bindTheme(Tab.Instances.Button.Header.AccentBrighter, "Color", "Accents.Brighter")
+		ThemeMethods.bindTheme(Tab.Instances.Button.Icon, "ImageColor3", "Foregrounds.Medium")
+		ThemeMethods.bindTheme(Tab.Instances.Button.Header, "TextColor3", "Foregrounds.Medium")
+		themeEvent.Event:Connect(function()
+			if tabs.UIPageLayout.CurrentPage == Tab.Instances.Page then
+				Activate()
+			end
+		end)
+		ThemeMethods.bindTheme(Tab.Instances.Page.Fade, "BackgroundColor3", "Backgrounds.Dark")
+		ThemeMethods.bindTheme(Tab.Instances.Page.Fade2, "BackgroundColor3", "Backgrounds.Dark")
+		ThemeMethods.bindTheme(Tab.Instances.Page.Thumbnail, "BackgroundColor3", "Backgrounds.Dark")
+		for _,shadow in pairs(Tab.Instances.Page.Thumbnail.DropShadowHolder:GetChildren()) do
+			ThemeMethods.bindTheme(shadow, "ImageColor3", "Miscellaneous.Shadow")
+		end
+		ThemeMethods.bindTheme(Tab.Instances.Page.Thumbnail.UIStroke, "Color", "Foregrounds.Dark")
+		for _, text in pairs(Tab.Instances.Page:GetChildren()) do
+			if text.ClassName ~= "TextLabel" then continue end
+			ThemeMethods.bindTheme(text, "TextColor3", "Foregrounds.Light")
+		end
+		for _, side in pairs(Tab.Instances.Page.Holder:GetChildren()) do
+			if side.ClassName ~= "Frame" then continue end
+			
+			for _, panel in pairs(side:GetChildren()) do
+				if panel.ClassName ~= "Frame" then continue end
+				
+				ThemeMethods.bindTheme(panel, "BackgroundColor3", "Backgrounds.Light")
+				ThemeMethods.bindTheme(panel.DropShadow, "ImageColor3", "Miscellaneous.Shadow")
+				ThemeMethods.bindTheme(panel.Header, "TextColor3", "Foregrounds.Light")
+				ThemeMethods.bindTheme(panel.Header.Icon, "ImageColor3", "Foregrounds.Light")
+				
+			end
+		end
+		
+		function Tab:Destroy()
+			Tab.Instances.Page:Destroy()
+			Tab.Instances.Button:Destroy()
+			connections.__homeTabTime:Disconnect()
+		end
+		
+		Tab.Instances.Button.Parent = prebuiltTabSection.Instance
+		prebuiltTabSection.Tabs["prebuilthometab"] = Tab
+		return Tab
+
+	end
+	
 	function Starlight.Window:CreateTabSection(Name :string, Visible)
 
 		Visible = Visible or (Name ~= nil and true or false)
@@ -2654,10 +3011,162 @@ function Starlight:CreateWindow(WindowSettings)
 			TabSection = nil
 		end
 
-		-- uhh not currently added
-		--[[function TabSection:CreateHomeTab(HomeTabSettings)
+		function TabSection:CreateCustomTab(TabSettings, TabIndex)
+			-- Tab Settings Table
+			--[[
+			
+			TabSettings = {
+				Name = string,
+				Columns = number, (ranged from 1-3)
+				Icon = number/string, **
+			}
+			
+			]]
 
-		end]]
+			TabSettings.Icon = TabSettings.Icon or ""
+			local Tab = {
+				Instances = {},
+				Values = TabSettings,
+				Groupboxes = {},
+				Index = TabIndex,
+
+				Active = false,
+				Hover = false,
+			}
+
+			Tab.Instances.Button = navigation.NavigationSectionTemplate.TabButtonTemplate:Clone()
+			Tab.Instances.Button.Visible = true
+
+			Tab.Instances.Button.Header.Text = TabSettings.Name
+			Tab.Instances.Button.Name = "TAB_" .. TabIndex
+
+			Tab.Instances.Button.Header.UIPadding.PaddingLeft = UDim.new(0, not String.IsEmptyOrNull(Tab.Values.Icon) and 36 or 8)
+			Tab.Instances.Button.Icon.Image = "rbxassetid://" .. Tab.Values.Icon
+
+			Tab.Instances.Page = tabs["Tab_TEMPLATE"]:Clone()
+			Tab.Instances.Page.Parent = tabs
+			for i,v in pairs(Tab.Instances.Page:GetChildren()) do
+				if v.ClassName == "ScrollingFrame" then
+					v:Destroy()
+				end
+			end
+			Tab.Instances.Page.Visible = true
+			Tab.Instances.Page.Name = "TAB_" .. TabIndex
+
+			Tab.Instances.Page.LayoutOrder = #tabs:GetChildren() - 2
+
+			local function Activate() -- so i dont have to rewrite shit again
+
+				Tween(Tab.Instances.Button, {BackgroundTransparency = 0.5})
+				Tween(Tab.Instances.Button.Icon, {ImageColor3 = Starlight.CurrentTheme.Foregrounds.Light})
+				Tween(Tab.Instances.Button.Header, {TextColor3 = Starlight.CurrentTheme.Foregrounds.Light})
+				Tab.Instances.Button.Icon.AccentBrighter.Enabled = true
+				Tab.Instances.Button.Header.AccentBrighter.Enabled = true
+
+
+				for i,v in pairs(Starlight.Window.TabSections) do
+					for _, tab in pairs(v.Tabs) do
+						tab.Active = false
+					end
+				end
+
+				for _, OtherTabSection in pairs(navigation:GetChildren()) do
+					for _, OtherTab in pairs(OtherTabSection:GetChildren()) do
+						if OtherTab.ClassName == "Frame" and OtherTab ~= Tab.Instances.Button then
+							Tween(OtherTab, {BackgroundTransparency = 1})
+							Tween(OtherTab.Icon, {ImageColor3 = Starlight.CurrentTheme.Foregrounds.Medium})
+							Tween(OtherTab.Header, {TextColor3 = Starlight.CurrentTheme.Foregrounds.Medium})
+							OtherTab.Icon.AccentBrighter.Enabled = false
+							OtherTab.Header.AccentBrighter.Enabled = false
+						end
+					end
+				end
+
+				Tab.Active = true
+				Starlight.Window.CurrentTab = Tab
+				tabs.UIPageLayout:JumpTo(Tab.Instances.Page)
+
+			end
+
+			if Starlight.Window.CurrentTab == nil then
+				--task.spawn(function()
+				repeat
+					task.wait()
+				until Tab.Instances.Page.Parent == tabs
+				Activate()
+				--end)
+			end
+
+			Tab.Instances.Button.Interact["MouseButton1Click"]:Connect(Activate)
+
+			Tab.Instances.Button.MouseEnter:Connect(function()
+				Tab.Hover = true
+				if not Tab.Active then
+					Tween(Tab.Instances.Button.Icon, {ImageColor3 = Starlight.CurrentTheme.Foregrounds.Light})
+					Tween(Tab.Instances.Button.Header, {TextColor3 = Starlight.CurrentTheme.Foregrounds.Light})
+				end
+			end)
+
+			Tab.Instances.Button.MouseLeave:Connect(function()
+				Tab.Hover = false
+				if not Tab.Active then
+					Tween(Tab.Instances.Button.Icon, {ImageColor3 = Starlight.CurrentTheme.Foregrounds.Medium})
+					Tween(Tab.Instances.Button.Header, {TextColor3 = Starlight.CurrentTheme.Foregrounds.Medium})
+				end
+			end)
+
+			Tab.Instances.Page.InputBegan:Connect(function(input)
+				if input.KeyCode == Enum.KeyCode.LeftShift or input.KeyCode == Enum.KeyCode.RightShift or input.UserInputType == Enum.UserInputType.Touch then
+					Tab.Instances.Page.ScrollingEnabled = true
+				end
+			end)
+			Tab.Instances.Page.InputEnded:Connect(function(input)
+				if input.KeyCode == Enum.KeyCode.LeftShift or input.KeyCode == Enum.KeyCode.RightShift or input.UserInputType == Enum.UserInputType.Touch then
+					Tab.Instances.Page.ScrollingEnabled = false
+				end
+			end) 
+
+			ThemeMethods.bindTheme(Tab.Instances.Button, "BackgroundColor3", "Backgrounds.Dark")
+			ThemeMethods.bindTheme(Tab.Instances.Button.Accent, "Color", "Accents.Main")
+			ThemeMethods.bindTheme(Tab.Instances.Button.Icon.AccentBrighter, "Color", "Accents.Brighter")
+			ThemeMethods.bindTheme(Tab.Instances.Button.Header.AccentBrighter, "Color", "Accents.Brighter")
+			ThemeMethods.bindTheme(Tab.Instances.Button.Icon, "ImageColor3", "Foregrounds.Medium")
+			ThemeMethods.bindTheme(Tab.Instances.Button.Header, "TextColor3", "Foregrounds.Medium")
+			themeEvent.Event:Connect(function()
+				if tabs.UIPageLayout.CurrentPage == Tab.Instances.Page then
+					Activate()
+				end
+			end)
+
+			TabSettings.Page.Parent = Tab.Instances.Page
+
+			--// SUBSECTION : User Methods
+
+			function Tab:Set(NewTabSettings)
+				TabSettings = NewTabSettings
+				Tab.Values = TabSettings
+				Tab.Instances.Button.Header.Text = TabSettings.Name
+				Tab.Instances.Button.Name = "TAB_" .. TabIndex
+				Tab.Instances.Page.Name = "TAB_" .. TabIndex
+				Tab.Instances.Button.Icon.Image = "rbxassetid://" .. TabSettings.Icon
+				Starlight.Window.TabSections[Name].Tabs[TabIndex].Values = Tab.Values
+			end
+
+			function Tab:Destroy()
+				Tab.Instances.Button:Destroy()
+				Tab.Instances.Page:Destroy()
+				for _, groupbox in pairs(Tab.Groupboxes) do
+					groupbox:Destroy()
+				end
+				Tab = nil
+			end 
+
+			--// ENDSUBSECTION
+
+			Tab.Instances.Button.Parent = Starlight.Window.TabSections[Name].Instance
+			Starlight.Window.TabSections[Name].Tabs[TabIndex] = Tab
+			return Starlight.Window.TabSections[Name].Tabs[TabIndex]
+		end
 
 		function TabSection:CreateTab(TabSettings, TabIndex)
 			-- Tab Settings Table
@@ -7913,11 +8422,10 @@ function Starlight:CreateWindow(WindowSettings)
 		end
 
 		mainWindow.Content.Topbar.Controls.Close["MouseButton1Click"]:Connect(function()
-			Starlight:Destroy()
-			--[[ 
-			Starlight.Window:Prompt({
+			Starlight.Window:PromptDialog({
 				Name = "Are you sure?",
 				Content = "Are you sure you wish to exit the Interface?",
+				Type=1,
 				Actions = {
 					Primary = {
 						Name = "Cancel",
@@ -7931,7 +8439,6 @@ function Starlight:CreateWindow(WindowSettings)
 					}
 				}
 			})
-			]]
 		end)
 		mainWindow.Content.Topbar.Controls.Maximize["MouseButton1Click"]:Connect(function()
 			if Starlight.Maximized then
@@ -8269,7 +8776,10 @@ if isStudio and enabled then
 
 	})
 
-	local ts = win:CreateTabSection()
+	win:CreateHomeTab {
+		Backdrop = 78881404248017
+	}
+	local ts = win:CreateTabSection("ELEMENT SHOWCASE")
 	local ts2 = win:CreateTabSection("TAB SECTION EXAMPLE")
 
 	local t = ts:CreateTab({
@@ -8593,6 +9103,12 @@ if isStudio and enabled then
 
 	local configg = t:BuildConfigGroupbox(2)
 	local themeg = t:BuildThemeGroupbox(1)
+
+	ts2:CreateCustomTab({
+		Name = "Custom Tab",
+		Icon = 11963368654,
+		Page = Instance.new("Frame")
+	}, "customtab")
 
 	Starlight:LoadAutoloadConfig()
 end--]=]
