@@ -8628,12 +8628,9 @@ function Starlight.FileSystem:RefreshConfigList(path)
 
 	if isStudio or (not isfile) then return "Config system unavailable." end
 
-	local success, list = pcall(function()
-		listfiles(path)
-	end)
-	if not success then
-		list = {}
-	end
+	if not isfolder(path) then print("dawg get a better executor") return false end
+
+	local list = listfiles(path)
 
 	local configs = {}
 	for i = 1, #list do
