@@ -1542,6 +1542,8 @@ local function AddToolTip(InfoStr, HoverInstance)
 		ThemeMethods.bindTheme(stroke, "Color", "Foregrounds.Dark")
 		ThemeMethods.bindTheme(label, "TextColor3", "Foregrounds.Light")
 	end
+	tooltip.ClipsDescendants = false
+	label.ClipsDescendants = false
 
 	return label
 end
