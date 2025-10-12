@@ -1,8 +1,3 @@
---!nocheck
-
--- Studio Function Error Prevention Shit
-local setclipboard, identifyexecutor, cloneref, syn, getgenv, gethui, fluxus, http, http_request, request, isfile, isfolder, makefile, makefolder, delfile, delfolder, writefile, readfile, listfiles = nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil, nil
-
 --[[
 
 ███████╗████████╗ █████╗ ██████╗ ██╗     ██╗ ██████╗ ██╗  ██╗████████╗    ██╗███╗   ██╗████████╗███████╗██████╗ ███████╗ █████╗  ██████╗███████╗    ███████╗██╗   ██╗██╗████████╗███████╗
