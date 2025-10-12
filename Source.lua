@@ -1,3 +1,8 @@
+--!nocheck
+
+-- Studio Function Error Prevention Shit
+local setclipboard, identifyexecutor, cloneref, syn, getgenv, gethui, fluxus, http, http_request, request, isfile, isfolder, makefile, makefolder, delfile, delfolder, writefile, readfile, listfiles = nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil, nil
+
 --[[
 
 ███████╗████████╗ █████╗ ██████╗ ██╗     ██╗ ██████╗ ██╗  ██╗████████╗    ██╗███╗   ██╗████████╗███████╗██████╗ ███████╗ █████╗  ██████╗███████╗    ███████╗██╗   ██╗██╗████████╗███████╗
@@ -68,7 +73,7 @@ by Nebula Softworks
 
 --// SECTION : Core Variables
 
-local Release = "Prerelease Beta 5.01" 
+local Release = "Prerelease Beta 5.01a" 
 local debugV = false
 
 local Starlight = {
@@ -1894,10 +1899,11 @@ function Starlight:Notification(data)
 		end
 
 		task.spawn(function()
-			while task.wait(1) do
-				pcall(setDuration, tick() - creationTime)
-			end
+			
 		end)
+		table.insert(connections, RunService.RenderStepped:Connect(function()
+			pcall(setDuration, tick() - creationTime)
+		end))
 
 		notificationAcrylicEvent.Event:Connect(function()
 			if newNotification.BackgroundTransparency == 1 then	return end
@@ -2274,123 +2280,124 @@ function Starlight:CreateWindow(WindowSettings)
 			end
 			ThemeMethods.bindTheme(mainWindow["New Loading Screen"].Frame.ImageLabel.Player, "BackgroundColor3", "Backgrounds.Groupbox")
 		end
-		
-		mainWindow.Visible = true
-		StarlightUI.Drag.Visible = true
-		StarlightUI.MobileToggle.Visible = UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled
 
-		if WindowSettings.LoadingEnabled then
+		task.defer(function()
+			if WindowSettings.LoadingEnabled then
 
-			local main = mainWindow["New Loading Screen"]
-			local shadows = main.shadows
-			local content = main.Frame
-			local versionLabel = main.Version
+				mainWindow.Visible = true
+				StarlightUI.Drag.Visible = true
+				StarlightUI.MobileToggle.Visible = UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled
 
-			local imgContainer = content.ImageLabel
-			local textLabels = content.SubFrame
+				local main = mainWindow["New Loading Screen"]
+				local shadows = main.shadows
+				local content = main.Frame
+				local versionLabel = main.Version
 
-			local loadingCircle = imgContainer.Image
-			local playerIcon = imgContainer.Player
+				local imgContainer = content.ImageLabel
+				local textLabels = content.SubFrame
 
-			local subtitle = textLabels.Subtitle
-			local title = textLabels.Title
+				local loadingCircle = imgContainer.Image
+				local playerIcon = imgContainer.Player
 
-			StarlightUI.MainWindow.Position = UDim2.fromOffset(
-				Camera.ViewportSize.X / 2 - StarlightUI.MainWindow.Size.X.Offset / 2,
-				((Camera.ViewportSize.Y / 2 - GuiInset) - StarlightUI.MainWindow.Size.Y.Offset / 2) - (GuiInset/2)
-			)
-			StarlightUI.Drag.Position = UDim2.new(0.5, 0, 0, ((Camera.ViewportSize.Y / 2 - GuiInset) - StarlightUI.MainWindow.Size.Y.Offset / 2) - (GuiInset/2) + mainWindow.Size.Y.Offset + 10)
+				local subtitle = textLabels.Subtitle
+				local title = textLabels.Title
 
-			for _, shadow in pairs(shadows:GetChildren()) do
-				shadow.ImageTransparency = 1
-			end
-			for _, shadow in pairs(mainWindow.DropShadowHolder:GetChildren()) do
-				shadow.ImageTransparency = 1
-			end
-			versionLabel.TextTransparency = 1
-			loadingCircle.ImageTransparency = 1
-			subtitle.TextTransparency = 1
-			title.TextTransparency = 1
-
-			title.Text = WindowSettings.LoadingSettings and WindowSettings.LoadingSettings.Title or "Starlight Interface Suite"
-			versionLabel.Text = title.Text == "Starlight Interface Suite" and Release or `Starlight UI {Release}`
-			title.playerName.Text = Player.DisplayName
-			playerIcon.Image = Players:GetUserThumbnailAsync(Player.UserId, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size352x352)
-
-			Tween(main, {BackgroundTransparency = 0}, nil, Tween.Info("Quint", "InOut", 0.2))
-			for _, shadow in pairs(shadows:GetChildren()) do
-				local trans = {
-					antumbraShadow = 0.9,
-					penumbraShadow = 0.45,
-					umbraShadow = 0.1
-				}
-
-				Tween(shadow, {ImageTransparency = trans[shadow.Name]}, nil, Tween.Info("Quint", "InOut", 0.2))
-			end
-			Tween(versionLabel, {TextTransparency = 0}, nil, Tween.Info("Quint", "InOut", 0.2))
-			task.wait(0.076)
-			Tween(loadingCircle, {ImageTransparency = 0}, nil, Tween.Info(nil, "InOut", 0.7))
-			Tween(title, {TextTransparency = 0}, nil, Tween.Info(nil, "InOut", 0.7))
-			task.wait(0.05)
-			Tween(subtitle, {TextTransparency = 0}, nil, Tween.Info(nil, "InOut", 0.7))
-
-			if not loadingScreenLogoChanged then
-				Tween(loadingCircle, {Rotation = 450}, nil, TweenInfo.new(1.7, Enum.EasingStyle.Back, Enum.EasingDirection.Out, 2, false, 0.2))
-			else
-				if WindowSettings.LoadingSettings.IconAnimation then
-					pcall(WindowSettings.LoadingSettings.IconAnimation, loadingCircle)
-				end
-			end
-
-			task.wait(3.24)
-
-			subtitle.Text = "Loaded!"
-			task.wait(0.5)
-
-			subtitle.Text = "Logging In..."
-			task.wait(1.72)
-
-			subtitle.Text = WindowSettings.LoadingSettings and (WindowSettings.LoadingSettings.Subtitle or WindowSettings.LoadingSettings.Title) or "Welcome To Starlight!"
-			Tween(title, {TextTransparency = 1}, nil, Tween.Info("Quint", "InOut", 0.2))
-			Tween(title.playerName, {Position = UDim2.new(0,-8,0,0)}, nil, Tween.Info("Quint", "InOut", 0.85))
-			Tween(playerIcon, {Size = UDim2.new(1,-10,1,-10), Position = UDim2.new(0.5,0,0.5,-6)}, nil, Tween.Info("Back", "InOut", 1.4))
-			Tween(loadingCircle, {ImageTransparency = 1}, nil, Tween.Info(nil,nil, 0.38))
-
-			task.wait(1.5)
-
-			Tween(mainWindow, {
-				Size = size,
-				Position = UDim2.fromOffset(
-					Camera.ViewportSize.X / 2 - size.X.Offset / 2,
-					((Camera.ViewportSize.Y / 2 - GuiInset) - size.Y.Offset / 2) - (GuiInset/2)
+				StarlightUI.MainWindow.Position = UDim2.fromOffset(
+					Camera.ViewportSize.X / 2 - StarlightUI.MainWindow.Size.X.Offset / 2,
+					((Camera.ViewportSize.Y / 2 - GuiInset) - StarlightUI.MainWindow.Size.Y.Offset / 2) - (GuiInset/2)
 				)
-			}, nil, Tween.Info(nil,nil,1.1))
-			Tween(StarlightUI.Drag, {
-				Position = UDim2.new(0.5, 0, 0, ((Camera.ViewportSize.Y / 2 - GuiInset) - size.Y.Offset / 2) - (GuiInset/2) + size.Y.Offset + 10)
-			}, nil, Tween.Info(nil,nil,1.1))
+				StarlightUI.Drag.Position = UDim2.new(0.5, 0, 0, ((Camera.ViewportSize.Y / 2 - GuiInset) - StarlightUI.MainWindow.Size.Y.Offset / 2) - (GuiInset/2) + mainWindow.Size.Y.Offset + 10)
 
-			Tween(mainWindow.DropShadowHolder.umbraShadow, {
-				ImageTransparency = 0
-			}, nil, Tween.Info(nil,nil,1.5))
-			Tween(mainWindow.DropShadowHolder.antumbraShadow, {
-				ImageTransparency = 0.94
-			}, nil, Tween.Info(nil,nil,1.5))
-			Tween(mainWindow.DropShadowHolder.penumbraShadow, {
-				ImageTransparency = 0.55
-			}, nil, Tween.Info(nil,nil,1.5))
-			for _, shadow in pairs(shadows:GetChildren()) do
-				Tween(shadow, {ImageTransparency = 1}, nil, Tween.Info("Quint", "InOut", 1.2))
-			end
+				for _, shadow in pairs(shadows:GetChildren()) do
+					shadow.ImageTransparency = 1
+				end
+				for _, shadow in pairs(mainWindow.DropShadowHolder:GetChildren()) do
+					shadow.ImageTransparency = 1
+				end
+				versionLabel.TextTransparency = 1
+				loadingCircle.ImageTransparency = 1
+				subtitle.TextTransparency = 1
+				title.TextTransparency = 1
 
-			Tween(playerIcon, {Size = UDim2.new(1,10,1,10), ImageTransparency = 1}, nil, Tween.Info("Back", "InOut", 0.9))
-			Tween(title.playerName, {Position = UDim2.new(0,0,1,0)}, nil, Tween.Info("Quint", "InOut", 0.85))
-			Tween(subtitle, {TextTransparency = 1}, nil, Tween.Info("Quint", "InOut", 0.2))
-			Tween(versionLabel, {TextTransparency = 1}, nil, Tween.Info("Quint", "InOut", 0.2))
-			task.wait(0.08)
-			Tween(playerIcon, {BackgroundTransparency = 1}, nil, Tween.Info("Quint", "InOut", 0.2))
-			task.wait(1.1-0.08)
-			Tween(main, {BackgroundTransparency = 1}, nil, Tween.Info("Quint", "InOut", 0.2))
-			-- like this cus uhh tween method dont got all the properties
+				title.Text = WindowSettings.LoadingSettings and WindowSettings.LoadingSettings.Title or "Starlight Interface Suite"
+				versionLabel.Text = title.Text == "Starlight Interface Suite" and Release or `Starlight UI {Release}`
+				title.playerName.Text = Player.DisplayName
+				playerIcon.Image = Players:GetUserThumbnailAsync(Player.UserId, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size352x352)
+
+				Tween(main, {BackgroundTransparency = 0}, nil, Tween.Info("Quint", "InOut", 0.2))
+				for _, shadow in pairs(shadows:GetChildren()) do
+					local trans = {
+						antumbraShadow = 0.9,
+						penumbraShadow = 0.45,
+						umbraShadow = 0.1
+					}
+
+					Tween(shadow, {ImageTransparency = trans[shadow.Name]}, nil, Tween.Info("Quint", "InOut", 0.2))
+				end
+				Tween(versionLabel, {TextTransparency = 0}, nil, Tween.Info("Quint", "InOut", 0.2))
+				task.wait(0.076)
+				Tween(loadingCircle, {ImageTransparency = 0}, nil, Tween.Info(nil, "InOut", 0.7))
+				Tween(title, {TextTransparency = 0}, nil, Tween.Info(nil, "InOut", 0.7))
+				task.wait(0.05)
+				Tween(subtitle, {TextTransparency = 0}, nil, Tween.Info(nil, "InOut", 0.7))
+
+				if not loadingScreenLogoChanged then
+					Tween(loadingCircle, {Rotation = 450}, nil, TweenInfo.new(1.7, Enum.EasingStyle.Back, Enum.EasingDirection.Out, 2, false, 0.2))
+				else
+					if WindowSettings.LoadingSettings.IconAnimation then
+						pcall(WindowSettings.LoadingSettings.IconAnimation, loadingCircle)
+					end
+				end
+
+				task.wait(3.24)
+
+				subtitle.Text = "Loaded!"
+				task.wait(0.5)
+
+				subtitle.Text = "Logging In..."
+				task.wait(1.72)
+
+				subtitle.Text = WindowSettings.LoadingSettings and (WindowSettings.LoadingSettings.Subtitle or WindowSettings.LoadingSettings.Title) or "Welcome To Starlight!"
+				Tween(title, {TextTransparency = 1}, nil, Tween.Info("Quint", "InOut", 0.2))
+				Tween(title.playerName, {Position = UDim2.new(0,-8,0,0)}, nil, Tween.Info("Quint", "InOut", 0.85))
+				Tween(playerIcon, {Size = UDim2.new(1,-10,1,-10), Position = UDim2.new(0.5,0,0.5,-6)}, nil, Tween.Info("Back", "InOut", 1.4))
+				Tween(loadingCircle, {ImageTransparency = 1}, nil, Tween.Info(nil,nil, 0.38))
+
+				task.wait(1.5)
+
+				Tween(mainWindow, {
+					Size = size,
+					Position = UDim2.fromOffset(
+						Camera.ViewportSize.X / 2 - size.X.Offset / 2,
+						((Camera.ViewportSize.Y / 2 - GuiInset) - size.Y.Offset / 2) - (GuiInset/2)
+					)
+				}, nil, Tween.Info(nil,nil,1.1))
+				Tween(StarlightUI.Drag, {
+					Position = UDim2.new(0.5, 0, 0, ((Camera.ViewportSize.Y / 2 - GuiInset) - size.Y.Offset / 2) - (GuiInset/2) + size.Y.Offset + 10)
+				}, nil, Tween.Info(nil,nil,1.1))
+
+				Tween(mainWindow.DropShadowHolder.umbraShadow, {
+					ImageTransparency = 0
+				}, nil, Tween.Info(nil,nil,1.5))
+				Tween(mainWindow.DropShadowHolder.antumbraShadow, {
+					ImageTransparency = 0.94
+				}, nil, Tween.Info(nil,nil,1.5))
+				Tween(mainWindow.DropShadowHolder.penumbraShadow, {
+					ImageTransparency = 0.55
+				}, nil, Tween.Info(nil,nil,1.5))
+				for _, shadow in pairs(shadows:GetChildren()) do
+					Tween(shadow, {ImageTransparency = 1}, nil, Tween.Info("Quint", "InOut", 1.2))
+				end
+
+				Tween(playerIcon, {Size = UDim2.new(1,10,1,10), ImageTransparency = 1}, nil, Tween.Info("Back", "InOut", 0.9))
+				Tween(title.playerName, {Position = UDim2.new(0,0,1,0)}, nil, Tween.Info("Quint", "InOut", 0.85))
+				Tween(subtitle, {TextTransparency = 1}, nil, Tween.Info("Quint", "InOut", 0.2))
+				Tween(versionLabel, {TextTransparency = 1}, nil, Tween.Info("Quint", "InOut", 0.2))
+				task.wait(0.08)
+				Tween(playerIcon, {BackgroundTransparency = 1}, nil, Tween.Info("Quint", "InOut", 0.2))
+				task.wait(1.1-0.08)
+				Tween(main, {BackgroundTransparency = 1}, nil, Tween.Info("Quint", "InOut", 0.2))
+				-- like this cus uhh tween method dont got all the properties
 			--[[if not loadingScreenLogoChanged then
 				TweenService:Create(mainWindow["Loading Screen"].Frame.ImageLabel, TweenInfo.new(1.7, Enum.EasingStyle.Back, Enum.EasingDirection.Out, 2, false, 0.2), {Rotation = 450}):Play()
 			end
@@ -2411,9 +2418,14 @@ function Starlight:CreateWindow(WindowSettings)
 			Tween(StarlightUI.Drag, {
 				Position = UDim2.new(0.5, 0, 0, ((Camera.ViewportSize.Y / 2 - GuiInset) - StarlightUI.MainWindow.Size.Y.Offset / 2) - (GuiInset/2) + mainWindow.Size.Y.Offset + 10)
 			})]]
-		end
+			end
 
-		mainWindow["New Loading Screen"].Visible = false
+			mainWindow["New Loading Screen"].Visible = false
+
+			mainWindow.Visible = true
+			StarlightUI.Drag.Visible = true
+			StarlightUI.MobileToggle.Visible = UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled
+		end)
 
 		makeDraggable(mainWindow.Content.Topbar, mainWindow, StarlightUI.Drag)
 		makeDraggable(mainWindow.Sidebar, mainWindow, StarlightUI.Drag)
