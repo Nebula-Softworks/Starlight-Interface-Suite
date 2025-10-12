@@ -68,12 +68,12 @@ by Nebula Softworks
 
 --// SECTION : Core Variables
 
-local Release = "Prerelease Beta 5" 
+local Release = "Prerelease Beta 5.01" 
 local debugV = false
 
 local Starlight = {
 
-	InterfaceBuild = "B5B1",
+	InterfaceBuild = "B5B4",
 	
 	WindowKeybind = "K",
 	
@@ -133,6 +133,19 @@ local mainAcrylic = false
 local notificationAcrylic = true
 local acrylicEvent = Instance.new("BindableEvent")
 local notificationAcrylicEvent = Instance.new("BindableEvent")
+local acrylicFlag = false -- I do logic like this cus im scared weird and/or conditions fuck up as true may be behind or sm
+if getgenv then
+	if getgenv().NoAnticheat == nil or getgenv().NoAnticheat == true then
+		flag = true
+	end
+	if getgenv().SecureMode then
+		flag = false
+	end
+else
+	if RunService:IsStudio() then
+		flag = true
+	end
+end
 
 local isStudio = RunService:IsStudio() or false
 local website = "nebulasoftworks.xyz/starlight"
@@ -774,7 +787,7 @@ local connections = {}
 
 --// SECTION : Methods
 
--- used so we index system allows for universal linking without breaking
+-- used so the index system allows for universal linking without breaking
 local function GetNestedValue(tbl, path)
 	local current = tbl
 	for segment in string.gmatch(path, "[^%.]+") do
@@ -785,7 +798,34 @@ local function GetNestedValue(tbl, path)
 	end
 	return current
 end
-
+local ClassInterfacer = {
+	
+	["Button"] = {},
+	["Toggle"] = {
+		"CurrentValue"
+	},
+	["Slider"] = {
+		"CurrentValue"
+	},
+	["Input"] = {
+		"CurrentValue"
+	},
+	["Label"] = {},
+	["Paragraph"] = {},
+	["Divider"] = {},
+	--["Image"] = {}, ["Viewport"] = {}, ["Stepper"] = {}, ["Radio"] = {}, 
+	["Bind"] = {
+		"CurrentValue"
+	},
+	["ColorPicker"] = {
+		"CurrentValue",
+		"Transparency"
+	},
+	["Dropdown"] = {
+		"CurrentOption"
+	}
+	
+}
 
 local ConfigMethods = {
 	Save = function(Idx, Data, Type)
@@ -813,17 +853,13 @@ local ConfigMethods = {
 	end,
 	Load = function(Idx, Data, Path)
 		if GetNestedValue(Starlight.Window.TabSections, Idx) then
-			if GetNestedValue(Starlight.Window.TabSections, Idx).Class == "ColorPicker" then
+			if GetNestedValue(Starlight.Window.TabSections, Idx) then
 				for key, value in pairs(Data) do
-					if key == "CurrentValue" then
-						GetNestedValue(Starlight.Window.TabSections, Idx):Set({ CurrentValue = Color.Pack(value) })
-					else
-						GetNestedValue(Starlight.Window.TabSections, Idx):Set({ [key] = value })
+					if table.find(ClassInterfacer[GetNestedValue(Starlight.Window.TabSections, Idx).Class], key) then
+						GetNestedValue(Starlight.Window.TabSections, Idx):Set({[key] = value})
 					end
 				end
-				return
 			end
-			GetNestedValue(Starlight.Window.TabSections, Idx):Set(Data)
 		end
 	end,
 	UpdateOld = function(oldPath, newPath)
@@ -860,7 +896,7 @@ local ThemeMethods = {
 	bindTheme = function(object : GuiObject, property, themeKey)
 
 		local function set()
-			task.spawn(function()
+			pcall(task.defer,function()
 				if object.ClassName == "UIGradient" and typeof(GetNestedValue(Starlight.CurrentTheme, themeKey)) == "Color3" then
 					object[property] = ColorSequence.new {
 						ColorSequenceKeypoint.new(0, GetNestedValue(Starlight.CurrentTheme, themeKey)),
@@ -880,13 +916,13 @@ local ThemeMethods = {
 	encodeTheme = function(theme)
 		local function serialize(data)
 			if typeof(data) == "Color3" then
-				return {R = data.R*255, G = data.G*255, B = data.B*255}
+				return {__type = "Color3", R = data.R * 255, G = data.G * 255, B = data.B * 255}
 			elseif typeof(data) == "ColorSequence" then
 				local keypoints = {}
 				for _, kp in ipairs(data.Keypoints) do
 					table.insert(keypoints, {
 						Time = kp.Time,
-						Value = {R = kp.Value.R*255, G = kp.Value.G*255, B = kp.Value.B*255}
+						Value = {R = kp.Value.R * 255, G = kp.Value.G * 255, B = kp.Value.B * 255}
 					})
 				end
 				return {__type = "ColorSequence", Keypoints = keypoints}
@@ -910,17 +946,17 @@ local ThemeMethods = {
 	decodeTheme = function(data)
 		local function deserialize(value)
 			if type(value) == "table" then
-				if value.__type == "ColorSequence" then
+				if value.__type == "Color3" then
+					return Color3.fromRGB(value.R, value.G, value.B)
+				elseif value.__type == "ColorSequence" then
 					local keypoints = {}
 					for _, kp in ipairs(value.Keypoints) do
 						table.insert(keypoints, ColorSequenceKeypoint.new(
 							kp.Time,
-							Color.Pack(kp.Value)
+							Color3.fromRGB(kp.Value.R, kp.Value.G, kp.Value.B)
 							))
 					end
 					return ColorSequence.new(keypoints)
-				elseif #value == 3 and type(value[1]) == "number" then
-					return Color.Pack(value)
 				else
 					local newTbl = {}
 					for k, v in pairs(value) do
@@ -1330,17 +1366,19 @@ local function Hide(Interface , JustHide : boolean?, Notify : boolean?, Bind : s
 	end
 
 	if Notify then
-		if Starlight.Instance.MobileToggle.Visible then
+		if Starlight.Instance.MobileToggle.Visible then 
 			Starlight:Notification({
 				Title = "Interface Hidden",
 				Icon = 87575513726659,
-				Content = "The Interface Has Been Hidden. You May Reopen It By Pressing The Small Icon Button. " 
+				Content = "The Interface Has Been Hidden. You May Reopen It By Pressing The Small Icon Button. " ,
+				Duration = 2,
 			}) 
-		else
+		else 
 			Starlight:Notification({
 				Title = "Interface Hidden",
 				Icon = 87575513726659,
-				Content = "The Interface Has Been Hidden. You May Reopen It By Pressing The " .. Bind .. " Key.  " 
+				Content = "The Interface Has Been Hidden. You May Reopen It By Pressing The " .. Bind .. " Key.  " ,
+				Duration = 2,
 			})
 		end
 	end
@@ -1772,7 +1810,7 @@ end
 
 --// SECTION : Library Methods
 
--- Sets what to do un destruction
+-- Sets what to do on destruction
 function Starlight:OnDestroy(func)
 	Starlight.DestroyFunction = func
 end
@@ -1787,8 +1825,10 @@ StarlightUI.Destroying:Connect(function()
 	for i,v in pairs(connections) do
 		v:Disconnect()
 	end
-	for _, tabSection in pairs(Starlight.Window.TabSections) do
-		tabSection:Destroy()
+	if Starlight.Window then
+		for _, tabSection in pairs(Starlight.Window.TabSections) do
+			tabSection:Destroy()
+		end
 	end
 	for i,v in pairs(Starlight) do
 		v = nil
@@ -1797,7 +1837,7 @@ StarlightUI.Destroying:Connect(function()
 		for _, blur in pairs(Camera:FindFirstChild("Starlight Blur Elements"):GetChildren()) do
 			blur:Destroy()
 		end
-		Camera:FindFirstChild("Starlight Blur Elements"):Destroy()
+		--Camera:FindFirstChild("Starlight Blur Elements"):Destroy()
 	end
 end)
 
@@ -1881,7 +1921,7 @@ function Starlight:Notification(data)
 
 		newNotification.Description.Size = UDim2.new(1, -65, 0, math.huge)
 		local bounds = newNotification.Description.TextBounds.Y
-		newNotification.Description.Size = UDim2.new(1,-65,0, bounds)
+		newNotification.Description.Size = UDim2.new(1,-65,0, bounds + 2)
 		newNotification.Size = UDim2.new(1, 0, 0, -StarlightUI.Notifications:FindFirstChild("UIListLayout").Padding.Offset)
 		task.wait()
 		TweenService:Create(newNotification, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {Size = UDim2.new(1, 0, 0, bounds + 50)}):Play()
@@ -1948,6 +1988,7 @@ function Starlight:Notification(data)
 				CollectionService:AddTag(newNotification, "__starlight_ExpiredNotification")
 			end)
 		end
+		return newNotification
 	end)
 
 end
@@ -2048,7 +2089,7 @@ function Starlight:CreateWindow(WindowSettings)
 		Starlight.FileSystem.AutoloadThemePath = `{Starlight.FileSystem.Folder}/{folderpath}/themes/`
 	end
 
-	Starlight.FileSystem:BuildFolderTree(root ~= nil and true or false, root or "", folder, WindowSettings.FileSettings.ThemesInRoot)
+	Starlight.FileSystem:BuildFolderTree( WindowSettings.FileSettings)
 
 	Starlight.Window = {
 		Instance = mainWindow,
@@ -2431,8 +2472,8 @@ function Starlight:CreateWindow(WindowSettings)
 		Modal.Instance.Holder.Actions.Primary:Destroy()
 		Modal.Instance.Holder.Actions.Secondary:Destroy()
 		Modal.Instance.Holder.Actions.Input:Destroy()
-		Modal.Instance.Parent = mainWindow.ModalOverlay
 		Modal.Instance.Name = "Dialog"
+		mainWindow.Content.Interactable = false
 
 		repeat task.wait() until Modal.Instance.Holder ~= nil
 		Modal.Instance.Holder:GetPropertyChangedSignal("AbsoluteSize"):Connect(function()
@@ -2468,6 +2509,7 @@ function Starlight:CreateWindow(WindowSettings)
 			end)
 			task.wait(0.18)
 			mainWindow.ModalOverlay.Visible = false
+			mainWindow.Content.Interactable = true
 			if x then x() end
 			connection:Disconnect()
 		end
@@ -2629,6 +2671,7 @@ function Starlight:CreateWindow(WindowSettings)
 		mainWindow.ModalOverlay.Visible = true
 		Tween(mainWindow.ModalOverlay, {BackgroundTransparency = 0.2, ImageTransparency = 0.1})
 		
+		Modal.Instance.Parent = mainWindow.ModalOverlay
 		--return Modal
 		
 	end
@@ -3046,7 +3089,6 @@ function Starlight:CreateWindow(WindowSettings)
 			Tab.Instances.Button.Icon.Image = "rbxassetid://" .. Tab.Values.Icon
 
 			Tab.Instances.Page = tabs["Tab_TEMPLATE"]:Clone()
-			Tab.Instances.Page.Parent = tabs
 			for i,v in pairs(Tab.Instances.Page:GetChildren()) do
 				if v.ClassName == "ScrollingFrame" then
 					v:Destroy()
@@ -3054,6 +3096,7 @@ function Starlight:CreateWindow(WindowSettings)
 			end
 			Tab.Instances.Page.Visible = true
 			Tab.Instances.Page.Name = "TAB_" .. TabIndex
+			Tab.Instances.Page.Parent = tabs
 
 			Tab.Instances.Page.LayoutOrder = #tabs:GetChildren() - 2
 
@@ -3203,7 +3246,6 @@ function Starlight:CreateWindow(WindowSettings)
 			Tab.Instances.Button.Icon.Image = "rbxassetid://" .. Tab.Values.Icon
 
 			Tab.Instances.Page = tabs["Tab_TEMPLATE"]:Clone()
-			Tab.Instances.Page.Parent = tabs
 			for i,v in pairs(Tab.Instances.Page:GetChildren()) do
 				if v.ClassName == "ScrollingFrame" then
 					v:Destroy()
@@ -3211,6 +3253,7 @@ function Starlight:CreateWindow(WindowSettings)
 			end
 			Tab.Instances.Page.Visible = true
 			Tab.Instances.Page.Name = "TAB_" .. TabIndex
+			Tab.Instances.Page.Parent = tabs
 
 			Tab.Instances.Page.LayoutOrder = #tabs:GetChildren() - 2
 
@@ -3298,13 +3341,11 @@ function Starlight:CreateWindow(WindowSettings)
 
 				local fadetop = mainWindow.Content.ContentMain.FadesTop.Fade:Clone()
 				fadetop.Name = "FADE_" .. TabIndex
-				fadetop.Parent = mainWindow.Content.ContentMain.FadesTop
 				fadetop.Size = UDim2.new(1/TabSettings.Columns,-10/TabSettings.Columns, 0, 40)
 				fadetop.LayoutOrder = i
 
 				local fadebottom = mainWindow.Content.ContentMain.FadesBottom.Fade:Clone()
 				fadebottom.Name = "FADE_" .. TabIndex
-				fadebottom.Parent = mainWindow.Content.ContentMain.FadesBottom
 				fadebottom.Size = UDim2.new(1/TabSettings.Columns,-10/TabSettings.Columns, 0, 40)
 				fadebottom.LayoutOrder = i
 
@@ -3352,6 +3393,8 @@ function Starlight:CreateWindow(WindowSettings)
 					updBottom()
 				end)
 
+				fadetop.Parent = mainWindow.Content.ContentMain.FadesTop
+				fadebottom.Parent = mainWindow.Content.ContentMain.FadesBottom
 			end
 
 			ThemeMethods.bindTheme(Tab.Instances.Button, "BackgroundColor3", "Backgrounds.Dark")
@@ -3494,7 +3537,6 @@ function Starlight:CreateWindow(WindowSettings)
 						Groupbox.Instance = tabs["Tab_TEMPLATE"].ScrollingCollumnTemplate2["Groupbox_Style2"]:Clone()
 					end
 
-					Groupbox.Instance.Parent = Tab.Instances.Page["Column_" .. NewGroupboxSettings.Column]
 
 					Groupbox.ParentingItem = Groupbox.Instance.PART_Content
 
@@ -3519,6 +3561,7 @@ function Starlight:CreateWindow(WindowSettings)
 					Groupbox.Instance.Header.Text = NewGroupboxSettings.Name
 					Groupbox.Instance.Header.Icon.Image = "rbxassetid://" .. NewGroupboxSettings.Icon
 					Groupbox.Instance.Name = "GROUPBOX_" .. GroupIndex
+					Groupbox.Instance.Parent = Tab.Instances.Page["Column_" .. NewGroupboxSettings.Column]
 
 					Starlight.Window.TabSections[Name].Tabs[TabIndex].Groupboxes[GroupIndex].Values = NewGroupboxSettings
 				end
@@ -4421,7 +4464,6 @@ function Starlight:CreateWindow(WindowSettings)
 						for i, ElementInstance in pairs(Instances) do
 
 							ElementInstance.Visible = ElementInstance.Name == "Button_TEMPLATE_Style" .. Element.Values.Style
-							ElementInstance.Parent = Groupbox.ParentingItem
 
 							ElementInstance.Name = "BUTTON_" .. Index
 							ElementInstance["PART_Backdrop"].Header.Header.Text = Element.Values.Name
@@ -4500,6 +4542,8 @@ function Starlight:CreateWindow(WindowSettings)
 								end
 							end)
 
+							ElementInstance.Parent = Groupbox.ParentingItem
+
 							tooltips[i] = AddToolTip(Element.Values.Tooltip or "", ElementInstance)
 
 							Element.Instance = ElementInstance.Visible and ElementInstance or Element.Instance
@@ -4523,9 +4567,9 @@ function Starlight:CreateWindow(WindowSettings)
 
 								local flag
 								if Element.Values.Style == 1 then
-									flag = ElementInstance.PART_Backdrop.Accent ~= nil and true or false
+									flag = ElementInstance.PART_Backdrop:FindFirstChild("Accent")
 								else
-									flag = ElementInstance.PART_Backdrop.Accent == nil and true or false
+									flag = not ElementInstance.PART_Backdrop:FindFirstChild("Accent")
 								end
 								ElementInstance.Visible = flag
 								ElementInstance.Parent = Groupbox.ParentingItem
@@ -4665,8 +4709,6 @@ function Starlight:CreateWindow(WindowSettings)
 							if ElementInstance.Name == "Switch_TEMPLATE_Disabled" and Element.Values.Style == 2 then
 								ElementInstance.Visible = true
 							end
-
-							ElementInstance.Parent = Groupbox.ParentingItem
 
 							ElementInstance.Name = "TOGGLE_" .. Index
 							ElementInstance.Header.Text = Element.Values.Name
@@ -4829,6 +4871,8 @@ function Starlight:CreateWindow(WindowSettings)
 
 							tooltips[i] = AddToolTip(Element.Values.Tooltip or "", ElementInstance)
 
+							ElementInstance.Parent = Groupbox.ParentingItem
+
 							Element.Instance = ElementInstance.Visible and ElementInstance or Element.Instance
 
 						end
@@ -4918,39 +4962,39 @@ function Starlight:CreateWindow(WindowSettings)
 							Starlight.Window.TabSections[Name].Tabs[TabIndex].Groupboxes[GroupIndex].Elements[Index].Values = Element.Values
 
 						end
-
-						function Element:Destroy()
-							for _, ElementInstance in pairs(Instances) do
-								ElementInstance:Destroy()
-							end
-							if Element.NestedElements ~= nil then
-								for _, nestedElement in pairs(Element.NestedElements) do
-									nestedElement:Destroy()
-								end
-							end
-							Element = nil
-						end
-
-						function Element:Lock(Reason : string?)
-
-							for _, ElementInstance in pairs(Instances) do
-								ElementInstance.Lock_Overlay.Visible = true
-								ElementInstance.Interactable = false
-								ElementInstance.Lock_Overlay.Header.Text = Reason or ""
-							end
-
-						end
-
-						function Element:Unlock()
-
-							for _, ElementInstance in pairs(Instances) do
-								ElementInstance.Lock_Overlay.Visible = false
-								ElementInstance.Interactable = true
-								ElementInstance.Lock_Overlay.Header.Text = ""
-							end
-
-						end
 					end)
+
+					function Element:Destroy()
+						for _, ElementInstance in pairs(Instances) do
+							ElementInstance:Destroy()
+						end
+						if Element.NestedElements ~= nil then
+							for _, nestedElement in pairs(Element.NestedElements) do
+								nestedElement:Destroy()
+							end
+						end
+						Element = nil
+					end
+
+					function Element:Lock(Reason : string?)
+
+						for _, ElementInstance in pairs(Instances) do
+							ElementInstance.Lock_Overlay.Visible = true
+							ElementInstance.Interactable = false
+							ElementInstance.Lock_Overlay.Header.Text = Reason or ""
+						end
+
+					end
+
+					function Element:Unlock()
+
+						for _, ElementInstance in pairs(Instances) do
+							ElementInstance.Lock_Overlay.Visible = false
+							ElementInstance.Interactable = true
+							ElementInstance.Lock_Overlay.Header.Text = ""
+						end
+
+					end
 
 					function Element:AddBind(NestedSettings, NestedIndex)
 						local index = HttpService:GenerateGUID()
@@ -5070,7 +5114,6 @@ function Starlight:CreateWindow(WindowSettings)
 
 						Element.Instance = GroupboxTemplateInstance.Slider_TEMPLATE:Clone()
 						Element.Instance.Visible = true
-						Element.Instance.Parent = Groupbox.ParentingItem
 
 						Element.Instance.Name = "SLIDER_" .. Index
 						Element.Instance.Header.Text = Element.Values.Name
@@ -5394,6 +5437,7 @@ function Starlight:CreateWindow(WindowSettings)
 							Element.Instance.Interactable = true
 							Element.Instance.Lock_Overlay.Header.Text = ""
 						end
+						Element.Instance.Parent = Groupbox.ParentingItem
 					end)
 
 					Starlight.Window.TabSections[Name].Tabs[TabIndex].Groupboxes[GroupIndex].Elements[Index] = Element
@@ -5439,7 +5483,6 @@ function Starlight:CreateWindow(WindowSettings)
 
 						Element.Instance = GroupboxTemplateInstance.Input_TEMPLATE:Clone()
 						Element.Instance.Visible = true
-						Element.Instance.Parent = Groupbox.ParentingItem
 
 						Element.Instance.PART_Backdrop.PART_Input.FocusLost:Connect(function(Enter)
 
@@ -5605,6 +5648,7 @@ function Starlight:CreateWindow(WindowSettings)
 							Element.Instance.Lock_Overlay.Header.Text = ""
 						end
 					end)
+					Element.Instance.Parent = Groupbox.ParentingItem
 
 					Starlight.Window.TabSections[Name].Tabs[TabIndex].Groupboxes[GroupIndex].Elements[Index] = Element
 					return Starlight.Window.TabSections[Name].Tabs[TabIndex].Groupboxes[GroupIndex].Elements[Index]
@@ -6163,7 +6207,7 @@ function Starlight:CreateWindow(WindowSettings)
 								Tween(NestedElement.Instances[2], {Size = UDim2.fromOffset(0, 0)}, function()
 									if NestedElement and NestedElement.Instances ~= nil then
 										NestedElement.Instances[2].Visible = false
-										AcrylicObject.Model.Transparency = 1
+										if acrylicFlag then AcrylicObject.Model.Transparency = 1 end
 									end
 								end, Tween.Info(nil, nil, 0.24))
 
@@ -6182,7 +6226,7 @@ function Starlight:CreateWindow(WindowSettings)
 									NestedElement.Instances[2].Container.Visible = true
 									NestedElement.Instances[2].TabSelector.Visible = true
 									NestedElement.Instances[2].Buttons.Visible = true
-									AcrylicObject.Model.Transparency = 0.98
+									if acrylicFlag then AcrylicObject.Model.Transparency = 0.98 end
 									local connection ; connection = UserInputService.InputBegan:Connect(function(i)
 										if i.UserInputType ~= Enum.UserInputType.MouseButton1 then return end
 										local p, pos, size = i.Position, NestedElement.Instances[2].AbsolutePosition, NestedElement.Instances[2].AbsoluteSize
@@ -6797,7 +6841,7 @@ function Starlight:CreateWindow(WindowSettings)
 								Tween(NestedElement.Instances[2], {Size = UDim2.fromOffset(NestedElement.Instances[2].Size.X.Offset, 0)}, function()
 									if NestedElement and NestedElement.Instances ~= nil then
 										NestedElement.Instances[2].Visible = false
-										AcrylicObject.Model.Transparency = 1
+										if acrylicFlag then AcrylicObject.Model.Transparency = 1 end
 									end
 								end, Tween.Info(nil, nil, 0.18))
 							end
@@ -6825,7 +6869,7 @@ function Starlight:CreateWindow(WindowSettings)
 									Tween(NestedElement.Instances[2].List, {Size = UDim2.new(1,0,0,height)}, function()
 										NestedElement.Instances[2].List.ScrollBarImageTransparency = 0
 									end)
-									AcrylicObject.Model.Transparency = 0.98
+									if acrylicFlag then AcrylicObject.Model.Transparency = 0.98 end
 									local connection ; connection = UserInputService.InputBegan:Connect(function(i)
 										if i.UserInputType ~= Enum.UserInputType.MouseButton1 then return end
 										local p, pos, size = i.Position, NestedElement.Instances[2].AbsolutePosition, NestedElement.Instances[2].AbsoluteSize
@@ -7265,7 +7309,7 @@ function Starlight:CreateWindow(WindowSettings)
 				local themesPath = WindowSettings.FileSettings.ThemesInRoot and `{Starlight.FileSystem.Folder}/{root}/themes` or `{Starlight.FileSystem.Folder}/{folderpath}/themes`
 
 				if not isStudio and not isfolder(themesPath) then
-					Starlight.FileSystem:BuildFolderTree()
+					Starlight.FileSystem:BuildFolderTree(WindowSettings.FileSettings)
 				end
 
 				local instance = Tab:CreateGroupbox({
@@ -7766,13 +7810,12 @@ function Starlight:CreateWindow(WindowSettings)
 
 				instance:CreateDivider()
 				
-				local newName = ""
-				instance:CreateInput({
+				local newName = instance:CreateInput({
 					Name = "New Theme Name",
 					PlaceholderText = "Name",
 					RemoveTextOnFocus = true,
 					Callback = function(v)
-						newName = v
+						
 					end,
 				}, "newthemename")
 				instance:CreateButton({
@@ -7780,7 +7823,7 @@ function Starlight:CreateWindow(WindowSettings)
 					Icon = 6031471484,
 					CenteredContent = ButtonsCentered,
 					Callback = function()	
-						if not newName or String.IsEmptyOrNull(newName) then
+						if not newName.CurrentValue or String.IsEmptyOrNull(newName.CurrentValue) then
 							Starlight:Notification({
 								Title = "Theme Error",
 								Icon = 129398364168201,
@@ -7788,10 +7831,10 @@ function Starlight:CreateWindow(WindowSettings)
 							})
 							return
 						end
-						newName = string.gsub(newName, "/", " ")
-						newName = string.gsub(newName, "\\", " ")
+						newName.CurrentValue = string.gsub(newName.CurrentValue, "/", " ")
+						newName.CurrentValue = string.gsub(newName.CurrentValue, "\\", " ")
 
-						if isfile(`{themesPath}/{newName}{Starlight.FileSystem.FileExtension}`) or themesArray[newName] then
+						if isfile(`{themesPath}/{newName.CurrentValue}{Starlight.FileSystem.FileExtension}`) or themesArray[newName.CurrentValue] then
 							Starlight:Notification({
 								Title = "Theme Exists",
 								Icon = 129398364168201,
@@ -7803,7 +7846,7 @@ function Starlight:CreateWindow(WindowSettings)
 						local success, returned = pcall(function()
 							if isStudio or (not isfile) then return "File System unavailable." end
 
-							local fullPath = `{themesPath}/{newName}{Starlight.FileSystem.FileExtension}`
+							local fullPath = `{themesPath}/{newName.CurrentValue}{Starlight.FileSystem.FileExtension}`
 
 							local success, encoded = ThemeMethods.encodeTheme(Starlight.CurrentTheme)
 							if not success then
@@ -7834,7 +7877,7 @@ function Starlight:CreateWindow(WindowSettings)
 						Starlight:Notification({
 							Title = "Theme Created",
 							Icon = 6026568227,
-							Content = string.format("Created Theme %q", newName),
+							Content = string.format("Created Theme %q", newName.CurrentValue),
 						})
 					end,
 				}, "newtheme")
@@ -8048,14 +8091,14 @@ function Starlight:CreateWindow(WindowSettings)
 				local inputPath = nil
 				local selectedConfig = nil
 
-				instance:CreateInput({
+				inputPath = instance:CreateInput({
 					Name = "Config Name",
 					Tooltip = "Insert a name for the config you want to create.",
 					PlaceholderText = "Name",
 					RemoveTextOnFocus = true,
 					IgnoreConfig = true,
-					Callback = function(val)
-						inputPath = val
+					Callback = function(val) 
+						
 					end,
 				}, "__prebuiltConfigNameInput")
 
@@ -8065,7 +8108,7 @@ function Starlight:CreateWindow(WindowSettings)
 					CenterContent = ButtonsCentered,
 					Tooltip = "Create a configuration to access any time with all your current settings.",
 					Callback = function()
-						if not inputPath or String.IsEmptyOrNull(inputPath) then
+						if not inputPath.CurrentValue or String.IsEmptyOrNull(inputPath.CurrentValue) then
 							Starlight:Notification({
 								Title = "Configuration Error",
 								Icon = 129398364168201,
@@ -8073,10 +8116,10 @@ function Starlight:CreateWindow(WindowSettings)
 							})
 							return
 						end
-						inputPath = string.gsub(inputPath, "/", " ")
-						inputPath = string.gsub(inputPath, "\\", " ")
+						inputPath.CurrentValue = string.gsub(inputPath.CurrentValue, "/", " ")
+						inputPath.CurrentValue = string.gsub(inputPath.CurrentValue, "\\", " ")
 
-						if isfile(`{Starlight.FileSystem.Folder}/{folderpath}/configs/{inputPath}{Starlight.FileSystem.FileExtension}`) then
+						if isfile(`{Starlight.FileSystem.Folder}/{folderpath}/configs/{inputPath.CurrentValue}{Starlight.FileSystem.FileExtension}`) then
 							Starlight:Notification({
 								Title = "Configuration Exists",
 								Icon = 129398364168201,
@@ -8085,7 +8128,7 @@ function Starlight:CreateWindow(WindowSettings)
 							return
 						end
 
-						local success, returned = Starlight.FileSystem:SaveConfig(inputPath, `{Starlight.FileSystem.Folder}/{folderpath}/configs/`)
+						local success, returned = Starlight.FileSystem:SaveConfig(inputPath.CurrentValue, `{Starlight.FileSystem.Folder}/{folderpath}/configs/`)
 						if not success then
 							Starlight:Notification({
 								Title = "Configuration Error",
@@ -8097,7 +8140,7 @@ function Starlight:CreateWindow(WindowSettings)
 						Starlight:Notification({
 							Title = "Configuration Created",
 							Icon = 6026568227,
-							Content = string.format("Created config %q", inputPath),
+							Content = string.format("Created config %q", inputPath.CurrentValue),
 						})
 
 						instance.Elements["__prebuiltConfigSelector_lbl"].NestedElements["__prebuiltConfigSelector_lbl"]:Set({ Options = Starlight.FileSystem:RefreshConfigList(`{Starlight.FileSystem.Folder}/{folderpath}/configs`) })
@@ -8242,6 +8285,24 @@ function Starlight:CreateWindow(WindowSettings)
 				warning.Instance.Header.UIPadding.PaddingLeft = UDim.new(0,0)
 
 				instance:CreateButton({
+					Name = "Clear Autoload",
+					Icon = 6034767619,
+					CenterContent = ButtonsCentered,
+					Tooltip = "Removes the autoloading of the current autoload config.",
+					Callback = function()
+						if isfile(`{Starlight.FileSystem.Folder}/{folderpath}/configs/autoload.txt`) then delfile(`{Starlight.FileSystem.Folder}/{folderpath}/configs/autoload.txt`) end
+						loadlabel:Set({ Content = "None" })
+
+						Starlight:Notification({
+							Title = "Autoload Cleared",
+							Icon = 6026568227,
+							Content = string.format("Disabled current autoload.", selectedConfig),
+						})
+					end,
+					Style = 2,
+				}, "__prebuiltConfigDeleter")
+
+				instance:CreateButton({
 					Name = "Delete Configuration",
 					Icon = 115577765236264,
 					CenterContent = ButtonsCentered,
@@ -8276,24 +8337,6 @@ function Starlight:CreateWindow(WindowSettings)
 						})
 						if selectedConfig then selectedConfig = nil end
 
-					end,
-					Style = 2,
-				}, "__prebuiltConfigDeleter")
-
-				instance:CreateButton({
-					Name = "Clear Autoload",
-					Icon = 6034767619,
-					CenterContent = ButtonsCentered,
-					Tooltip = "Removes the autoloading of the current autoload config.",
-					Callback = function()
-						if isfile(`{Starlight.FileSystem.Folder}/{folderpath}/configs/autoload.txt`) then delfile(`{Starlight.FileSystem.Folder}/{folderpath}/configs/autoload.txt`) end
-						loadlabel:Set({ Content = "None" })
-
-						Starlight:Notification({
-							Title = "Autoload Cleared",
-							Icon = 6026568227,
-							Content = string.format("Disabled current autoload.", selectedConfig),
-						})
 					end,
 					Style = 2,
 				}, "__prebuiltConfigDeleter")
@@ -8370,10 +8413,9 @@ function Starlight:CreateWindow(WindowSettings)
 							newNotification.Visible = true
 
 							newNotification.Description.Size = UDim2.new(1, -65, 0, math.huge)
-							local bounds = newNotification.Description.TextBounds.Y + 50
-							newNotification.Description.Size = UDim2.new(1,-65,0, bounds - 30)
-							newNotification.Size = UDim2.new(1, 0, 0, -StarlightUI.Notifications:FindFirstChild("UIListLayout").Padding.Offset)
-							TweenService:Create(newNotification, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {Size = UDim2.new(1, 0, 0, bounds)}):Play()
+							local bounds = newNotification.Description.TextBounds.Y
+							newNotification.Description.Size = UDim2.new(1,-65,0, bounds + 2)
+							TweenService:Create(newNotification, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {Size = UDim2.new(1, 0, 0, bounds + 50)}):Play()
 
 							task.wait(0.15)
 							TweenService:Create(newNotification, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {BackgroundTransparency = notificationAcrylic and (mainAcrylic and 0.55 or 0.375) or 0}):Play()
@@ -8523,33 +8565,41 @@ end
 
 --// SECTION : Config System
 
-function Starlight.FileSystem:BuildFolderTree(hasRoot : boolean, Root : string, Folder : string, hasTheme : boolean?)
+function Starlight.FileSystem:BuildFolderTree(FileSettings)
 	-- Revamp since beta 4 since we are storing stuff within like scripts for both themes and such
 	if isStudio or (not isfolder) then return "Config system unavailable." end
-	local path = hasRoot and `{Root}/{Folder}` or `{Folder}`
-	local paths = {
-		[1] = Starlight.FileSystem.Folder,
-		[3] = `{Starlight.FileSystem.Folder}/{path}`,
-		[4] = `{Starlight.FileSystem.Folder}/{path}/configs`
-	}
-	if hasRoot then
-		paths[2] = `{Starlight.FileSystem.Folder}/{Root}`
-	end
-
-	if not hasTheme then
-		table.insert(paths, `{Starlight.FileSystem.Folder}/{path}/themes`)
+	local paths = {}
+	if FileSettings.RootFolder ~= nil then
+		-- has root
+		if FileSettings.ThemesInRoot then
+			paths = {
+				Starlight.FileSystem.Folder,
+				`{Starlight.FileSystem.Folder}/{FileSettings.RootFolder}/{FileSettings.ConfigFolder}`,
+				`{Starlight.FileSystem.Folder}/{FileSettings.RootFolder}/{FileSettings.ConfigFolder}/configs`,
+				`{Starlight.FileSystem.Folder}/{FileSettings.RootFolder}/themes`
+			}
+		else
+			paths = {
+				Starlight.FileSystem.Folder,
+				`{Starlight.FileSystem.Folder}/{FileSettings.RootFolder}/{FileSettings.ConfigFolder}`,
+				`{Starlight.FileSystem.Folder}/{FileSettings.RootFolder}/{FileSettings.ConfigFolder}/configs`,
+				`{Starlight.FileSystem.Folder}/{FileSettings.RootFolder}}/{FileSettings.ConfigFolder}/themes`
+			}
+		end
 	else
-		table.insert(paths, `{Starlight.FileSystem.Folder}/{Root}/themes`)
+		-- no root
+		paths = {
+			Starlight.FileSystem.Folder,
+			`{Starlight.FileSystem.Folder}/{FileSettings.ConfigFolder}`,
+			`{Starlight.FileSystem.Folder}/{FileSettings.ConfigFolder}/configs`,
+			`{Starlight.FileSystem.Folder}/{FileSettings.ConfigFolder}/themes`
+		}
 	end
 
 	for i, str in ipairs(paths) do
 		if not isfolder(str) then
 			makefolder(str)
 		end
-	end
-
-	if isfolder(`{Starlight.FileSystem.Folder}/Configurations/{path}`) then
-		ConfigMethods.UpdateOld(`{Starlight.FileSystem.Folder}/Configurations/{path}`, `{Starlight.FileSystem.Folder}/{path}/configs`)
 	end
 end
 
@@ -8630,9 +8680,16 @@ function Starlight.FileSystem:RefreshConfigList(path)
 
 	if isStudio or (not isfile) then return "Config system unavailable." end
 
-	if not isfolder(path) then print("dawg get a better executor") return false end
+	if not isfolder(path) then 
+		Starlight:Notification({ 
+			Title = "shitty executor",
+			Icon = 0,
+			Content = identifyexecutor() .. " is so shit bro.\n your file system is just broken 💀", 
+		}, "hdajdnj") 
+		return {} 
+	end
 
-	local list = listfiles(path)
+	local list = listfiles(path) or {}
 
 	local configs = {}
 	for i = 1, #list do
