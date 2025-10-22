@@ -1787,6 +1787,17 @@ local ResizePos = false -- Not Implemented as of Alpha Release 2
 
 local GUICanvasSize = { X = Camera.ViewportSize.X, Y = Camera.ViewportSize.Y - GuiInset }
 
+--// SUBSECTION : Interface Variables
+
+local mainWindow : Frame = StarlightUI.MainWindow
+local Resources = StarlightUI.Resources
+local navigation : Frame = mainWindow.Sidebar.Navigation
+local tabs : Frame = mainWindow.Content.ContentMain.Elements
+local Resizing = false -- Not Implemented as of Alpha Release 2
+local ResizePos = false -- Not Implemented as of Alpha Release 2
+
+local GUICanvasSize = { X = Camera.ViewportSize.X, Y = Camera.ViewportSize.Y - GuiInset }
+
 --// ENDSUBSECTION 
  
 if UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled then
