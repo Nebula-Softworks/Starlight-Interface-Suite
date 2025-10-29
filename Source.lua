@@ -1787,6 +1787,17 @@ local ResizePos = false -- Not Implemented as of Alpha Release 2
 
 local GUICanvasSize = { X = Camera.ViewportSize.X, Y = Camera.ViewportSize.Y - GuiInset }
 
+--// SUBSECTION : Interface Variables
+
+local mainWindow : Frame = StarlightUI.MainWindow
+local Resources = StarlightUI.Resources
+local navigation : Frame = mainWindow.Sidebar.Navigation
+local tabs : Frame = mainWindow.Content.ContentMain.Elements
+local Resizing = false -- Not Implemented as of Alpha Release 2
+local ResizePos = false -- Not Implemented as of Alpha Release 2
+
+local GUICanvasSize = { X = Camera.ViewportSize.X, Y = Camera.ViewportSize.Y - GuiInset }
+
 --// ENDSUBSECTION 
  
 if UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled then
@@ -1794,19 +1805,25 @@ if UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled then
 end
 
 if PlayerGui:FindFirstChild("TouchGui") then
-	function check()
-		if PlayerGui:FindFirstChild("TouchGui").TouchControlFrame.JumpButton.Visible then
-			StarlightUI.Notifications.Position = UDim2.new(1,-20,1,-(24 + PlayerGui:FindFirstChild("TouchGui").TouchControlFrame.JumpButton.AbsoluteSize.Y))
+	local controlFrame = PlayerGui:FindFirstChild("TouchGui"):FindFirstChild("TouchControlFrame")
+	local jumpButton = controlFrame and controlFrame:FindFirstChild("JumpButton")
+
+	local function check()
+		if jumpButton and jumpButton.Visible then
+			StarlightUI.Notifications.Position = UDim2.new(1, -20, 1, -(24 + jumpButton.AbsoluteSize.Y))
 		else
-	StarlightUI.Notifications.Position = UDim2.new(1,-20,1,-20)
+			StarlightUI.Notifications.Position = UDim2.new(1, -20, 1, -20)
 		end
 	end
-	PlayerGui:FindFirstChild("TouchGui").TouchControlFrame.JumpButton:GetPropertyChangedSignal("Visible"):Connect(check)
+
+	if jumpButton then
+		jumpButton:GetPropertyChangedSignal("Visible"):Connect(check)
+	end
+
 	check()
 end
 
 --// ENDSECTION
-
 
 --// SECTION : Library Methods
 
