@@ -8084,288 +8084,290 @@ function Starlight:CreateWindow(WindowSettings)
 
 			end
 
-			function Tab:BuildConfigGroupbox(Column, Style, ButtonsCentered)
+function Tab:BuildConfigGroupbox(Column, Style, ButtonsCentered)
 
-				if ButtonsCentered == nil then
-					ButtonsCentered = false
-				end
+	if ButtonsCentered == nil then
+		ButtonsCentered = false
+	end
 
-				local instance = Tab:CreateGroupbox({
-					Name = "Configurations",
-					Icon = 6031280882,
-					Column = Column,
-					Style = Style or 1
-				}, "__prebuiltConfigGroupbox")
+	local instance = Tab:CreateGroupbox({
+		Name = "Configurations",
+		Icon = 6031280882,
+		Column = Column,
+		Style = Style or 1
+	}, "__prebuiltConfigGroupbox")
 
-				if isStudio then
-					instance:CreateParagraph({
-						Name = "Config System Unavailable.",
-						Content = "Environment Invalid : isStudio."
-					}, "__prebuiltConfigEnvironmentWarning")
-					return "Config System Unavailable"
-				end
-				if not isfile or isfile == nil then
-					instance:CreateParagraph({
-						Name = "Config System Unavailable.",
-						Content = "Environment Invalid : isFile UNC Function Not Found."
-					}, "__prebuiltConfigEnvironmentWarning")
-					return "Config System Unavailable"
-				end
+	if isStudio then
+		instance:CreateParagraph({
+			Name = "Config System Unavailable.",
+			Content = "Environment Invalid : isStudio."
+		}, "__prebuiltConfigEnvironmentWarning")
+		return "Config System Unavailable"
+	end
+	if not isfile or isfile == nil then
+		instance:CreateParagraph({
+			Name = "Config System Unavailable.",
+			Content = "Environment Invalid : isFile UNC Function Not Found."
+		}, "__prebuiltConfigEnvironmentWarning")
+		return "Config System Unavailable"
+	end
 
-				local inputPath = nil
-				local selectedConfig = nil
+	local inputPath = nil
+	local selectedConfig = nil
 
-				inputPath = instance:CreateInput({
-					Name = "Config Name",
-					Tooltip = "Insert a name for the config you want to create.",
-					PlaceholderText = "Name",
-					RemoveTextOnFocus = true,
-					IgnoreConfig = true,
-					Callback = function(val) 
-						
-					end,
-				}, "__prebuiltConfigNameInput")
+	inputPath = instance:CreateInput({
+		Name = "Config Name",
+		Tooltip = "Insert a name for the config you want to create.",
+		PlaceholderText = "Name",
+		RemoveTextOnFocus = true,
+		IgnoreConfig = true,
+		Callback = function(val) 
+			
+		end,
+	}, "__prebuiltConfigNameInput")
 
-				instance:CreateButton({
-					Name = "Create Config",
-					Icon = 6035053304,
-					CenterContent = ButtonsCentered,
-					Tooltip = "Create a configuration to access any time with all your current settings.",
-					Callback = function()
-						if not inputPath.CurrentValue or String.IsEmptyOrNull(inputPath.CurrentValue) then
-							Starlight:Notification({
-								Title = "Configuration Error",
-								Icon = 129398364168201,
-								Content = "Config name cannot be empty."
-							})
-							return
-						end
-						inputPath.CurrentValue = string.gsub(inputPath.CurrentValue, "/", " ")
-						inputPath.CurrentValue = string.gsub(inputPath.CurrentValue, "\\", " ")
-
-						if isfile(`{Starlight.FileSystem.Folder}/{folderpath}/configs/{inputPath.CurrentValue}{Starlight.FileSystem.FileExtension}`) then
-							Starlight:Notification({
-								Title = "Configuration Exists",
-								Icon = 129398364168201,
-								Content = "Configuration with the provided name exists already. Overwrite it with update config below."
-							})
-							return
-						end
-
-						local success, returned = Starlight.FileSystem:SaveConfig(inputPath.CurrentValue, `{Starlight.FileSystem.Folder}/{folderpath}/configs/`)
-						if not success then
-							Starlight:Notification({
-								Title = "Configuration Error",
-								Icon = 6031071057,
-								Content = "Unable to save config, return error: " .. returned
-							})
-						end
-
-						Starlight:Notification({
-							Title = "Configuration Created",
-							Icon = 6026568227,
-							Content = string.format("Created config %q", inputPath.CurrentValue),
-						})
-
-						instance.Elements["__prebuiltConfigSelector_lbl"].NestedElements["__prebuiltConfigSelector_lbl"]:Set({ Options = Starlight.FileSystem:RefreshConfigList(`{Starlight.FileSystem.Folder}/{folderpath}/configs`) })
-					end,
-					Style = 1,
-				}, "__prebuiltConfigCreator")
-
-				instance:CreateDivider()
-
-				local configSelection = instance:CreateLabel({
-					Name = "Select Config",
-					Tooltip = "Select a config for this section to work on.",
-				}, "__prebuiltConfigSelector_lbl"):AddDropdown({
-					Options = Starlight.FileSystem:RefreshConfigList(`{Starlight.FileSystem.Folder}/{folderpath}/configs`),
-					CurrentOption = nil,
-					MultipleOptions = false,
-					Callback = function(val)
-						selectedConfig = val[1]
-					end,
-				}, "__prebuiltConfigSelector_lbl")
-
-				instance:CreateButton({
-					Name = "Load Config",
-					Icon = 10723433935,
-					CenterContent = ButtonsCentered,
-					Tooltip = "Load the selected configuration and all its settings.",
-					Callback = function()
-						if selectedConfig == nil then
-							Starlight:Notification({
-								Title = "Null Selection",
-								Icon = 129398364168201,
-								Content = "Configuration Must Be Selected!"
-							})
-							return
-						end
-
-						local success, returned = Starlight.FileSystem:LoadConfig(selectedConfig, `{Starlight.FileSystem.Folder}/{folderpath}/configs/`)
-						if not success then
-							Starlight:Notification({
-								Title = "Configuration Error",
-								Icon = 6031071057,
-								Content = "Unable to load config, return error: " .. returned
-							})
-							return
-						end
-
-						Starlight:Notification({
-							Title = "Configuration Loaded",
-							Icon = 6026568227,
-							Content = string.format("Loaded config %q", selectedConfig),
-						})
-					end,
-					Style = 1,
-				}, "__prebuiltConfigLoader")
-
-				instance:CreateButton({
-					Name = "Update Config",
-					Icon = 6031225810,
-					CenterContent = ButtonsCentered,
-					Tooltip = "Overwrite and update the selected configuration and all its settings with your current ones.",
-					Callback = function()
-						if selectedConfig == nil then
-							Starlight:Notification({
-								Title = "Null Selection",
-								Icon = 129398364168201,
-								Content = "Configuration Must Be Selected!"
-							})
-							return
-						end
-
-						local success, returned = Starlight.FileSystem:SaveConfig(selectedConfig, `{Starlight.FileSystem.Folder}/{folderpath}/configs/`)
-						if not success then
-							Starlight:Notification({
-								Title = "Configuration Error",
-								Icon = 6031071057,
-								Content = "Unable to overwrite config, return error: " .. returned
-							})
-							return
-						end
-
-						Starlight:Notification({
-							Title = "Configuration Updated",
-							Icon = 6026568227,
-							Content = string.format("Overwrote config %q", selectedConfig),
-						})
-					end,
-					Style = 2,
-				}, "__prebuiltConfigUpdater")
-
-				instance:CreateButton({
-					Name = "Refresh Configuration List",
-					Icon = 6035056483,
-					CenterContent = ButtonsCentered,
-					Tooltip = "Manually refresh the list of configurations incase of any errors.",
-					Callback = function()
-						instance.Elements["__prebuiltConfigSelector_lbl"].NestedElements["__prebuiltConfigSelector_lbl"]:Set({ Options = Starlight.FileSystem:RefreshConfigList(`{Starlight.FileSystem.Folder}/{folderpath}/configs`) })
-					end,
-					Style = 2,
-				}, "__prebuiltConfigRefresher")
-
-				local loadlabel = instance:CreateParagraph({
-					Name = "Current Autoload Config:",
-					Content = isfile(`{Starlight.FileSystem.Folder}/{folderpath}/configs/autoload.txt`) and readfile(`{Starlight.FileSystem.Folder}/{folderpath}/configs/autoload.txt`) or "None",
-				}, "__prebuiltConfigAutoloadLabel")
-
-				instance:CreateButton({
-					Name = "Autoload Configuration",
-					Icon = 6023565901,
-					CenterContent = ButtonsCentered,
-					Tooltip = "Set the selected configuration to load whenever you run the script automatically.",
-					Callback = function()
-						if selectedConfig == nil then
-							Starlight:Notification({
-								Title = "Null Selection",
-								Icon = 129398364168201,
-								Content = "Configuration Must Be Selected!"
-							})
-							return
-						end
-						local name = selectedConfig
-						pcall(function()
-							writefile(`{Starlight.FileSystem.Folder}/{folderpath}/configs/autoload.txt`, name)
-						end)
-						loadlabel:Set({ Content = name })
-
-						Starlight:Notification({
-							Title = "Configuration Updated",
-							Icon = 6026568227,
-							Content = string.format("Set %q to be automatically loaded on your future sessions.", selectedConfig),
-						})
-					end,
-					Style = 1,
-				}, "__prebuiltConfigLoader")
-
-				instance:CreateDivider()
-
-				local warning = instance:CreateLabel({
-					Name = "! DANGER ZONE !"
-				}, "__prebuiltConfigDangerWarning")
-				warning.Instance.Header.TextXAlignment = Enum.TextXAlignment.Center
-				warning.Instance.Header.Size = UDim2.new(1,0,0, warning.Instance.Header.Size.Y.Offset)
-				warning.Instance.Header.UIPadding.PaddingLeft = UDim.new(0,0)
-
-				instance:CreateButton({
-					Name = "Clear Autoload",
-					Icon = 6034767619,
-					CenterContent = ButtonsCentered,
-					Tooltip = "Removes the autoloading of the current autoload config.",
-					Callback = function()
-						if isfile(`{Starlight.FileSystem.Folder}/{folderpath}/configs/autoload.txt`) then delfile(`{Starlight.FileSystem.Folder}/{folderpath}/configs/autoload.txt`) end
-						loadlabel:Set({ Content = "None" })
-
-						Starlight:Notification({
-							Title = "Autoload Cleared",
-							Icon = 6026568227,
-							Content = string.format("Disabled current autoload.", selectedConfig),
-						})
-					end,
-					Style = 2,
-				}, "__prebuiltConfigDeleter")
-
-				instance:CreateButton({
-					Name = "Delete Configuration",
-					Icon = 115577765236264,
-					CenterContent = ButtonsCentered,
-					Tooltip = "Deleting A Configuration is permanent and you have to redo it!",
-					Callback = function()
-						if selectedConfig == nil then
-							Starlight:Notification({
-								Title = "Null Selection",
-								Icon = 129398364168201,
-								Content = "Configuration Must Be Selected!"
-							})
-							return
-						end
-						if isfile(`{Starlight.FileSystem.Folder}/{folderpath}/configs/{selectedConfig}{Starlight.FileSystem.FileExtension}`) then
-							delfile(`{Starlight.FileSystem.Folder}/{folderpath}/configs/{selectedConfig}{Starlight.FileSystem.FileExtension}`)
-						end
-
-						if loadlabel.Values.Content == selectedConfig then
-							if isfile(`{Starlight.FileSystem.Folder}/{folderpath}/configs/autoload.txt`) then delfile(`{Starlight.FileSystem.Folder}/{folderpath}/configs/autoload.txt`) end
-							loadlabel:Set({ Content = "None" })
-						end
-
-						instance.Elements["__prebuiltConfigSelector_lbl"].NestedElements["__prebuiltConfigSelector_lbl"]:Set({ 
-							Options = Starlight.FileSystem:RefreshConfigList(`{Starlight.FileSystem.Folder}/{folderpath}/configs`),
-							CurrentOption = "",
-						})
-
-						Starlight:Notification({
-							Title = "Configuration Deleted",
-							Icon = 6026568227,
-							Content = string.format("Deleted Configuration %q", selectedConfig),
-						})
-						if selectedConfig then selectedConfig = nil end
-
-					end,
-					Style = 2,
-				}, "__prebuiltConfigDeleter")
-
+	instance:CreateButton({
+		Name = "Create Config",
+		Icon = 6035053304,
+		CenterContent = ButtonsCentered,
+		Tooltip = "Create a configuration to access any time with all your current settings.",
+		Callback = function()
+			if not inputPath.Values.CurrentValue or String.IsEmptyOrNull(inputPath.Values.CurrentValue) then
+				Starlight:Notification({
+					Title = "Configuration Error",
+					Icon = 129398364168201,
+					Content = "Config name cannot be empty."
+				})
+				return
 			end
+			inputPath.Values.CurrentValue = string.gsub(inputPath.Values.CurrentValue, "/", " ")
+			inputPath.Values.CurrentValue = string.gsub(inputPath.Values.CurrentValue, "\\", " ")
+
+			if isfile(`{Starlight.FileSystem.Folder}/{folderpath}/configs/{inputPath.Values.CurrentValue}{Starlight.FileSystem.FileExtension}`) then
+				Starlight:Notification({
+					Title = "Configuration Exists",
+					Icon = 129398364168201,
+					Content = "Configuration with the provided name exists already. Overwrite it with update config below."
+				})
+				return
+			end
+
+			local success, returned = Starlight.FileSystem:SaveConfig(inputPath.Values.CurrentValue, `{Starlight.FileSystem.Folder}/{folderpath}/configs/`)
+			if not success then
+				Starlight:Notification({
+					Title = "Configuration Error",
+					Icon = 6031071057,
+					Content = "Unable to save config, return error: " .. returned
+				})
+			end
+
+			Starlight:Notification({
+				Title = "Configuration Created",
+				Icon = 6026568227,
+				Content = string.format("Created config %q", inputPath.Values.CurrentValue),
+			})
+
+			instance.Elements["__prebuiltConfigSelector_lbl"].NestedElements["__prebuiltConfigSelector_lbl"]:Set({ Options = Starlight.FileSystem:RefreshConfigList(`{Starlight.FileSystem.Folder}/{folderpath}/configs`) })
+		end,
+		Style = 1,
+	}, "__prebuiltConfigCreator")
+
+	instance:CreateDivider()
+
+	local configSelection = instance:CreateLabel({
+		Name = "Select Config",
+		Tooltip = "Select a config for this section to work on.",
+	}, "__prebuiltConfigSelector_lbl"):AddDropdown({
+		Options = Starlight.FileSystem:RefreshConfigList(`{Starlight.FileSystem.Folder}/{folderpath}/configs`),
+		CurrentOption = nil,
+		MultipleOptions = false,
+		Callback = function(val)
+			selectedConfig = val[1]
+		end,
+	}, "__prebuiltConfigSelector_lbl")
+
+	instance:CreateButton({
+		Name = "Load Config",
+		Icon = 10723433935,
+		CenterContent = ButtonsCentered,
+		Tooltip = "Load the selected configuration and all its settings.",
+		Callback = function()
+			if selectedConfig == nil then
+				Starlight:Notification({
+					Title = "Null Selection",
+					Icon = 129398364168201,
+					Content = "Configuration Must Be Selected!"
+				})
+				return
+			end
+
+			local success, returned = Starlight.FileSystem:LoadConfig(selectedConfig, `{Starlight.FileSystem.Folder}/{folderpath}/configs/`)
+			if not success then
+				Starlight:Notification({
+					Title = "Configuration Error",
+					Icon = 6031071057,
+					Content = "Unable to load config, return error: " .. returned
+				})
+				return
+			end
+
+			Starlight:Notification({
+				Title = "Configuration Loaded",
+				Icon = 6026568227,
+				Content = string.format("Loaded config %q", selectedConfig),
+			})
+		end,
+		Style = 1,
+	}, "__prebuiltConfigLoader")
+
+	instance:CreateButton({
+		Name = "Update Config",
+		Icon = 6031225810,
+		CenterContent = ButtonsCentered,
+		Tooltip = "Overwrite and update the selected configuration and all its settings with your current ones.",
+		Callback = function()
+			if selectedConfig == nil then
+				Starlight:Notification({
+					Title = "Null Selection",
+					Icon = 129398364168201,
+					Content = "Configuration Must Be Selected!"
+				})
+				return
+			end
+
+			local success, returned = Starlight.FileSystem:SaveConfig(selectedConfig, `{Starlight.FileSystem.Folder}/{folderpath}/configs/`)
+			if not success then
+				Starlight:Notification({
+					Title = "Configuration Error",
+					Icon = 6031071057,
+					Content = "Unable to overwrite config, return error: " .. returned
+				})
+				return
+			end
+
+			Starlight:Notification({
+				Title = "Configuration Updated",
+				Icon = 6026568227,
+				Content = string.format("Overwrote config %q", selectedConfig),
+			})
+		end,
+		Style = 2,
+	}, "__prebuiltConfigUpdater")
+
+	instance:CreateButton({
+		Name = "Refresh Configuration List",
+		Icon = 6035056483,
+		CenterContent = ButtonsCentered,
+		Tooltip = "Manually refresh the list of configurations incase of any errors.",
+		Callback = function()
+			instance.Elements["__prebuiltConfigSelector_lbl"].NestedElements["__prebuiltConfigSelector_lbl"]:Set({ Options = Starlight.FileSystem:RefreshConfigList(`{Starlight.FileSystem.Folder}/{folderpath}/configs`) })
+		end,
+		Style = 2,
+	}, "__prebuiltConfigRefresher")
+
+	local loadlabel = instance:CreateParagraph({
+		Name = "Current Autoload Config:",
+		Content = isfile(`{Starlight.FileSystem.Folder}/{folderpath}/configs/autoload.txt`) and readfile(`{Starlight.FileSystem.Folder}/{folderpath}/configs/autoload.txt`) or "None",
+	}, "__prebuiltConfigAutoloadLabel")
+
+	instance:CreateButton({
+		Name = "Autoload Configuration",
+		Icon = 6023565901,
+		CenterContent = ButtonsCentered,
+		Tooltip = "Set the selected configuration to load whenever you run the script automatically.",
+		Callback = function()
+			if selectedConfig == nil then
+				Starlight:Notification({
+					Title = "Null Selection",
+					Icon = 129398364168201,
+					Content = "Configuration Must Be Selected!"
+				})
+				return
+			end
+			local name = selectedConfig
+			pcall(function()
+				writefile(`{Starlight.FileSystem.Folder}/{folderpath}/configs/autoload.txt`, name)
+			end)
+			loadlabel:Set({ Content = name })
+
+			Starlight:Notification({
+				Title = "Configuration Updated",
+				Icon = 6026568227,
+				Content = string.format("Set %q to be automatically loaded on your future sessions.", selectedConfig),
+			})
+		end,
+		Style = 1,
+	}, "__prebuiltConfigLoader")
+
+	instance:CreateDivider()
+
+	local warning = instance:CreateLabel({
+		Name = "! DANGER ZONE !"
+	}, "__prebuiltConfigDangerWarning")
+	warning.Instance.Header.TextXAlignment = Enum.TextXAlignment.Center
+	warning.Instance.Header.Size = UDim2.new(1,0,0, warning.Instance.Header.Size.Y.Offset)
+	warning.Instance.Header.UIPadding.PaddingLeft = UDim.new(0,0)
+
+	instance:CreateButton({
+		Name = "Clear Autoload",
+		Icon = 6034767619,
+		CenterContent = ButtonsCentered,
+		Tooltip = "Removes the autoloading of the current autoload config.",
+		Callback = function()
+			if isfile(`{Starlight.FileSystem.Folder}/{folderpath}/configs/autoload.txt`) then delfile(`{Starlight.FileSystem.Folder}/{folderpath}/configs/autoload.txt`) end
+			loadlabel:Set({ Content = "None" })
+
+			Starlight:Notification({
+				Title = "Autoload Cleared",
+				Icon = 6026568227,
+				Content = string.format("Disabled current autoload.", selectedConfig),
+			})
+		end,
+		Style = 2,
+	}, "__prebuiltConfigDeleter")
+
+	instance:CreateButton({
+		Name = "Delete Configuration",
+		Icon = 115577765236264,
+		CenterContent = ButtonsCentered,
+		Tooltip = "Deleting A Configuration is permanent and you have to redo it!",
+		Callback = function()
+			if selectedConfig == nil then
+				Starlight:Notification({
+					Title = "Null Selection",
+					Icon = 129398364168201,
+					Content = "Configuration Must Be Selected!"
+				})
+				return
+			end
+			if isfile(`{Starlight.FileSystem.Folder}/{folderpath}/configs/{selectedConfig}{Starlight.FileSystem.FileExtension}`) then
+				delfile(`{Starlight.FileSystem.Folder}/{folderpath}/configs/{selectedConfig}{Starlight.FileSystem.FileExtension}`)
+			end
+
+			if loadlabel.Values.Content == selectedConfig then
+				if isfile(`{Starlight.FileSystem.Folder}/{folderpath}/configs/autoload.txt`) then delfile(`{Starlight.FileSystem.Folder}/{folderpath}/configs/autoload.txt`) end
+				loadlabel:Set({ Content = "None" })
+			end
+
+			instance.Elements["__prebuiltConfigSelector_lbl"].NestedElements["__prebuiltConfigSelector_lbl"]:Set({ 
+				Options = Starlight.FileSystem:RefreshConfigList(`{Starlight.FileSystem.Folder}/{folderpath}/configs`),
+				CurrentOption = "",
+			})
+
+			Starlight:Notification({
+				Title = "Configuration Deleted",
+				Icon = 6026568227,
+				Content = string.format("Deleted Configuration %q", selectedConfig),
+			})
+			if selectedConfig then selectedConfig = nil end
+
+		end,
+		Style = 2,
+	}, "__prebuiltConfigDeleter")
+
+end
+
+
 
 
 			--// ENDSUBSECTION
