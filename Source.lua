@@ -1856,7 +1856,7 @@ end
 --// SECTION : Interface Management
 
 -- Interface Model
-local modelId = debugV and 136653172778765 or 115378917859034
+local modelId = debugV and 136653172778765 or 132866968194043
 
 local StarlightUI: ScreenGui = isStudio and script.Parent:WaitForChild("Starlight V2")
 	or game:GetObjects("rbxassetid://" .. modelId)[1]
@@ -10755,5 +10755,13 @@ if isStudio and enabled then
 end --]=]
 
 --// ENDSECTION
+
+--// SECTION : Protection of our work
+Starlight:Notification({
+	Title = "Enjoying Starlight?",
+	Content = "Thanks for using a script that uses our UI Library. Starlight is made with love, care and effort by Nebula Softworks And Nebula Softworks alone. No other developer or such entity. We are spreading this message as a skid who claims others work as their own, lizardleo123 on discord, is claiming Starlight as theirs. Help us protect our work by staying away from his lies. You can always find us at dsc.gg/nebulasoftworks.\nThank you ❤️",
+	Duration = 10,
+	Icon = 105789146907268,
+})
 
 return Starlight
