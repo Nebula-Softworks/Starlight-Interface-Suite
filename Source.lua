@@ -4518,22 +4518,37 @@ function Starlight:CreateWindow(WindowSettings)
 					Element.Instances.Popup.Header.Text = ElementSettings.Name
 
 
-					--// Interaction System \\--
-					Element.Instances.Element.Icon.MouseButton1Click:Connect(function()
-						mainWindow["Popup Overlay"].Visible = true
-						Element.Instances.Popup.Visible = true
+--// Interaction System \\--
+local function CloseDropdown()
+    mainWindow["Popup Overlay"].Visible = false
+    Element.Instances.Popup.Visible = false
+end
 
-						UserInputService.InputBegan:Connect(function(i, g)
-							if g or i.UserInputType ~= Enum.UserInputType.MouseButton1 then return end
-							local p, pos, size = i.Position, Element.Instances.Popup.AbsolutePosition, Element.Instances.Popup.AbsoluteSize
-							if not (p.X >= pos.X and p.X <= pos.X + size.X and p.Y >= pos.Y and p.Y <= pos.Y + size.Y) then
-								mainWindow["Popup Overlay"].Visible = false
-								Element.Instances.Popup.Visible = false
-							end
-						end)
-					end)
+Element.Instances.Element:GetPropertyChangedSignal("AbsolutePosition"):Connect(CloseDropdown)
 
-					local function ActivateColorSingle(name)
+Element.Instances.Element.Icon.MouseButton1Click:Connect(function()
+    if Element.Instances.Popup.Visible then
+        CloseDropdown()
+        return
+    end
+
+    mainWindow["Popup Overlay"].Visible = true
+    Element.Instances.Popup.Visible = true
+
+    local connection
+    connection = UserInputService.InputBegan:Connect(function(i, g)
+        if g or i.UserInputType ~= Enum.UserInputType.MouseButton1 then return end
+        local p, pos, size = i.Position, Element.Instances.Popup.AbsolutePosition, Element.Instances.Popup.AbsoluteSize
+        if not (p.X >= pos.X and p.X <= pos.X + size.X and p.Y >= pos.Y and p.Y <= pos.Y + size.Y) then
+            CloseDropdown()
+            if connection then
+                connection:Disconnect()
+            end
+        end
+    end)
+end)
+
+local function ActivateColorSingle(name)
 						for _, Option in pairs(Element.Instances.Popup.Content:GetChildren()) do
 							if Option.ClassName == "Frame" and not string.find(Option.Name, "Option_Template") then
 								Tween(Option, {BackgroundTransparency = 1})
