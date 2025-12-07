@@ -7927,195 +7927,246 @@ function Starlight:CreateWindow(WindowSettings)
 						return Starlight.Window.TabSections[Name].Tabs[TabIndex].Groupboxes[GroupIndex].Elements[ParentIndex].NestedElements[NestedIndex]
 					end
 
-					-[[
-    NestedSettings = {
-        Options = table,
-        CurrentOption = table/string,
-        MultipleOptions = bool,
-        Special = number (1,2),
-        Callback = function(table),
-    }
-]]
+					function Element:AddDropdown(NestedSettings, NestedIndex, Parent, ParentIndex)
+						Parent = Parent or Element
+						ParentIndex = ParentIndex or Index
 
-local additionSize = Parent.Instance.DropdownHolder:FindFirstChild("Dropdown") and 36 or 34
-local localConnections = {}
+						--[[
+						NestedSettings = {
+							Options = table,
+							CurrentOption = table/string,
+							MultipleOptions = bool,**
+							Special = number (1,2), **
+							
+							Callback = function(table),
+						}
+						]]
 
-NestedSettings.MultipleOptions = NestedSettings.MultipleOptions or false
-NestedSettings.Special = NestedSettings.Special or 0
-NestedSettings.Required = NestedSettings.Required or false
+						local additionSize = Parent.Instance.DropdownHolder:FindFirstChild("Dropdown") and 36 or 34
+						local localConnections = {}
 
--- normalize CurrentOption
-if NestedSettings.MultipleOptions == false then
-    if typeof(NestedSettings.CurrentOption) == "table" then
-        NestedSettings.CurrentOption = NestedSettings.CurrentOption[1]
-    end
-else
-    if typeof(NestedSettings.CurrentOption) ~= "table" then
-        NestedSettings.CurrentOption = { NestedSettings.CurrentOption }
-    end
-end
+						NestedSettings.MultipleOptions = NestedSettings.MultipleOptions or false
+						NestedSettings.Special = NestedSettings.Special or 0
+						NestedSettings.Required = NestedSettings.Required or false
 
-local NestedElement = {
-    Values = NestedSettings,
-    Class = "Dropdown",
-    Instances = {},
-    IgnoreConfig = NestedSettings.IgnoreConfig,
-}
+						local NestedElement = {
+							Values = NestedSettings,
+							Class = "Dropdown",
+							Instances = {},
+							IgnoreConfig = NestedSettings.IgnoreConfig,
+						}
 
-task.spawn(function()
-    local popupConnection
-    local hover = false
-    local height = 175
+						task.spawn(function()
+							local hover = false
+							local height = 175
 
-    NestedElement.Instances[1] = Element.Instance.DropdownHolder.Dropdown:Clone()
-    NestedElement.Instances[1].Visible = true
-    NestedElement.Instances[1].Parent = Parent.Instance.DropdownHolder
+							NestedElement.Instances[1] = Element.Instance.DropdownHolder.Dropdown:Clone()
+							NestedElement.Instances[1].Visible = true
+							NestedElement.Instances[1].Parent = Parent.Instance.DropdownHolder
+							if Parent ~= Element then
+								local instance2
+								for i, v in pairs(Parent.Instance.Parent:GetChildren()) do
+									if v.Name == Parent.Instance.Name and v ~= Parent.Instance then
+										instance2 = v
+									end
+								end
+								instance2.Size = UDim2.fromOffset(0, Parent.Instance.Size.Y.Offset + additionSize)
+								Parent.Instance.Size = UDim2.fromOffset(0, Parent.Instance.Size.Y.Offset + additionSize)
+							else
+								Parent.Instance.Size = UDim2.fromOffset(0, Parent.Instance.Size.Y.Offset + additionSize)
+							end
 
-    if Parent ~= Element then
-        local instance2
-        for _, v in pairs(Parent.Instance.Parent:GetChildren()) do
-            if v.Name == Parent.Instance.Name and v ~= Parent.Instance then
-                instance2 = v
-            end
-        end
-        instance2.Size = UDim2.fromOffset(0, Parent.Instance.Size.Y.Offset + additionSize)
-        Parent.Instance.Size = UDim2.fromOffset(0, Parent.Instance.Size.Y.Offset + additionSize)
-    else
-        Parent.Instance.Size = UDim2.fromOffset(0, Parent.Instance.Size.Y.Offset + additionSize)
-    end
+							NestedElement.Instances[2] = Resources.Elements.DropdownPopup:Clone()
+							NestedElement.Instances[2].Parent = StarlightUI.PopupOverlay
 
-    NestedElement.Instances[2] = Resources.Elements.DropdownPopup:Clone()
-    NestedElement.Instances[2].Parent = StarlightUI.PopupOverlay
+							NestedElement.Instances[1].Name = "DROPDOWN_" .. NestedIndex
+							NestedElement.Instances[2].Name = "DROPDOWN_" .. NestedIndex
 
-    NestedElement.Instances[1].Name = "DROPDOWN_" .. NestedIndex
-    NestedElement.Instances[2].Name = "DROPDOWN_" .. NestedIndex
+							for _, option in pairs(NestedElement.Instances[2].List:GetChildren()) do
+								if option.ClassName == "Frame" then
+									option:Destroy()
+								end
+							end
 
-    for _, option in pairs(NestedElement.Instances[2].List:GetChildren()) do
-        if option.ClassName == "Frame" then
-            option:Destroy()
-        end
-    end
+							acrylicEvent.Event:Connect(function()
+								if mainAcrylic then
+									NestedElement.Instances[2].BackgroundTransparency = 0.5
+								else
+									NestedElement.Instances[2].BackgroundTransparency = 0
+								end
+							end)
+							local AcrylicObject = Acrylic.AcrylicPaint()
+							AcrylicObject.AddParent(NestedElement.Instances[2])
+							AcrylicObject.Frame.Parent = NestedElement.Instances[2]
 
-    acrylicEvent.Event:Connect(function()
-        if mainAcrylic then
-            NestedElement.Instances[2].BackgroundTransparency = 0.5
-        else
-            NestedElement.Instances[2].BackgroundTransparency = 0
-        end
-    end)
+							local function updPos()
+								if
+									NestedElement.Instances[1].AbsolutePosition.Y + 35 + height
+									>= Camera.ViewportSize.Y - (GuiInset + 20)
+								then
+									NestedElement.Instances[2].AnchorPoint = Vector2.new(0, 1)
+									NestedElement.Instances[2].Position = UDim2.fromOffset(
+										math.ceil(NestedElement.Instances[1].AbsolutePosition.X),
+										math.ceil(NestedElement.Instances[1].AbsolutePosition.Y) - 5
+									)
+								else
+									NestedElement.Instances[2].AnchorPoint = Vector2.new(0, 0)
+									NestedElement.Instances[2].Position = UDim2.fromOffset(
+										math.ceil(NestedElement.Instances[1].AbsolutePosition.X),
+										math.ceil(NestedElement.Instances[1].AbsolutePosition.Y) + 35
+									)
+								end
+							end
+							local function close()
+								Tween(
+									NestedElement.Instances[2].List,
+									{ Size = UDim2.new(1, 0, 0, 0) },
+									nil,
+									Tween.Info(nil, nil, 0.18)
+								)
+								Tween(
+									NestedElement.Instances[2],
+									{ Size = UDim2.fromOffset(NestedElement.Instances[2].Size.X.Offset, 0) },
+									function()
+										if NestedElement and NestedElement.Instances ~= nil then
+											NestedElement.Instances[2].Visible = false
+											if acrylicFlag then
+												AcrylicObject.Model.Transparency = 1
+											end
+										end
+									end,
+									Tween.Info(nil, nil, 0.18)
+								)
+							end
+							NestedElement.Instances[1]:GetPropertyChangedSignal("AbsolutePosition"):Connect(close)
+							NestedElement.Instances[1]:GetPropertyChangedSignal("AbsolutePosition"):Connect(updPos)
+							updPos()
+							close()
 
-    local AcrylicObject = Acrylic.AcrylicPaint()
-    AcrylicObject.AddParent(NestedElement.Instances[2])
-    AcrylicObject.Frame.Parent = NestedElement.Instances[2]
+							NestedElement.Instances[1]:GetPropertyChangedSignal("AbsoluteSize"):Connect(function()
+								NestedElement.Instances[2].Size = UDim2.fromOffset(
+									math.ceil(NestedElement.Instances[1].AbsoluteSize.X),
+									NestedElement.Instances[2].Size.Y.Offset
+								)
+								--task.wait()
+								NestedElement:truncate()
+							end)
 
-    local function updPos()
-        if NestedElement.Instances[1].AbsolutePosition.Y + 35 + height >= Camera.ViewportSize.Y - (GuiInset + 20) then
-            NestedElement.Instances[2].AnchorPoint = Vector2.new(0,1)
-            NestedElement.Instances[2].Position = UDim2.fromOffset(
-                math.ceil(NestedElement.Instances[1].AbsolutePosition.X),
-                math.ceil(NestedElement.Instances[1].AbsolutePosition.Y) - 5
-            )
-        else
-            NestedElement.Instances[2].AnchorPoint = Vector2.new(0,0)
-            NestedElement.Instances[2].Position = UDim2.fromOffset(
-                math.ceil(NestedElement.Instances[1].AbsolutePosition.X),
-                math.ceil(NestedElement.Instances[1].AbsolutePosition.Y) + 35
-            )
-        end
-    end
+							NestedElement.Instances[1].Interact.MouseButton1Click:Connect(function()
+								if NestedElement.Instances[2].Visible then
+									close()
+								else
+									NestedElement.Instances[2].Visible = true
+									height = NestedElement.Instances[2].List.AbsoluteCanvasSize.Y >= 175 and 175
+										or NestedElement.Instances[2].List.AbsoluteCanvasSize.Y
+									updPos()
+									NestedElement.Instances[2].List.Size = UDim2.new(1, 0, 0, 0)
+									NestedElement.Instances[2].List.ScrollBarImageTransparency = 1
+									Tween(
+										NestedElement.Instances[2],
+										{ Size = UDim2.fromOffset(NestedElement.Instances[2].Size.X.Offset, height) }
+									)
+									Tween(
+										NestedElement.Instances[2].List,
+										{ Size = UDim2.new(1, 0, 0, height) },
+										function()
+											NestedElement.Instances[2].List.ScrollBarImageTransparency = 0
+										end
+									)
+									if acrylicFlag then
+										AcrylicObject.Model.Transparency = 0.98
+									end
+									local connection
+									connection = UserInputService.InputBegan:Connect(function(i)
+										if i.UserInputType ~= Enum.UserInputType.MouseButton1 then
+											return
+										end
+										local p, pos, size =
+											i.Position,
+											NestedElement.Instances[2].AbsolutePosition,
+											NestedElement.Instances[2].AbsoluteSize
+										if
+											not (
+												p.X >= pos.X
+												and p.X <= pos.X + size.X
+												and p.Y >= pos.Y
+												and p.Y <= pos.Y + size.Y
+											) and not hover
+										then
+											close()
+											connection:Disconnect()
+										end
+									end)
+								end
+							end)
 
-    local function closePopup()
-        if popupConnection then popupConnection:Disconnect() end
-        Tween(NestedElement.Instances[2].List, { Size = UDim2.new(1,0,0,0) }, nil, Tween.Info(nil,nil,0.18))
-        Tween(NestedElement.Instances[2], { Size = UDim2.fromOffset(NestedElement.Instances[2].Size.X.Offset, 0) }, function()
-            if NestedElement and NestedElement.Instances then
-                NestedElement.Instances[2].Visible = false
-                if acrylicFlag then
-                    AcrylicObject.Model.Transparency = 1
-                end
-            end
-        end, Tween.Info(nil,nil,0.18))
-    end
+							local function hover()
+								Tween(
+									NestedElement.Instances[1].UIStroke,
+									{ Color = Starlight.CurrentTheme.Foregrounds.DarkHover }
+								)
+								Tween(
+									NestedElement.Instances[2].UIStroke,
+									{ Color = Starlight.CurrentTheme.Foregrounds.DarkHover }
+								)
+								hover = true
+							end
+							local function leave()
+								Tween(
+									NestedElement.Instances[1].UIStroke,
+									{ Color = Starlight.CurrentTheme.Foregrounds.Dark }
+								)
+								Tween(
+									NestedElement.Instances[2].UIStroke,
+									{ Color = Starlight.CurrentTheme.Foregrounds.Dark }
+								)
+								hover = false
+							end
 
-    NestedElement.Instances[1]:GetPropertyChangedSignal("AbsolutePosition"):Connect(closePopup)
-    NestedElement.Instances[1]:GetPropertyChangedSignal("AbsolutePosition"):Connect(updPos)
-    updPos()
-    closePopup()
+							NestedElement.Instances[1].MouseEnter:Connect(hover)
+							NestedElement.Instances[1].MouseLeave:Connect(leave)
+							NestedElement.Instances[2].MouseEnter:Connect(hover)
+							NestedElement.Instances[2].MouseLeave:Connect(leave)
 
-    NestedElement.Instances[1]:GetPropertyChangedSignal("AbsoluteSize"):Connect(function()
-        NestedElement.Instances[2].Size = UDim2.fromOffset(
-            math.ceil(NestedElement.Instances[1].AbsoluteSize.X),
-            NestedElement.Instances[2].Size.Y.Offset
-        )
-        NestedElement:truncate()
-    end)
+							if NestedElement.Values.CurrentOption then
+								if typeof(NestedElement.Values.CurrentOption) == "string" then
+									NestedElement.Values.CurrentOption = { NestedElement.Values.CurrentOption }
+								end
+								if
+									not NestedElement.Values.MultipleOptions
+									and typeof(NestedElement.Values.CurrentOption) == "table"
+								then
+									NestedElement.Values.CurrentOption = { NestedElement.Values.CurrentOption[1] }
+								end
+								if typeof(NestedElement.Values.CurrentOption) == "number" then
+									NestedElement.Values.CurrentOption =
+										{ NestedElement.Values.Options[NestedElement.Values.CurrentOption] }
+								end
+							else
+								NestedElement.Values.CurrentOption = {}
+							end
+							if NestedElement.Values.Required and unpack(NestedElement.Values.CurrentOption) == nil then
+								NestedElement.Values.CurrentOption = { NestedElement.Values.Options[1] }
+							end
 
-    NestedElement.Instances[1].Interact.MouseButton1Click:Connect(function()
-        if NestedElement.Instances[2].Visible then
-            closePopup()
-        else
-            NestedElement.Instances[2].Visible = true
-            height = NestedElement.Instances[2].List.AbsoluteCanvasSize.Y >= 175 and 175 or NestedElement.Instances[2].List.AbsoluteCanvasSize.Y
-            updPos()
-            NestedElement.Instances[2].List.Size = UDim2.new(1,0,0,0)
-            NestedElement.Instances[2].List.ScrollBarImageTransparency = 1
+							--// SUBSECTION : display updation and methods
 
-            Tween(NestedElement.Instances[2], { Size = UDim2.fromOffset(NestedElement.Instances[2].Size.X.Offset, height) })
-            Tween(NestedElement.Instances[2].List, { Size = UDim2.new(1,0,0,height) }, function()
-                NestedElement.Instances[2].List.ScrollBarImageTransparency = 0
-            end)
+							function NestedElement:truncate()
+								NestedElement.Instances[1].Header.Size = UDim2.new(1, -18, 0, 20)
+								if
+									NestedElement.Instances[1].Header.TextBounds.X
+									<= NestedElement.Instances[1].Header.AbsoluteSize.X
+								then
+									NestedElement.Instances[1].Truncater.Visible = false
+									return
+								end
+								NestedElement.Instances[1].Header.Size = UDim2.new(1, -26, 0, 20)
+								NestedElement.Instances[1].Truncater.Visible = true
+							end
 
-            if acrylicFlag then
-                AcrylicObject.Model.Transparency = 0.98
-            end
-
-            popupConnection = UserInputService.InputBegan:Connect(function(i)
-                if i.UserInputType ~= Enum.UserInputType.MouseButton1 then return end
-                local p, pos, size = i.Position, NestedElement.Instances[2].AbsolutePosition, NestedElement.Instances[2].AbsoluteSize
-                local inside = p.X >= pos.X and p.X <= pos.X + size.X and p.Y >= pos.Y and p.Y <= pos.Y + size.Y
-                if not inside and not hover then
-                    closePopup()
-                    if popupConnection then popupConnection:Disconnect() end
-                end
-            end)
-        end
-    end)
-
-    local function enterHover()
-        Tween(NestedElement.Instances[1].UIStroke, { Color = Starlight.CurrentTheme.Foregrounds.DarkHover })
-        Tween(NestedElement.Instances[2].UIStroke, { Color = Starlight.CurrentTheme.Foregrounds.DarkHover })
-        hover = true
-    end
-    local function leaveHover()
-        Tween(NestedElement.Instances[1].UIStroke, { Color = Starlight.CurrentTheme.Foregrounds.Dark })
-        Tween(NestedElement.Instances[2].UIStroke, { Color = Starlight.CurrentTheme.Foregrounds.Dark })
-        hover = false
-    end
-
-    NestedElement.Instances[1].MouseEnter:Connect(enterHover)
-    NestedElement.Instances[1].MouseLeave:Connect(leaveHover)
-    NestedElement.Instances[2].MouseEnter:Connect(enterHover)
-    NestedElement.Instances[2].MouseLeave:Connect(leaveHover)
-
-    -- normalize CurrentOption on load
-    if NestedElement.Values.CurrentOption then
-        if typeof(NestedElement.Values.CurrentOption) == "string" then
-            NestedElement.Values.CurrentOption = { NestedElement.Values.CurrentOption }
-        end
-        if not NestedElement.Values.MultipleOptions and typeof(NestedElement.Values.CurrentOption) == "table" then
-            NestedElement.Values.CurrentOption = { NestedElement.Values.CurrentOption[1] }
-        end
-        if typeof(NestedElement.Values.CurrentOption) == "number" then
-            NestedElement.Values.CurrentOption = { NestedElement.Values.Options[NestedElement.Values.CurrentOption] }
-        end
-    else
-        NestedElement.Values.CurrentOption = {}
-    end
-
-    if NestedElement.Values.Required and unpack(NestedElement.Values.CurrentOption) == nil then
-        NestedElement.Values.CurrentOption = { NestedElement.Values.Options[1] }
-    end
-end)
+							NestedElement.Instances[1].Header:GetPropertyChangedSignal("Text"):Connect(function()
+								NestedElement:truncate()
+							end)
 
 							--// ENDSUBSECTION
 
@@ -10708,7 +10759,7 @@ end --]=]
 --// SECTION : Protection of our work
 Starlight:Notification({
 	Title = "Enjoying Starlight?",
-	Content = "Thanks for using a script that uses our UI Library. Starlight is made with love, care and effort by Nebula Softworks And Nebula Softworks alone. No other developer or such entity. We are spreading this message as a skid who claims others work as their own, a fake bitdancer (bitdancer._) on discord, is claiming Starlight as theirs. Help us protect our work by staying away from his lies. You can always find us at dsc.gg/nebulasoftworks.\nThank you ❤️",
+	Content = "Thanks for using a script that uses our UI Library. Starlight is made with love, care and effort by Nebula Softworks And Nebula Softworks alone. No other developer or such entity. We are spreading this message as a skid who claims others work as their own, lizardleo123 on discord, is claiming Starlight as theirs. Help us protect our work by staying away from his lies. You can always find us at dsc.gg/nebulasoftworks.\nThank you ❤️",
 	Duration = 10,
 	Icon = 105789146907268,
 })
