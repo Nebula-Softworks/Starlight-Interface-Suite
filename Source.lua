@@ -7927,15 +7927,16 @@ function Starlight:CreateWindow(WindowSettings)
 						return Starlight.Window.TabSections[Name].Tabs[TabIndex].Groupboxes[GroupIndex].Elements[ParentIndex].NestedElements[NestedIndex]
 					end
 
-					-[[
-    NestedSettings = {
-        Options = table,
-        CurrentOption = table/string,
-        MultipleOptions = bool,
-        Special = number (1,2),
-        Callback = function(table),
-    }
+--[[
+NestedSettings = {
+    Options = table,
+    CurrentOption = table/string,
+    MultipleOptions = bool,
+    Special = number (1,2),
+    Callback = function(table),
+}
 ]]
+
 
 local additionSize = Parent.Instance.DropdownHolder:FindFirstChild("Dropdown") and 36 or 34
 local localConnections = {}
