@@ -68,7 +68,7 @@ by Nebula Softworks
 
 --// SECTION : Core Variables
 
-local Release = "Prerelease Beta 5.03"
+local Release = "Prerelease Beta 5.03a"
 local debugV = false
 
 local Starlight = {
@@ -1385,13 +1385,23 @@ local function Hide(Interface, JustHide: boolean?, Notify: boolean?, Bind: strin
 	end
 	
 	-- hide popups
-	InputManager:SendMouseButtonEvent(
-		0, 0, 0, true, game, 0
-	)
+	if not isStudio and Starlight.Instance.MobileToggle.Visible then
+		InputManager:SendTouchEvent(
+			0, Enum.UserInputState.Begin, 0, 0
+		)
 
-	InputManager:SendMouseButtonEvent(
-		0, 0, 0, false, game, 0
-	)
+		InputManager:SendTouchEvent(
+			0, Enum.UserInputState.End, 0, 0
+		)
+	elseif not isStudio then
+		InputManager:SendMouseButtonEvent(
+			0, 0, 0, true, game, 0
+		)
+
+		InputManager:SendMouseButtonEvent(
+			0, 0, 0, false, game, 0
+		)
+	end
 
 
 	task.wait(0.18)
@@ -3307,7 +3317,7 @@ function Starlight:CreateWindow(WindowSettings)
 		end
 
 		Tab.Instances.Page.Holder.Left.Server.Subheader.Text = "Currently Playing "
-			.. MarketplaceService:GetProductInfo(game.PlaceId).Name
+			.. MarketplaceService:GetProductInfoAsync(game.PlaceId).Name
 		Tab.Instances.Page.Holder.Left.Server.Frame.serverregion.Text = '<font size="14" color="#FFF" weight="semibold">Region</font>\n'
 			.. Localization:GetCountryRegionForPlayerAsync(Player)
 		
