@@ -68,7 +68,7 @@ by Nebula Softworks
 
 --// SECTION : Core Variables
 
-local Release = "Prerelease Beta 5.03b"
+local Release = "Prerelease Beta 5.03c"
 local debugV = false
 
 local Starlight = {
@@ -6542,6 +6542,24 @@ function Starlight:CreateWindow(WindowSettings)
 									),
 								}
 							)
+							local Success, Response = pcall(function()
+								Element.Values.Callback(Element.Values.CurrentValue)
+							end)
+
+							if not Success then
+								Element.Instance.Header.Text = "Callback Error"
+								warn(`Starlight Interface Suite - Callback Error | {Element.Values.Name} ({Index})`)
+								print(Response)
+								if WindowSettings.NotifyOnCallbackError then
+									Starlight:Notification({
+										Title = Element.Values.Name .. " Callback Error",
+										Content = tostring(Response),
+										Icon = 129398364168201,
+									})
+								end
+								wait(0.5)
+								Element.Instance.Header.Text = ElementSettings.Name
+							end
 
 							tooltip.Text = Element.Values.Tooltip or ""
 
