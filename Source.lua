@@ -759,7 +759,32 @@ local Themes = {
 			}),
 		},
 	},
-    ["Catppuccin Mocha"] = {
+    	 = Color3.fromRGB(198, 208, 245),
+		Light = Color3.fromRGB(198, 208, 245),
+		Medium = Color3.fromRGB(165, 173, 206),
+		Dark = Color3.fromRGB(115, 121, 148),
+		MediumHover = Color3.fromRGB(180, 189, 220),
+		DarkHover = Color3.fromRGB(136, 142, 170),
+	},
+	Miscellaneous = {
+		Divider = Color3.fromRGB(166, 218, 149),
+		Shadow = Color3.fromRGB(40, 44, 61),
+		LighterShadow = Color3.fromRGB(48, 52, 70),
+	},
+	Accents = {
+		Main = ColorSequence.new({
+			ColorSequenceKeypoint.new(0, Color3.fromRGB(239, 159, 118)),
+			ColorSequenceKeypoint.new(0.5, Color3.fromRGB(229, 200, 144)),
+			ColorSequenceKeypoint.new(1, Color3.fromRGB(166, 218, 149)),
+		}),
+		Brighter = ColorSequence.new({
+			ColorSequenceKeypoint.new(0, Color3.fromRGB(245, 182, 148)),
+			ColorSequenceKeypoint.new(0.5, Color3.fromRGB(238, 215, 170)),
+			ColorSequenceKeypoint.new(1, Color3.fromRGB(190, 232, 178)),
+		}),
+	},
+},
+["Catppuccin Mocha"] = {
 	Backgrounds = {
 		Dark = Color3.fromRGB(30, 30, 46),
 		Medium = Color3.fromRGB(34, 34, 52),
@@ -898,8 +923,6 @@ local Themes = {
 		}),
 	},
 },
-	
-
 	--PHub = {},
 	--Serika = {},
 	--Rust = {}
