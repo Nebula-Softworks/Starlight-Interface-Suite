@@ -761,30 +761,30 @@ local Themes = {
 	},
 	["Catppuccin Mocha"] = {
 	Backgrounds = {
-		Dark = Color3.fromRGB(30, 30, 46),       -- base
-		Medium = Color3.fromRGB(24, 24, 37),     -- mantle
-		Light = Color3.fromRGB(49, 50, 68),      -- surface0
-		Groupbox = Color3.fromRGB(49, 50, 68),
-		Highlight = Color3.fromRGB(69, 71, 90),  -- surface1
-	},
+	Dark = Color3.fromRGB(30, 30, 46),
+	Medium = Color3.fromRGB(34, 34, 52),
+	Light = Color3.fromRGB(43, 44, 60),
+	Groupbox = Color3.fromRGB(40, 41, 56),
+	Highlight = Color3.fromRGB(69, 71, 90),
+},
 	Foregrounds = {
-		Active = Color3.fromRGB(205, 214, 244),  -- text
+		Active = Color3.fromRGB(205, 214, 244),
 		Light = Color3.fromRGB(205, 214, 244),
-		Medium = Color3.fromRGB(166, 173, 200),  -- subtext0
-		Dark = Color3.fromRGB(108, 112, 134),    -- overlay0
+		Medium = Color3.fromRGB(166, 173, 200),  
+		Dark = Color3.fromRGB(108, 112, 134),    
 		MediumHover = Color3.fromRGB(186, 194, 222),
 		DarkHover = Color3.fromRGB(127, 132, 156),
 	},
 	Miscellaneous = {
-		Divider = Color3.fromRGB(137, 180, 250), -- blue
-		Shadow = Color3.fromRGB(17, 17, 27),     -- crust
+		Divider = Color3.fromRGB(137, 180, 250), 
+		Shadow = Color3.fromRGB(17, 17, 27),    
 		LighterShadow = Color3.fromRGB(24, 24, 37),
 	},
 	Accents = {
 		Main = ColorSequence.new({
-			ColorSequenceKeypoint.new(0.0, Color3.fromRGB(245, 194, 231)), -- pink
-			ColorSequenceKeypoint.new(0.5, Color3.fromRGB(203, 166, 247)), -- mauve
-			ColorSequenceKeypoint.new(1.0, Color3.fromRGB(137, 180, 250)), -- blue
+			ColorSequenceKeypoint.new(0.0, Color3.fromRGB(245, 194, 231)), 
+			ColorSequenceKeypoint.new(0.5, Color3.fromRGB(203, 166, 247)), 
+			ColorSequenceKeypoint.new(1.0, Color3.fromRGB(137, 180, 250)),
 		}),
 		Brighter = ColorSequence.new({
 			ColorSequenceKeypoint.new(0.0, Color3.fromRGB(250, 217, 233)),
