@@ -2841,7 +2841,7 @@ function Starlight:CreateWindow(WindowSettings)
 
 			mainWindow.Visible = true
 			StarlightUI.Drag.Visible = true
-			StarlightUI.MobileToggle.Visible = UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled
+			StarlightUI.MobileToggle.Visible = UserInputService.TouchEnabled
 		end)
 
 		makeDraggable(mainWindow.Content.Topbar, mainWindow, StarlightUI.Drag)
