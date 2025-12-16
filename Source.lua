@@ -2006,7 +2006,7 @@ local GUICanvasSize = { X = Camera.ViewportSize.X, Y = Camera.ViewportSize.Y - G
 
 --// ENDSUBSECTION
 
-if UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled then
+if UserInputService.TouchEnabled then
 	StarlightUI.Notifications.Interactable = false
 end
 
@@ -2665,7 +2665,6 @@ function Starlight:CreateWindow(WindowSettings)
 				mainWindow.Visible = true
 				StarlightUI.Drag.Visible = true
 				StarlightUI.MobileToggle.Visible = UserInputService.TouchEnabled
-					and not UserInputService.KeyboardEnabled
 
 				local main = mainWindow["New Loading Screen"]
 				local shadows = main.shadows
