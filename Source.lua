@@ -68,7 +68,7 @@ by Nebula Softworks
 
 --// SECTION : Core Variables
 
-local Release = "Prerelease Beta 5.03a"
+local Release = "Prerelease Beta 5.03b"
 local debugV = false
 
 local Starlight = {
@@ -1387,11 +1387,11 @@ local function Hide(Interface, JustHide: boolean?, Notify: boolean?, Bind: strin
 	-- hide popups
 	if not isStudio and Starlight.Instance.MobileToggle.Visible then
 		InputManager:SendTouchEvent(
-			0, Enum.UserInputState.Begin, 0, 0
+			0, 0, 0, 0
 		)
 
 		InputManager:SendTouchEvent(
-			0, Enum.UserInputState.End, 0, 0
+			0, 2, 0, 0
 		)
 	elseif not isStudio then
 		InputManager:SendMouseButtonEvent(
@@ -2665,6 +2665,7 @@ function Starlight:CreateWindow(WindowSettings)
 				mainWindow.Visible = true
 				StarlightUI.Drag.Visible = true
 				StarlightUI.MobileToggle.Visible = UserInputService.TouchEnabled
+					--and not UserInputService.KeyboardEnabled
 
 				local main = mainWindow["New Loading Screen"]
 				local shadows = main.shadows
@@ -3051,12 +3052,12 @@ function Starlight:CreateWindow(WindowSettings)
 								end
 							end
 						end
-					end)
 
-					if Action.RemoveTextAfterFocusLost then
-						ActionInput.PART_Input.Text = ""
-						Action.CurrentValue = ""
-					end
+						if Action.RemoveTextAfterFocusLost then
+							ActionInput.PART_Input.Text = ""
+							Action.CurrentValue = ""
+						end
+					end)
 				end)
 
 				ActionInput.Interact.Focused:Connect(function()
@@ -3316,7 +3317,7 @@ function Starlight:CreateWindow(WindowSettings)
 		end
 
 		Tab.Instances.Page.Holder.Left.Server.Subheader.Text = "Currently Playing "
-			.. MarketplaceService:GetProductInfoAsync(game.PlaceId).Name
+			.. MarketplaceService:GetProductInfo(game.PlaceId).Name
 		Tab.Instances.Page.Holder.Left.Server.Frame.serverregion.Text = '<font size="14" color="#FFF" weight="semibold">Region</font>\n'
 			.. Localization:GetCountryRegionForPlayerAsync(Player)
 		
