@@ -760,39 +760,146 @@ local Themes = {
 		},
 	},
     ["Catppuccin Mocha"] = {
-        Backgrounds = {
-            Dark = Color3.fromRGB(24, 24, 37),       -- base
-            Medium = Color3.fromRGB(30, 30, 46),     -- mantle
-            Light = Color3.fromRGB(30, 30, 46),     
-            Groupbox = Color3.fromRGB(30, 30, 46),
-            Highlight = Color3.fromRGB(49, 50, 68)  -- surface0
-        },
-        Foregrounds = {
-            Active = Color3.fromRGB(205, 214, 244),  -- text
-            Light = Color3.fromRGB(205, 214, 244),
-            Medium = Color3.fromRGB(166, 173, 200),  -- subtext0
-            Dark = Color3.fromRGB(88, 91, 112),    -- overlay0
-            MediumHover = Color3.fromRGB(186, 194, 222),
-            DarkHover = Color3.fromRGB(127, 132, 156),
-        },
-        Miscellaneous = {
-            Divider = Color3.fromRGB(137, 180, 250), -- blue
-            Shadow = Color3.fromRGB(17, 17, 27),     -- crust
-            LighterShadow = Color3.fromRGB(24, 24, 37),
-        },
-        Accents = {
-            Main = ColorSequence.new({
-                ColorSequenceKeypoint.new(0.0, Color3.fromRGB(245, 194, 231)), -- pink
-                ColorSequenceKeypoint.new(0.5, Color3.fromRGB(203, 166, 247)), -- mauve
-                ColorSequenceKeypoint.new(1.0, Color3.fromRGB(137, 180, 250)), -- blue
-            }),
-            Brighter = ColorSequence.new({
-                ColorSequenceKeypoint.new(0.0, Color3.fromRGB(250, 217, 233)),
-                ColorSequenceKeypoint.new(0.5, Color3.fromRGB(214, 178, 255)),
-                ColorSequenceKeypoint.new(1.0, Color3.fromRGB(166, 200, 255)),
-            }),
-        },
-    },
+	Backgrounds = {
+		Dark = Color3.fromRGB(30, 30, 46),
+		Medium = Color3.fromRGB(34, 34, 52),
+		Light = Color3.fromRGB(43, 44, 60),
+		Groupbox = Color3.fromRGB(40, 41, 56),
+		Highlight = Color3.fromRGB(69, 71, 90),
+	},
+	Foregrounds = {
+		Active = Color3.fromRGB(205, 214, 244),
+		Light = Color3.fromRGB(205, 214, 244),
+		Medium = Color3.fromRGB(166, 173, 200),
+		Dark = Color3.fromRGB(108, 112, 134),
+		MediumHover = Color3.fromRGB(186, 194, 222),
+		DarkHover = Color3.fromRGB(127, 132, 156),
+	},
+	Miscellaneous = {
+		Divider = Color3.fromRGB(137, 180, 250),
+		Shadow = Color3.fromRGB(17, 17, 27),
+		LighterShadow = Color3.fromRGB(24, 24, 37),
+	},
+	Accents = {
+		Main = ColorSequence.new({
+			ColorSequenceKeypoint.new(0, Color3.fromRGB(245, 194, 231)),
+			ColorSequenceKeypoint.new(0.5, Color3.fromRGB(203, 166, 247)),
+			ColorSequenceKeypoint.new(1, Color3.fromRGB(137, 180, 250)),
+		}),
+		Brighter = ColorSequence.new({
+			ColorSequenceKeypoint.new(0, Color3.fromRGB(250, 217, 233)),
+			ColorSequenceKeypoint.new(0.5, Color3.fromRGB(214, 178, 255)),
+			ColorSequenceKeypoint.new(1, Color3.fromRGB(166, 200, 255)),
+		}),
+	},
+},
+
+["Catppuccin Macchiato"] = {
+	Backgrounds = {
+		Dark = Color3.fromRGB(24, 25, 38),
+		Medium = Color3.fromRGB(36, 39, 58),
+		Light = Color3.fromRGB(48, 52, 70),
+		Groupbox = Color3.fromRGB(42, 45, 63),
+		Highlight = Color3.fromRGB(54, 58, 79),
+	},
+	Foregrounds = {
+		Active = Color3.fromRGB(202, 211, 245),
+		Light = Color3.fromRGB(202, 211, 245),
+		Medium = Color3.fromRGB(165, 173, 203),
+		Dark = Color3.fromRGB(110, 115, 141),
+		MediumHover = Color3.fromRGB(184, 192, 224),
+		DarkHover = Color3.fromRGB(129, 135, 165),
+	},
+	Miscellaneous = {
+		Divider = Color3.fromRGB(183, 189, 248),
+		Shadow = Color3.fromRGB(18, 19, 32),
+		LighterShadow = Color3.fromRGB(24, 25, 38),
+	},
+	Accents = {
+		Main = ColorSequence.new({
+			ColorSequenceKeypoint.new(0, Color3.fromRGB(238, 153, 160)),
+			ColorSequenceKeypoint.new(0.5, Color3.fromRGB(183, 189, 248)),
+			ColorSequenceKeypoint.new(1, Color3.fromRGB(245, 189, 230)),
+		}),
+		Brighter = ColorSequence.new({
+			ColorSequenceKeypoint.new(0, Color3.fromRGB(244, 184, 191)),
+			ColorSequenceKeypoint.new(0.5, Color3.fromRGB(198, 202, 255)),
+			ColorSequenceKeypoint.new(1, Color3.fromRGB(250, 212, 239)),
+		}),
+	},
+},
+
+["Catppuccin Frappe"] = {
+	Backgrounds = {
+		Dark = Color3.fromRGB(48, 52, 70),
+		Medium = Color3.fromRGB(65, 69, 89),
+		Light = Color3.fromRGB(81, 87, 109),
+		Groupbox = Color3.fromRGB(72, 78, 100),
+		Highlight = Color3.fromRGB(92, 97, 122),
+	},
+	Foregrounds = {
+		Active = Color3.fromRGB(198, 208, 245),
+		Light = Color3.fromRGB(198, 208, 245),
+		Medium = Color3.fromRGB(165, 173, 206),
+		Dark = Color3.fromRGB(115, 121, 148),
+		MediumHover = Color3.fromRGB(180, 189, 220),
+		DarkHover = Color3.fromRGB(136, 142, 170),
+	},
+	Miscellaneous = {
+		Divider = Color3.fromRGB(166, 218, 149),
+		Shadow = Color3.fromRGB(40, 44, 61),
+		LighterShadow = Color3.fromRGB(48, 52, 70),
+	},
+	Accents = {
+		Main = ColorSequence.new({
+			ColorSequenceKeypoint.new(0, Color3.fromRGB(239, 159, 118)),
+			ColorSequenceKeypoint.new(0.5, Color3.fromRGB(229, 200, 144)),
+			ColorSequenceKeypoint.new(1, Color3.fromRGB(166, 218, 149)),
+		}),
+		Brighter = ColorSequence.new({
+			ColorSequenceKeypoint.new(0, Color3.fromRGB(245, 182, 148)),
+			ColorSequenceKeypoint.new(0.5, Color3.fromRGB(238, 215, 170)),
+			ColorSequenceKeypoint.new(1, Color3.fromRGB(190, 232, 178)),
+		}),
+	},
+},
+
+["Catppuccin Latte"] = {
+	Backgrounds = {
+		Dark = Color3.fromRGB(239, 241, 245),
+		Medium = Color3.fromRGB(220, 224, 232),
+		Light = Color3.fromRGB(230, 233, 239),
+		Groupbox = Color3.fromRGB(216, 222, 233),
+		Highlight = Color3.fromRGB(204, 208, 218),
+	},
+	Foregrounds = {
+		Active = Color3.fromRGB(76, 79, 105),
+		Light = Color3.fromRGB(76, 79, 105),
+		Medium = Color3.fromRGB(108, 111, 133),
+		Dark = Color3.fromRGB(156, 160, 176),
+		MediumHover = Color3.fromRGB(92, 95, 119),
+		DarkHover = Color3.fromRGB(137, 142, 162),
+	},
+	Miscellaneous = {
+		Divider = Color3.fromRGB(64, 160, 43),
+		Shadow = Color3.fromRGB(76, 79, 105),
+		LighterShadow = Color3.fromRGB(108, 111, 133),
+	},
+	Accents = {
+		Main = ColorSequence.new({
+			ColorSequenceKeypoint.new(0, Color3.fromRGB(254, 100, 11)),
+			ColorSequenceKeypoint.new(0.5, Color3.fromRGB(223, 142, 29)),
+			ColorSequenceKeypoint.new(1, Color3.fromRGB(64, 160, 43)),
+		}),
+		Brighter = ColorSequence.new({
+			ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 132, 60)),
+			ColorSequenceKeypoint.new(0.5, Color3.fromRGB(235, 175, 80)),
+			ColorSequenceKeypoint.new(1, Color3.fromRGB(122, 190, 90)),
+		}),
+	},
+},
+	
+
 	--PHub = {},
 	--Serika = {},
 	--Rust = {}
