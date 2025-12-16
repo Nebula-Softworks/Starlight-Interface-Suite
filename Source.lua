@@ -3307,7 +3307,7 @@ function Starlight:CreateWindow(WindowSettings)
 		end
 
 		Tab.Instances.Page.Holder.Left.Server.Subheader.Text = "Currently Playing "
-			.. MarketplaceService:GetProductInfoAsync(game.PlaceId).Name
+			.. MarketplaceService:GetProductInfo(game.PlaceId).Name
 		Tab.Instances.Page.Holder.Left.Server.Frame.serverregion.Text = '<font size="14" color="#FFF" weight="semibold">Region</font>\n'
 			.. Localization:GetCountryRegionForPlayerAsync(Player)
 		
