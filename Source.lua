@@ -759,6 +759,7 @@ local Themes = {
 			}),
 		},
 	},
+	["Catppuccin Mocha"] = {
     	 = Color3.fromRGB(198, 208, 245),
 		Light = Color3.fromRGB(198, 208, 245),
 		Medium = Color3.fromRGB(165, 173, 206),
