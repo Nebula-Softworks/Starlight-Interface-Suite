@@ -899,7 +899,9 @@ local Themes = {
 	},
 	--PHub = {},
 	--Serika = {},
-	--Rust = {}
+	--Rust = {},
+	--Matcha = {},
+	--Vaporwave = {},
 }
 
 local function deepCopy(tbl)
