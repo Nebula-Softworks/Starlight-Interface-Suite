@@ -897,6 +897,181 @@ local Themes = {
 			}),
 		},
 	},
+	["Obsidian Night"] = {
+	Backgrounds = {
+		Dark = Color3.fromRGB(10, 11, 14),
+		Medium = Color3.fromRGB(16, 17, 21),
+		Light = Color3.fromRGB(22, 23, 28),
+		Groupbox = Color3.fromRGB(18, 19, 24),
+		Highlight = Color3.fromRGB(28, 29, 35),
+	},
+	Foregrounds = {
+		Active = Color3.fromRGB(255, 255, 255),
+		Light = Color3.fromRGB(235, 235, 235),
+		Medium = Color3.fromRGB(170, 170, 170),
+		Dark = Color3.fromRGB(90, 90, 90),
+		MediumHover = Color3.fromRGB(195, 195, 195),
+		DarkHover = Color3.fromRGB(120, 120, 120),
+	},
+	Miscellaneous = {
+		Divider = Color3.fromRGB(140, 140, 140),
+		Shadow = Color3.fromRGB(8, 8, 10),
+		LighterShadow = Color3.fromRGB(18, 18, 22),
+	},
+	Accents = {
+		Main = ColorSequence.new({
+			ColorSequenceKeypoint.new(0, Color3.fromRGB(120, 170, 255)),
+			ColorSequenceKeypoint.new(0.5, Color3.fromRGB(90, 140, 230)),
+			ColorSequenceKeypoint.new(1, Color3.fromRGB(70, 110, 200)),
+		}),
+		Brighter = ColorSequence.new({
+			ColorSequenceKeypoint.new(0, Color3.fromRGB(160, 200, 255)),
+			ColorSequenceKeypoint.new(0.5, Color3.fromRGB(130, 175, 240)),
+			ColorSequenceKeypoint.new(1, Color3.fromRGB(110, 150, 220)),
+		}),
+	},
+},
+
+["Cyber Neon"] = {
+	Backgrounds = {
+		Dark = Color3.fromRGB(7, 7, 10),
+		Medium = Color3.fromRGB(12, 12, 18),
+		Light = Color3.fromRGB(18, 18, 26),
+		Groupbox = Color3.fromRGB(14, 14, 22),
+		Highlight = Color3.fromRGB(22, 22, 34),
+	},
+	Foregrounds = {
+		Active = Color3.fromRGB(240, 255, 255),
+		Light = Color3.fromRGB(220, 240, 240),
+		Medium = Color3.fromRGB(150, 180, 190),
+		Dark = Color3.fromRGB(90, 110, 120),
+		MediumHover = Color3.fromRGB(180, 215, 225),
+		DarkHover = Color3.fromRGB(120, 150, 160),
+	},
+	Miscellaneous = {
+		Divider = Color3.fromRGB(0, 255, 220),
+		Shadow = Color3.fromRGB(6, 6, 9),
+		LighterShadow = Color3.fromRGB(12, 12, 18),
+	},
+	Accents = {
+		Main = ColorSequence.new({
+			ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 255, 220)),
+			ColorSequenceKeypoint.new(0.5, Color3.fromRGB(180, 0, 255)),
+			ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 0, 120)),
+		}),
+		Brighter = ColorSequence.new({
+			ColorSequenceKeypoint.new(0, Color3.fromRGB(120, 255, 235)),
+			ColorSequenceKeypoint.new(0.5, Color3.fromRGB(210, 120, 255)),
+			ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 120, 180)),
+		}),
+	},
+},
+
+["Solar Dusk"] = {
+	Backgrounds = {
+		Dark = Color3.fromRGB(18, 12, 10),
+		Medium = Color3.fromRGB(28, 18, 14),
+		Light = Color3.fromRGB(38, 26, 20),
+		Groupbox = Color3.fromRGB(32, 22, 18),
+		Highlight = Color3.fromRGB(46, 32, 26),
+	},
+	Foregrounds = {
+		Active = Color3.fromRGB(255, 245, 235),
+		Light = Color3.fromRGB(245, 230, 215),
+		Medium = Color3.fromRGB(190, 165, 145),
+		Dark = Color3.fromRGB(120, 95, 80),
+		MediumHover = Color3.fromRGB(215, 190, 170),
+		DarkHover = Color3.fromRGB(150, 120, 100),
+	},
+	Miscellaneous = {
+		Divider = Color3.fromRGB(255, 170, 90),
+		Shadow = Color3.fromRGB(14, 9, 7),
+		LighterShadow = Color3.fromRGB(22, 15, 12),
+	},
+	Accents = {
+		Main = ColorSequence.new({
+			ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 170, 90)),
+			ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255, 120, 70)),
+			ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 90, 60)),
+		}),
+		Brighter = ColorSequence.new({
+			ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 200, 130)),
+			ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255, 150, 110)),
+			ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 120, 95)),
+		}),
+	},
+},
+
+["Midnight Forest"] = {
+	Backgrounds = {
+		Dark = Color3.fromRGB(12, 18, 14),
+		Medium = Color3.fromRGB(18, 26, 20),
+		Light = Color3.fromRGB(24, 34, 26),
+		Groupbox = Color3.fromRGB(20, 30, 23),
+		Highlight = Color3.fromRGB(28, 42, 32),
+	},
+	Foregrounds = {
+		Active = Color3.fromRGB(235, 245, 235),
+		Light = Color3.fromRGB(220, 235, 220),
+		Medium = Color3.fromRGB(160, 185, 160),
+		Dark = Color3.fromRGB(95, 120, 95),
+		MediumHover = Color3.fromRGB(190, 215, 190),
+		DarkHover = Color3.fromRGB(120, 150, 120),
+	},
+	Miscellaneous = {
+		Divider = Color3.fromRGB(120, 200, 140),
+		Shadow = Color3.fromRGB(8, 12, 9),
+		LighterShadow = Color3.fromRGB(14, 20, 15),
+	},
+	Accents = {
+		Main = ColorSequence.new({
+			ColorSequenceKeypoint.new(0, Color3.fromRGB(120, 200, 140)),
+			ColorSequenceKeypoint.new(0.5, Color3.fromRGB(90, 170, 120)),
+			ColorSequenceKeypoint.new(1, Color3.fromRGB(70, 140, 100)),
+		}),
+		Brighter = ColorSequence.new({
+			ColorSequenceKeypoint.new(0, Color3.fromRGB(160, 220, 170)),
+			ColorSequenceKeypoint.new(0.5, Color3.fromRGB(120, 200, 150)),
+			ColorSequenceKeypoint.new(1, Color3.fromRGB(100, 170, 130)),
+		}),
+	},
+},
+
+["Rose Noir"] = {
+	Backgrounds = {
+		Dark = Color3.fromRGB(14, 10, 12),
+		Medium = Color3.fromRGB(22, 14, 18),
+		Light = Color3.fromRGB(30, 18, 24),
+		Groupbox = Color3.fromRGB(26, 16, 21),
+		Highlight = Color3.fromRGB(38, 22, 30),
+	},
+	Foregrounds = {
+		Active = Color3.fromRGB(255, 240, 245),
+		Light = Color3.fromRGB(245, 225, 235),
+		Medium = Color3.fromRGB(190, 155, 170),
+		Dark = Color3.fromRGB(120, 90, 105),
+		MediumHover = Color3.fromRGB(215, 180, 195),
+		DarkHover = Color3.fromRGB(150, 115, 130),
+	},
+	Miscellaneous = {
+		Divider = Color3.fromRGB(220, 120, 160),
+		Shadow = Color3.fromRGB(10, 7, 9),
+		LighterShadow = Color3.fromRGB(18, 12, 15),
+	},
+	Accents = {
+		Main = ColorSequence.new({
+			ColorSequenceKeypoint.new(0, Color3.fromRGB(220, 120, 160)),
+			ColorSequenceKeypoint.new(0.5, Color3.fromRGB(200, 90, 140)),
+			ColorSequenceKeypoint.new(1, Color3.fromRGB(180, 70, 120)),
+		}),
+		Brighter = ColorSequence.new({
+			ColorSequenceKeypoint.new(0, Color3.fromRGB(235, 160, 190)),
+			ColorSequenceKeypoint.new(0.5, Color3.fromRGB(215, 130, 170)),
+			ColorSequenceKeypoint.new(1, Color3.fromRGB(200, 110, 155)),
+		}),
+	},
+},
+	
 	--PHub = {},
 	--Serika = {},
 	--Rust = {},
