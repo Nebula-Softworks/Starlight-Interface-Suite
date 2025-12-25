@@ -1152,9 +1152,10 @@ local function WarnLowContrast(theme, threshold)
 end
 
 Starlight.Themes = Themes
+AnimateThemeTransition(0.25)
 Starlight.CurrentTheme = ResolveTheme(Themes, "Starlight")
 WarnLowContrast(Starlight.CurrentTheme)
-
+themeEvent:Fire()
 
 --//ENDSUBSECTION
 
@@ -1165,9 +1166,33 @@ function Tween.Info(style: string?, direction: string?, time: number?)
 	return TweenInfo.new(time, Enum.EasingStyle[style], Enum.EasingDirection[direction])
 end
 
+local function AnimateThemeTransition(duration)
+	duration = duration or 0.25
+	for _, v in pairs(CoreGui:GetDescendants()) do
+		if v:IsA("Frame") or v:IsA("TextLabel") or v:IsA("TextButton")
+		or v:IsA("ImageLabel") or v:IsA("ImageButton") then
+			local props = {}
+			if v.BackgroundTransparency < 1 then
+				props.BackgroundTransparency = v.BackgroundTransparency
+				v.BackgroundTransparency = 1
+			end
+			if v:IsA("TextLabel") or v:IsA("TextButton") then
+				props.TextTransparency = v.TextTransparency
+				v.TextTransparency = 1
+			end
+			if v:IsA("ImageLabel") or v:IsA("ImageButton") then
+				props.ImageTransparency = v.ImageTransparency
+				v.ImageTransparency = 1
+			end
+			TweenService:Create(v, TweenInfo.new(duration), props):Play()
+		end
+	end
+end
+
 local NebulaIcons = isStudio and require(ReplicatedStorage.NebulaIcons)
 
 local connections = {}
+
 
 --// ENDSECTION
 
