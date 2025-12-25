@@ -1089,8 +1089,72 @@ local function deepCopy(tbl)
 	end
 	return copy
 end
+
+local function deepMerge(base, override)
+	local result = deepCopy(base)
+	for k, v in pairs(override) do
+		if type(v) == "table" and type(result[k]) == "table" then
+			result[k] = deepMerge(result[k], v)
+		else
+			result[k] = deepCopy(v)
+		end
+	end
+	return result
+end
+
+local function ResolveTheme(themes, themeName)
+	local theme = themes[themeName]
+	if not theme then return nil end
+	if theme.Inherits then
+		local base = ResolveTheme(themes, theme.Inherits)
+		return deepMerge(base, theme)
+	end
+	return deepCopy(theme)
+end
+
+local function luminance(c)
+	local function channel(v)
+		v = v / 255
+		if v <= 0.03928 then
+			return v / 12.92
+		end
+		return ((v + 0.055) / 1.055) ^ 2.4
+	end
+	return 0.2126 * channel(c.R * 255)
+		+ 0.7152 * channel(c.G * 255)
+		+ 0.0722 * channel(c.B * 255)
+end
+
+local function ContrastRatio(c1, c2)
+	local l1 = luminance(c1)
+	local l2 = luminance(c2)
+	if l1 < l2 then
+		l1, l2 = l2, l1
+	end
+	return (l1 + 0.05) / (l2 + 0.05)
+end
+
+local function WarnLowContrast(theme, threshold)
+	threshold = threshold or 4.5
+	if not theme.Backgrounds or not theme.Foregrounds then return end
+	for _, fColor in pairs(theme.Foregrounds) do
+		if typeof(fColor) == "Color3" then
+			for _, bColor in pairs(theme.Backgrounds) do
+				if typeof(bColor) == "Color3" then
+					local ratio = ContrastRatio(fColor, bColor)
+					if ratio < threshold then
+						warn("[Theme Contrast Warning] Low contrast detected:", ratio)
+					end
+				end
+			end
+		end
+	end
+end
+
 Starlight.Themes = Themes
-Starlight.CurrentTheme = deepCopy(Themes.Starlight)
+Starlight.CurrentTheme = ResolveTheme(Themes, "Starlight")
+WarnLowContrast(Starlight.CurrentTheme)
+
 
 --//ENDSUBSECTION
 
