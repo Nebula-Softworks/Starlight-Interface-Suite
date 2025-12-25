@@ -1078,6 +1078,35 @@ local Themes = {
 	--Matcha = {},
 	--Vaporwave = {},
 }
+function Tween.Info(style: string?, direction: string?, time: number?)
+	style = style or "Exponential"
+	direction = direction or "Out"
+	time = time or 0.5
+	return TweenInfo.new(time, Enum.EasingStyle[style], Enum.EasingDirection[direction])
+end
+
+local function AnimateThemeTransition(duration)
+	duration = duration or 0.25
+	for _, v in pairs(CoreGui:GetDescendants()) do
+		if v:IsA("Frame") or v:IsA("TextLabel") or v:IsA("TextButton")
+		or v:IsA("ImageLabel") or v:IsA("ImageButton") then
+			local props = {}
+			if v.BackgroundTransparency < 1 then
+				props.BackgroundTransparency = v.BackgroundTransparency
+				v.BackgroundTransparency = 1
+			end
+			if v:IsA("TextLabel") or v:IsA("TextButton") then
+				props.TextTransparency = v.TextTransparency
+				v.TextTransparency = 1
+			end
+			if v:IsA("ImageLabel") or v:IsA("ImageButton") then
+				props.ImageTransparency = v.ImageTransparency
+				v.ImageTransparency = 1
+			end
+			TweenService:Create(v, TweenInfo.new(duration), props):Play()
+		end
+	end
+end
 
 local function deepCopy(tbl)
 	if type(tbl) ~= "table" then
@@ -1159,35 +1188,6 @@ themeEvent:Fire()
 
 --//ENDSUBSECTION
 
-function Tween.Info(style: string?, direction: string?, time: number?)
-	style = style or "Exponential"
-	direction = direction or "Out"
-	time = time or 0.5
-	return TweenInfo.new(time, Enum.EasingStyle[style], Enum.EasingDirection[direction])
-end
-
-local function AnimateThemeTransition(duration)
-	duration = duration or 0.25
-	for _, v in pairs(CoreGui:GetDescendants()) do
-		if v:IsA("Frame") or v:IsA("TextLabel") or v:IsA("TextButton")
-		or v:IsA("ImageLabel") or v:IsA("ImageButton") then
-			local props = {}
-			if v.BackgroundTransparency < 1 then
-				props.BackgroundTransparency = v.BackgroundTransparency
-				v.BackgroundTransparency = 1
-			end
-			if v:IsA("TextLabel") or v:IsA("TextButton") then
-				props.TextTransparency = v.TextTransparency
-				v.TextTransparency = 1
-			end
-			if v:IsA("ImageLabel") or v:IsA("ImageButton") then
-				props.ImageTransparency = v.ImageTransparency
-				v.ImageTransparency = 1
-			end
-			TweenService:Create(v, TweenInfo.new(duration), props):Play()
-		end
-	end
-end
 
 local NebulaIcons = isStudio and require(ReplicatedStorage.NebulaIcons)
 
