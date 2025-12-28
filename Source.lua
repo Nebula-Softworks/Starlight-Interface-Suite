@@ -1354,12 +1354,14 @@ bindTheme = function(object: GuiObject, property, themeKey)
 						ColorSequenceKeypoint.new(1, newValue),
 					})
 				end
+
 			elseif typeof(newValue) == "Color3" and typeof(oldValue) == "Color3" and initialized then
 				TweenService:Create(
 					object,
 					TweenInfo.new(0.25, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out),
 					{ [property] = newValue }
 				):Play()
+
 			else
 				object[property] = newValue
 			end
@@ -1371,6 +1373,7 @@ bindTheme = function(object: GuiObject, property, themeKey)
 	themeEvent.Event:Connect(set)
 	set()
 end,
+
 	encodeTheme = function(theme)
 		local function serialize(data)
 			if typeof(data) == "Color3" then
