@@ -1,6 +1,4 @@
 --[[
-2 yeah to keep count of it for when it updates lol
-
 ███████╗████████╗ █████╗ ██████╗ ██╗     ██╗ ██████╗ ██╗  ██╗████████╗    ██╗███╗   ██╗████████╗███████╗██████╗ ███████╗ █████╗  ██████╗███████╗    ███████╗██╗   ██╗██╗████████╗███████╗
 ██╔════╝╚══██╔══╝██╔══██╗██╔══██╗██║     ██║██╔════╝ ██║  ██║╚══██╔══╝    ██║████╗  ██║╚══██╔══╝██╔════╝██╔══██╗██╔════╝██╔══██╗██╔════╝██╔════╝    ██╔════╝██║   ██║██║╚══██╔══╝██╔════╝
 ███████╗   ██║   ███████║██████╔╝██║     ██║██║  ███╗███████║   ██║       ██║██╔██╗ ██║   ██║   ██████╗ ██████╔╝█████╗  ███████║██║     ██████╗     ███████╗██║   ██║██║   ██║   ██████╗  
@@ -12,7 +10,7 @@ by    d8b   db d88888b d8888b. db    db db       .d8b.       .d8888.  .d88b.  d8
       88V8o 88 88ooooo 88oooY' 88    88 88      88ooo88      `8bo.   88    88 88ooo      88    88   I8I   88 88    88 88oobY' 88,8P   `8bo.   
       88 V8o88 88~~~~~ 88~~~b. 88    88 88      88~~~88        `Y8b. 88    88 88~~~      88    Y8   I8I   88 88    88 88`8b   88`8b     `Y8b. 
       88  V888 88.     88   8D 88b  d88 88booo. 88   88      db   8D `8b  d8' 88         88    `8b d8'8b d8' `8b  d8' 88 `88. 88 `88. db   8D 
-      VP   V8P Y88888P Y8888P' ~Y8888P' Y88888P YP   YP      `8888Y'  `Y88P'  YP         YP     `8b8' `8d8'   `Y88P'  88   YD YP   YD `8888Y' 
+      VP   V8P Y88888P Y8888P' ~Y8888P' Y88888P YP   YP      `8888Y'  `Y88P'  YP         YP     `8b8' `8d8'   `Y88P'  88   YD YP   YD `8888Y' .
                                                                                                                                         
                                                                                                                                         
 
@@ -1207,11 +1205,10 @@ local function WarnLowContrast(theme, threshold)
 end
 
 Starlight.Themes = Themes
-AnimateThemeTransition(1)
-Starlight.PreviousTheme = Starlight.CurrentTheme
 Starlight.CurrentTheme = ResolveTheme(Themes, "Starlight")
 WarnLowContrast(Starlight.CurrentTheme)
 themeEvent:Fire()
+
 
 
 
@@ -1339,25 +1336,32 @@ bindTheme = function(object: GuiObject, property, themeKey)
 			local newValue = GetNestedValue(Starlight.CurrentTheme, themeKey)
 			local oldValue = Starlight.PreviousTheme and GetNestedValue(Starlight.PreviousTheme, themeKey)
 
-			if initialized and typeof(oldValue) == "Color3" and typeof(newValue) == "Color3" then
-				TweenService:Create(
-					object,
-					TweenInfo.new(
-						1,
-						Enum.EasingStyle.Exponential,
-						Enum.EasingDirection.Out
-					),
-					{ [property] = newValue }
-				):Play()
-			else
-				if object.ClassName == "UIGradient" and typeof(newValue) == "Color3" then
+			if object.ClassName == "UIGradient" and typeof(newValue) == "Color3" then
+				if initialized then
+					TweenService:Create(
+						object,
+						TweenInfo.new(0.25, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out),
+						{
+							[property] = ColorSequence.new({
+								ColorSequenceKeypoint.new(0, newValue),
+								ColorSequenceKeypoint.new(1, newValue),
+							})
+						}
+					):Play()
+				else
 					object[property] = ColorSequence.new({
 						ColorSequenceKeypoint.new(0, newValue),
 						ColorSequenceKeypoint.new(1, newValue),
 					})
-				else
-					object[property] = newValue
 				end
+			elseif typeof(newValue) == "Color3" and typeof(oldValue) == "Color3" and initialized then
+				TweenService:Create(
+					object,
+					TweenInfo.new(0.25, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out),
+					{ [property] = newValue }
+				):Play()
+			else
+				object[property] = newValue
 			end
 
 			initialized = true
@@ -10849,9 +10853,11 @@ function Starlight:SetTheme(newTheme)
 		themeToCopy = Starlight.Themes[themeToCopy]
 	end
 
+	AnimateThemeTransition(0.25)
 	Starlight.CurrentTheme = deepCopy(themeToCopy)
 	themeEvent:Fire()
 end
+
 
 function Starlight:LoadAutoloadTheme()
 	if isStudio or not isfile then
