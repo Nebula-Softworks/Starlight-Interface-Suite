@@ -1,14 +1,3 @@
-local THEME_DEBUG = true
-local function ThemeDebug(...)
-	if THEME_DEBUG then
-		warn("[THEME DEBUG]", ...)
-	end
-end
-
-themeEvent.Event:Connect(function()
-	ThemeDebug("themeEvent received")
-end)
-
 --[[
 
 ███████╗████████╗ █████╗ ██████╗ ██╗     ██╗ ██████╗ ██╗  ██╗████████╗    ██╗███╗   ██╗████████╗███████╗██████╗ ███████╗ █████╗  ██████╗███████╗    ███████╗██╗   ██╗██╗████████╗███████╗
@@ -1098,45 +1087,26 @@ end
 
 local function AnimateThemeTransition(duration)
 	duration = duration or 0.25
-	ThemeDebug("AnimateThemeTransition called, duration =", duration)
-
-	local count = 0
-
 	for _, v in pairs(CoreGui:GetDescendants()) do
-		if v:IsA("Frame")
-			or v:IsA("TextLabel")
-			or v:IsA("TextButton")
-			or v:IsA("ImageLabel")
-			or v:IsA("ImageButton")
-		then
-			count += 1
-
+		if v:IsA("Frame") or v:IsA("TextLabel") or v:IsA("TextButton")
+		or v:IsA("ImageLabel") or v:IsA("ImageButton") then
 			local props = {}
-
 			if v.BackgroundTransparency < 1 then
 				props.BackgroundTransparency = v.BackgroundTransparency
 				v.BackgroundTransparency = 1
 			end
-
 			if v:IsA("TextLabel") or v:IsA("TextButton") then
 				props.TextTransparency = v.TextTransparency
 				v.TextTransparency = 1
 			end
-
 			if v:IsA("ImageLabel") or v:IsA("ImageButton") then
 				props.ImageTransparency = v.ImageTransparency
 				v.ImageTransparency = 1
 			end
-
-			if next(props) then
-				TweenService:Create(v, TweenInfo.new(duration), props):Play()
-			end
+			TweenService:Create(v, TweenInfo.new(duration), props):Play()
 		end
 	end
-
-	ThemeDebug("Animated objects count:", count)
 end
-
 
 local function deepCopy(tbl)
 	if type(tbl) ~= "table" then
@@ -1214,7 +1184,7 @@ Starlight.Themes = Themes
 AnimateThemeTransition(0.25)
 Starlight.CurrentTheme = ResolveTheme(Themes, "Starlight")
 WarnLowContrast(Starlight.CurrentTheme)
-ThemeDebug("themeEvent:Fire()") themeEvent:Fire()
+themeEvent:Fire()
 
 --//ENDSUBSECTION
 
@@ -9221,7 +9191,7 @@ function Starlight:CreateWindow(WindowSettings)
 							Callback = function(c)
 								debounce = true
 								Starlight.CurrentTheme.Backgrounds.Dark = c
-								ThemeDebug("themeEvent:Fire()") themeEvent:Fire()
+								themeEvent:Fire()
 								task.wait(6 / 60)
 								debounce = false
 							end,
@@ -9240,7 +9210,7 @@ function Starlight:CreateWindow(WindowSettings)
 							Callback = function(c)
 								debounce = true
 								Starlight.CurrentTheme.Backgrounds.Medium = c
-								ThemeDebug("themeEvent:Fire()") themeEvent:Fire()
+								themeEvent:Fire()
 								task.wait(6 / 60)
 								debounce = false
 							end,
@@ -9259,7 +9229,7 @@ function Starlight:CreateWindow(WindowSettings)
 							Callback = function(c)
 								debounce = true
 								Starlight.CurrentTheme.Backgrounds.Light = c
-								ThemeDebug("themeEvent:Fire()") themeEvent:Fire()
+								themeEvent:Fire()
 								task.wait(6 / 60)
 								debounce = false
 							end,
@@ -9278,7 +9248,7 @@ function Starlight:CreateWindow(WindowSettings)
 							Callback = function(c)
 								debounce = true
 								Starlight.CurrentTheme.Backgrounds.Groupbox = c
-								ThemeDebug("themeEvent:Fire()") themeEvent:Fire()
+								themeEvent:Fire()
 								task.wait(6 / 60)
 								debounce = false
 							end,
@@ -9297,7 +9267,7 @@ function Starlight:CreateWindow(WindowSettings)
 							Callback = function(c)
 								debounce = true
 								Starlight.CurrentTheme.Backgrounds.Highlight = c
-								ThemeDebug("themeEvent:Fire()") themeEvent:Fire()
+								themeEvent:Fire()
 								task.wait(6 / 60)
 								debounce = false
 							end,
@@ -9320,7 +9290,7 @@ function Starlight:CreateWindow(WindowSettings)
 							Callback = function(c)
 								debounce = true
 								Starlight.CurrentTheme.Foregrounds.Dark = c
-								ThemeDebug("themeEvent:Fire()") themeEvent:Fire()
+								themeEvent:Fire()
 								task.wait(6 / 60)
 								debounce = false
 							end,
@@ -9339,7 +9309,7 @@ function Starlight:CreateWindow(WindowSettings)
 							Callback = function(c)
 								debounce = true
 								Starlight.CurrentTheme.Foregrounds.Medium = c
-								ThemeDebug("themeEvent:Fire()") themeEvent:Fire()
+								themeEvent:Fire()
 								task.wait(6 / 60)
 								debounce = false
 							end,
@@ -9358,7 +9328,7 @@ function Starlight:CreateWindow(WindowSettings)
 							Callback = function(c)
 								debounce = true
 								Starlight.CurrentTheme.Foregrounds.Light = c
-								ThemeDebug("themeEvent:Fire()") themeEvent:Fire()
+								themeEvent:Fire()
 								task.wait(6 / 60)
 								debounce = false
 							end,
@@ -9377,7 +9347,7 @@ function Starlight:CreateWindow(WindowSettings)
 							Callback = function(c)
 								debounce = true
 								Starlight.CurrentTheme.Foregrounds.Active = c
-								ThemeDebug("themeEvent:Fire()") themeEvent:Fire()
+								themeEvent:Fire()
 								task.wait(6 / 60)
 								debounce = false
 							end,
@@ -9396,7 +9366,7 @@ function Starlight:CreateWindow(WindowSettings)
 							Callback = function(c)
 								debounce = true
 								Starlight.CurrentTheme.Foregrounds.DarkHover = c
-								ThemeDebug("themeEvent:Fire()") themeEvent:Fire()
+								themeEvent:Fire()
 								task.wait(6 / 60)
 								debounce = false
 							end,
@@ -9415,7 +9385,7 @@ function Starlight:CreateWindow(WindowSettings)
 							Callback = function(c)
 								debounce = true
 								Starlight.CurrentTheme.Foregrounds.MediumHover = c
-								ThemeDebug("themeEvent:Fire()") themeEvent:Fire()
+								themeEvent:Fire()
 								task.wait(6 / 60)
 								debounce = false
 							end,
@@ -9437,7 +9407,7 @@ function Starlight:CreateWindow(WindowSettings)
 						Callback = function(c)
 							debounce = true
 							Starlight.CurrentTheme.Miscellaneous.Divider = c
-							ThemeDebug("themeEvent:Fire()") themeEvent:Fire()
+							themeEvent:Fire()
 							task.wait(6 / 60)
 							debounce = false
 						end,
@@ -9459,7 +9429,7 @@ function Starlight:CreateWindow(WindowSettings)
 							Callback = function(c)
 								debounce = true
 								Starlight.CurrentTheme.Miscellaneous.Shadow = c
-								ThemeDebug("themeEvent:Fire()") themeEvent:Fire()
+								themeEvent:Fire()
 								task.wait(6 / 60)
 								debounce = false
 							end,
@@ -9478,7 +9448,7 @@ function Starlight:CreateWindow(WindowSettings)
 							Callback = function(c)
 								debounce = true
 								Starlight.CurrentTheme.Miscellaneous.LighterShadow = c
-								ThemeDebug("themeEvent:Fire()") themeEvent:Fire()
+								themeEvent:Fire()
 								task.wait(6 / 60)
 								debounce = false
 							end,
@@ -9508,7 +9478,7 @@ function Starlight:CreateWindow(WindowSettings)
 										keypoints[2],
 										keypoints[3],
 									})
-									ThemeDebug("themeEvent:Fire()") themeEvent:Fire()
+									themeEvent:Fire()
 									task.wait(6 / 60)
 									debounce = false
 								end,
@@ -9536,7 +9506,7 @@ function Starlight:CreateWindow(WindowSettings)
 										ColorSequenceKeypoint.new(keypoints[2].Time, c),
 										keypoints[3],
 									})
-									ThemeDebug("themeEvent:Fire()") themeEvent:Fire()
+									themeEvent:Fire()
 									task.wait(6 / 60)
 									debounce = false
 								end,
@@ -9564,7 +9534,7 @@ function Starlight:CreateWindow(WindowSettings)
 										keypoints[2],
 										ColorSequenceKeypoint.new(keypoints[3].Time, c),
 									})
-									ThemeDebug("themeEvent:Fire()") themeEvent:Fire()
+									themeEvent:Fire()
 									task.wait(6 / 60)
 									debounce = false
 								end,
@@ -9595,7 +9565,7 @@ function Starlight:CreateWindow(WindowSettings)
 										keypoints[2],
 										keypoints[3],
 									})
-									ThemeDebug("themeEvent:Fire()") themeEvent:Fire()
+									themeEvent:Fire()
 									task.wait(6 / 60)
 									debounce = false
 								end,
@@ -9623,7 +9593,7 @@ function Starlight:CreateWindow(WindowSettings)
 										ColorSequenceKeypoint.new(keypoints[2].Time, c),
 										keypoints[3],
 									})
-									ThemeDebug("themeEvent:Fire()") themeEvent:Fire()
+									themeEvent:Fire()
 									task.wait(6 / 60)
 									debounce = false
 								end,
@@ -9651,7 +9621,7 @@ function Starlight:CreateWindow(WindowSettings)
 										keypoints[2],
 										ColorSequenceKeypoint.new(keypoints[3].Time, c),
 									})
-									ThemeDebug("themeEvent:Fire()") themeEvent:Fire()
+									themeEvent:Fire()
 									task.wait(6 / 60)
 									debounce = false
 								end,
@@ -10837,7 +10807,7 @@ function Starlight:SetTheme(newTheme)
 	end
 
 	Starlight.CurrentTheme = deepCopy(themeToCopy)
-	ThemeDebug("themeEvent:Fire()") themeEvent:Fire()
+	themeEvent:Fire()
 end
 
 function Starlight:LoadAutoloadTheme()
