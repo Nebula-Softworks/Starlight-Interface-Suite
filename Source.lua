@@ -1,5 +1,5 @@
 --[[
-1
+2 yeah to keep count of it for when it updates lol
 
 ███████╗████████╗ █████╗ ██████╗ ██╗     ██╗ ██████╗ ██╗  ██╗████████╗    ██╗███╗   ██╗████████╗███████╗██████╗ ███████╗ █████╗  ██████╗███████╗    ███████╗██╗   ██╗██╗████████╗███████╗
 ██╔════╝╚══██╔══╝██╔══██╗██╔══██╗██║     ██║██╔════╝ ██║  ██║╚══██╔══╝    ██║████╗  ██║╚══██╔══╝██╔════╝██╔══██╗██╔════╝██╔══██╗██╔════╝██╔════╝    ██╔════╝██║   ██║██║╚══██╔══╝██╔════╝
@@ -1324,14 +1324,15 @@ local ConfigMethods = {
 	end,
 }
 
-local ThemeMethods = {
-	bindTheme = function(object: GuiObject, property, themeKey)
+bindTheme = function(object: GuiObject, property, themeKey)
+	local initialized = false
+
 	local function set()
 		task.spawn(function()
 			local newValue = GetNestedValue(Starlight.CurrentTheme, themeKey)
 			local oldValue = Starlight.PreviousTheme and GetNestedValue(Starlight.PreviousTheme, themeKey)
 
-			if typeof(oldValue) == "Color3" and typeof(newValue) == "Color3" then
+			if initialized and typeof(oldValue) == "Color3" and typeof(newValue) == "Color3" then
 				TweenService:Create(
 					object,
 					TweenInfo.new(
@@ -1341,18 +1342,18 @@ local ThemeMethods = {
 					),
 					{ [property] = newValue }
 				):Play()
-				return
+			else
+				if object.ClassName == "UIGradient" and typeof(newValue) == "Color3" then
+					object[property] = ColorSequence.new({
+						ColorSequenceKeypoint.new(0, newValue),
+						ColorSequenceKeypoint.new(1, newValue),
+					})
+				else
+					object[property] = newValue
+				end
 			end
 
-			if object.ClassName == "UIGradient" and typeof(newValue) == "Color3" then
-				object[property] = ColorSequence.new({
-					ColorSequenceKeypoint.new(0, newValue),
-					ColorSequenceKeypoint.new(1, newValue),
-				})
-				return
-			end
-
-			object[property] = newValue
+			initialized = true
 		end)
 	end
 
