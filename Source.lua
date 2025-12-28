@@ -1,4 +1,5 @@
 --[[
+1
 
 ███████╗████████╗ █████╗ ██████╗ ██╗     ██╗ ██████╗ ██╗  ██╗████████╗    ██╗███╗   ██╗████████╗███████╗██████╗ ███████╗ █████╗  ██████╗███████╗    ███████╗██╗   ██╗██╗████████╗███████╗
 ██╔════╝╚══██╔══╝██╔══██╗██╔══██╗██║     ██║██╔════╝ ██║  ██║╚══██╔══╝    ██║████╗  ██║╚══██╔══╝██╔════╝██╔══██╗██╔════╝██╔══██╗██╔════╝██╔════╝    ██╔════╝██║   ██║██║╚══██╔══╝██╔════╝
@@ -1081,29 +1082,47 @@ local Themes = {
 function Tween.Info(style: string?, direction: string?, time: number?)
 	style = style or "Exponential"
 	direction = direction or "Out"
-	time = time or 0.5
+	time = time or 1
 	return TweenInfo.new(time, Enum.EasingStyle[style], Enum.EasingDirection[direction])
 end
 
 local function AnimateThemeTransition(duration)
-	duration = duration or 0.25
+	duration = duration or 1
 	for _, v in pairs(CoreGui:GetDescendants()) do
-		if v:IsA("Frame") or v:IsA("TextLabel") or v:IsA("TextButton")
-		or v:IsA("ImageLabel") or v:IsA("ImageButton") then
+		if v:IsA("Frame")
+			or v:IsA("TextLabel")
+			or v:IsA("TextButton")
+			or v:IsA("ImageLabel")
+			or v:IsA("ImageButton")
+		then
 			local props = {}
+
 			if v.BackgroundTransparency < 1 then
 				props.BackgroundTransparency = v.BackgroundTransparency
 				v.BackgroundTransparency = 1
 			end
+
 			if v:IsA("TextLabel") or v:IsA("TextButton") then
 				props.TextTransparency = v.TextTransparency
 				v.TextTransparency = 1
 			end
+
 			if v:IsA("ImageLabel") or v:IsA("ImageButton") then
 				props.ImageTransparency = v.ImageTransparency
 				v.ImageTransparency = 1
 			end
-			TweenService:Create(v, TweenInfo.new(duration), props):Play()
+
+			if next(props) then
+				TweenService:Create(
+					v,
+					TweenInfo.new(
+						duration,
+						Enum.EasingStyle.Exponential,
+						Enum.EasingDirection.Out
+					),
+					props
+				):Play()
+			end
 		end
 	end
 end
@@ -1181,11 +1200,12 @@ local function WarnLowContrast(theme, threshold)
 end
 
 Starlight.Themes = Themes
-AnimateThemeTransition(0.25)
+AnimateThemeTransition(1)
 Starlight.PreviousTheme = Starlight.CurrentTheme
 Starlight.CurrentTheme = ResolveTheme(Themes, "Starlight")
 WarnLowContrast(Starlight.CurrentTheme)
 themeEvent:Fire()
+
 
 
 --//ENDSUBSECTION
@@ -1306,35 +1326,39 @@ local ConfigMethods = {
 
 local ThemeMethods = {
 	bindTheme = function(object: GuiObject, property, themeKey)
-		local function set()
-			pcall(task.spawn, function()
-				local newValue = GetNestedValue(Starlight.CurrentTheme, themeKey)
-				local oldValue = Starlight.PreviousTheme and GetNestedValue(Starlight.PreviousTheme, themeKey)
+	local function set()
+		task.spawn(function()
+			local newValue = GetNestedValue(Starlight.CurrentTheme, themeKey)
+			local oldValue = Starlight.PreviousTheme and GetNestedValue(Starlight.PreviousTheme, themeKey)
 
-				if typeof(newValue) == "Color3" and typeof(oldValue) == "Color3" then
-					TweenService:Create(
-						object,
-						Tween.Info("Exponential", "Out", 0.25),
-						{ [property] = newValue }
-					):Play()
-					return
-				end
+			if typeof(oldValue) == "Color3" and typeof(newValue) == "Color3" then
+				TweenService:Create(
+					object,
+					TweenInfo.new(
+						1,
+						Enum.EasingStyle.Exponential,
+						Enum.EasingDirection.Out
+					),
+					{ [property] = newValue }
+				):Play()
+				return
+			end
 
-				if object.ClassName == "UIGradient" and typeof(newValue) == "Color3" then
-					object[property] = ColorSequence.new({
-						ColorSequenceKeypoint.new(0, newValue),
-						ColorSequenceKeypoint.new(1, newValue),
-					})
-					return
-				end
+			if object.ClassName == "UIGradient" and typeof(newValue) == "Color3" then
+				object[property] = ColorSequence.new({
+					ColorSequenceKeypoint.new(0, newValue),
+					ColorSequenceKeypoint.new(1, newValue),
+				})
+				return
+			end
 
-				object[property] = newValue
-			end)
-		end
+			object[property] = newValue
+		end)
+	end
 
-		themeEvent.Event:Connect(set)
-		set()
-	end,
+	themeEvent.Event:Connect(set)
+	set()
+end,
 	encodeTheme = function(theme)
 		local function serialize(data)
 			if typeof(data) == "Color3" then
