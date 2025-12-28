@@ -10862,6 +10862,7 @@ function Starlight:SetTheme(newTheme)
 	themeEvent:Fire()
 end
 
+
 function Starlight:LoadAutoloadTheme()
 	if isStudio or not isfile then
 		return "Config system unavailable."
