@@ -1182,9 +1182,11 @@ end
 
 Starlight.Themes = Themes
 AnimateThemeTransition(0.25)
+Starlight.PreviousTheme = Starlight.CurrentTheme
 Starlight.CurrentTheme = ResolveTheme(Themes, "Starlight")
 WarnLowContrast(Starlight.CurrentTheme)
 themeEvent:Fire()
+
 
 --//ENDSUBSECTION
 
@@ -1306,18 +1308,27 @@ local ThemeMethods = {
 	bindTheme = function(object: GuiObject, property, themeKey)
 		local function set()
 			pcall(task.spawn, function()
-				if
-					object.ClassName == "UIGradient"
-					and typeof(GetNestedValue(Starlight.CurrentTheme, themeKey)) == "Color3"
-				then
+				local newValue = GetNestedValue(Starlight.CurrentTheme, themeKey)
+				local oldValue = Starlight.PreviousTheme and GetNestedValue(Starlight.PreviousTheme, themeKey)
+
+				if typeof(newValue) == "Color3" and typeof(oldValue) == "Color3" then
+					TweenService:Create(
+						object,
+						Tween.Info("Exponential", "Out", 0.25),
+						{ [property] = newValue }
+					):Play()
+					return
+				end
+
+				if object.ClassName == "UIGradient" and typeof(newValue) == "Color3" then
 					object[property] = ColorSequence.new({
-						ColorSequenceKeypoint.new(0, GetNestedValue(Starlight.CurrentTheme, themeKey)),
-						ColorSequenceKeypoint.new(1, GetNestedValue(Starlight.CurrentTheme, themeKey)),
+						ColorSequenceKeypoint.new(0, newValue),
+						ColorSequenceKeypoint.new(1, newValue),
 					})
 					return
 				end
 
-				object[property] = GetNestedValue(Starlight.CurrentTheme, themeKey)
+				object[property] = newValue
 			end)
 		end
 
