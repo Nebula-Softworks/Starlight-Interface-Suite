@@ -156,8 +156,7 @@ local Acrylic = isStudio and require(ReplicatedStorage.AcrylicBundled)
 	or loadstring(game:HttpGet("https://raw." .. website .. "/AcrylicModule.luau"))()
 Acrylic.Init()
 
-local Request = (syn and syn.request)
-	or (fluxus and fluxus.request)
+local Request = (fluxus and fluxus.request)
 	or (http and http.request)
 	or http_request
 	or request
@@ -2060,10 +2059,6 @@ end
 -- Sets The Interface Into Roblox's GUI
 if gethui then
 	StarlightUI.Parent = gethui()
-elseif syn and syn.protect_gui then
-	syn.protect_gui(StarlightUI)
-
-	StarlightUI.Parent = CoreGui
 elseif not isStudio and CoreGui:FindFirstChild("RobloxGui") then
 	StarlightUI.Parent = CoreGui:FindFirstChild("RobloxGui")
 elseif not isStudio then
