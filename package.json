@@ -1,0 +1,26 @@
+{
+  "name": "starlight-interface-suite",
+  "version": "2.0.0",
+  "description": "Simply Better Than Others",
+  "main": "src/init.luau",
+  "scripts": {
+    "dev-bundle": "lune run build/init.development.lua",
+    "serve": "python -m http.server 8642",
+    "dev-server": "concurrently \"pnpm dev-bundle\" \"pnpm serve\" \"chokidar \\\"src/**/*.luau\\\" -c \\\"pnpm dev-bundle\\\"\"",
+
+    "buildmodel": "mkdirp dist && rojo build build.project.json -o dist/Starlight.Interface.Suite.rbxm",
+    "bundle": "lune run build && del dist\\main.luau 2>nul",
+    "build": "pnpm buildmodel && pnpm bundle"
+  },
+  "keywords": [],
+  "author": "Nebula Softworks",
+  "repository": "https://github.com/Nebula-Softworks/Starlight-Interface-Suite",
+  "discord": "https://dsc.gg/nebulasoftworks",
+  "license": "CC-BY-NC 4.0",
+  "packageManager": "pnpm@10.15.1",
+  "devDependencies": {
+    "chokidar-cli": "^3.0.0",
+    "concurrently": "^9.2.1",
+    "mkdirp": "^3.0.1"
+  }
+}

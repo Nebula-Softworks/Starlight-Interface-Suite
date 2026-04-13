@@ -1,0 +1,27 @@
+{
+	"generator" : {
+		"name": "retain_lines"
+	},
+	"bundle": {
+	  "require_mode": {
+		"name" : "luau",
+		"aliases": {
+			"@root": "../src"
+		 }
+	   }
+	},
+	"rules": [
+	  "compute_expression",
+	  "remove_unused_if_branch",
+	  "remove_unused_while",
+	  "remove_types",
+	  "remove_comments",
+	  "group_local_assignment",
+	  "convert_local_function_to_assign",
+	  "convert_index_to_field",
+	  "filter_after_early_return",
+	  "remove_empty_do",
+	  "remove_function_call_parens",
+	  "remove_spaces"
+	]
+  }

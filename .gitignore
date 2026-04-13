@@ -1,0 +1,18 @@
+# Project place file
+/Starlight Interface Suite.rbxlx
+
+# Roblox Studio lock files
+/*.rbxlx.lock
+/*.rbxl.lock
+
+# auto-generated files
+sourcemap.json
+pnpm-lock.yaml
+src/wally.lock
+
+# editor generated stuff
+.vscode
+
+# project generated folders
+node_modules
+dist

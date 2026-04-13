@@ -1,0 +1,26 @@
+{
+  "name": "Starlight Interface Suite",
+  "tree": {
+    "$className": "DataModel",
+
+    "ReplicatedStorage": {
+      "Starlight Interface Suite": {
+        "$path" : "src"
+      },
+      "Starlight Addons": {
+        "$path" : "addons"
+      },
+      "StarlightBundled": {
+        "$path" : "dist/Starlight.Interface.Suite.luau"
+      }
+    },
+    
+    "StarterPlayer": {
+      "StarterPlayerScripts": {
+        "Starlight Test": {
+          "$path": "test/example.client.luau"
+        }
+      }
+    }
+  }
+}
