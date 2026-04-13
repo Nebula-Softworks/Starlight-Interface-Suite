@@ -1,5 +1,5 @@
 # Starlight Interface Suite
-![Image](https://github.com/Nebula-Softworks/Starlight-Interface-Suite/blob/master/assets/Starlight%20Cover%20Image.png?raw=true)
+![Image](./assets/Starlight%20Cover%20Image.png?raw=true)
 
 ***
 
@@ -16,7 +16,7 @@ Starlight is an open-sourced, retained-mode, user-centric Full Interface Suite d
 - Actively Developed
   
 ## Preview
-![Image](https://github.com/Nebula-Softworks/Starlight-Interface-Suite/blob/master/assets/Preview.png?raw=true)
+![Image](./assets/Preview.png?raw=true)
   
   
 ## Structure Of Starlight
