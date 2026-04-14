@@ -69,7 +69,7 @@ function CustomImageManager.AddAsset(AssetName: string, RobloxAssetId: number, U
 
 	CustomImageManagerAssets[AssetName] = {
 		RobloxId = RobloxAssetId,
-		Path = string.format("Starlight/custom_assets/%s", AssetName),
+		Path = string.format("Starlight Interface Suite/custom_assets/%s", AssetName),
 		URL = URL,
 
 		Id = nil,

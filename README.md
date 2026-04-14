@@ -1,11 +1,33 @@
-# Starlight Interface Suite
+<div align="center">
+
+  <h1><img src="./assets/Starlight Logo.png" alt="Logo" width="50" style="vertical-align:middle;">Starlight Interface Suite</h1>
+
+
+[![Stars][badges/stars]][stars]
+[![Latest Release][badges/lastrel]][lastrel]
+[![Last Modified][badges/lastcom]][lastcom]
+
+[![Discord][badges/disc]][disc]
+
+**Starlight, Simply Better than Others.**  
+
+</div>
+
+[stars]: https://github.com/Nebula-Softworks/Starlight-Interface-Suite/stargazers
+[lastrel]: https://github.com/Nebula-Softworks/Starlight-Interface-Suite/releases/latest
+[lastcom]: https://github.com/Nebula-Softworks/Starlight-Interface-Suite/commits
+[disc]: https://dsc.gg/nebulasoftworks
+[badges/stars]: https://img.shields.io/github/stars/Nebula-Softworks/Starlight-Interface-Suite?label=Stars&logo=GitHub
+[badges/lastrel]: https://img.shields.io/github/v/release/Nebula-Softworks/Starlight-Interface-Suite?include_prereleases&label=Latest%20Release
+[badges/lastcom]: https://img.shields.io/github/last-commit/Nebula-Softworks/Starlight-Interface-Suite?label=Last%20Modifed
+[badges/disc]: https://img.shields.io/discord/1308635155916783668?&label=Discord
+
 ![Image](./assets/Starlight%20Cover%20Image.png?raw=true)
 
 ***
 
 ## The Pitch
-**Starlight, Simply Better than Others.**  
-Starlight is an open-sourced, retained-mode, user-centric Full Interface Suite designed to be both easy for developers and beautiful for users. Its API is fully typed, so once you learn one component, you can use 99% of the rest without needing to reference the documentation. Being packed with accesible and useful libraries for developers, Starlight will contain almost every function you need for your scripting experience. Paired with Twilight, you will most likely never need another utility library present in your script.
+Starlight is an open-sourced, retained-mode, user-centric Full Interface Suite designed to be both easy for developers and beautiful for users. Its API is fully typed, so once you learn one component, you can use 99% of the rest without needing to reference the documentation. Being packed with accesible and useful libraries for developers, Starlight will contain almost every function you need for your scripting experience. When paired with Twilight, you will most likely never need another utility library present in your script.
 
 ### Why Starlight?  
 - Sexy Design
