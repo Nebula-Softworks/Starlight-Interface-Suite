@@ -1,9 +1,7 @@
 local Creator = require("./Creator")
-local isStudio = game:GetService("RunService"):IsStudio()
+local _isStudio = game:GetService("RunService"):IsStudio()
 
 local function createAcrylic()
-
-
 	local flag = false
 	if getgenv then
 		if getgenv().NoAnticheat == nil or getgenv().NoAnticheat == true then
@@ -16,8 +14,10 @@ local function createAcrylic()
 	if game:GetService("RunService"):IsStudio() then
 		flag = true
 	end
-	if not flag then return end
-	
+	if not flag then
+		return
+	end
+
 	local Part = Creator.New("Part", {
 		Name = "Body",
 		Color = Color3.new(0, 0, 0),
@@ -32,7 +32,7 @@ local function createAcrylic()
 		Creator.New("SpecialMesh", {
 			MeshType = Enum.MeshType.Brick,
 			Offset = Vector3.new(0, 0, -0.000001),
-		})
+		}),
 	})
 
 	return Part

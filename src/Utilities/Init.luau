@@ -233,8 +233,3 @@ function module:IsMobile()
 end
 
 return module
-
---todo:
--- windows and content shld go up in zindex when selected/clicked on
--- only selected window will have rotating gradient
--- add a modal button on app creation so mouse unlock

@@ -98,8 +98,7 @@ Nebula Softworks - Design And Programming
 cyclic@luau.software - Helping With Some Project Setup  
 Rojo - RBXM Model Builder, Luau LSP System, Development Helper.  
 seaofvoices & Lune - Compiler  
-JohnyMorganz - Language Server Used In Development  
-Latte Softworks - Compiler prior to Version 1.2
+JohnyMorganz - Language Server Used In Development   
   
   
 > Copyright © 2025-2026 Nebula Softworks. All rights reserved.
