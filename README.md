@@ -1,6 +1,6 @@
 <div align="center">
 
-  <h1><img src="./assets/Starlight Logo.png" alt="Logo" width="50" style="vertical-align:middle;">Starlight Interface Suite</h1>
+  <h1>Starlight Interface Suite</h1>
 
 
 [![Stars][badges/stars]][stars]
