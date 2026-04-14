@@ -84,23 +84,6 @@ local function init()
 end
 
 local function FullBlur()
-	local flag = false
-	if getgenv then
-		if getgenv().NoAnticheat == nil or getgenv().NoAnticheat == true then
-			flag = true
-		end
-		if getgenv().SecureMode then
-			flag = false
-		end
-	else
-		if isStudio then
-			flag = true
-		end
-	end
-	if not flag then
-		return
-	end
-
 	local universalBlur
 	for i, v in pairs(Lighting:GetChildren()) do
 		if v:IsA("BlurEffect") and v.Name ~= "starlightBlur" then
@@ -117,7 +100,6 @@ local function FullBlur()
 	local blurObject = Lighting:FindFirstChild("starlightBlur") ~= nil and Lighting:FindFirstChild("starlightBlur")
 		or universalBlur:Clone()
 	blurObject.Size = 0
-	blurObject.Parent = Lighting
 	blurObject.Name = "starlightBlur"
 
 	local function enable()
@@ -129,6 +111,7 @@ local function FullBlur()
 	enable()
 
 	return {
+		Object = blurObject,
 		Enable = enable,
 		Disable = disable,
 	}

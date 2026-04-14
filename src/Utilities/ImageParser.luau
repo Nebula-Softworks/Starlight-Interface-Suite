@@ -1,7 +1,17 @@
 local functionLibrary = require("../Utilities")
 
-local CustomImageManager = {}
+local CustomImageManager = {
+	Library = nil,
+}
 local CustomImageManagerAssets = {
+
+	SnowfallBackground = {
+		RobloxId = 108329446100832,
+		Path = nil,
+		URL = nil,
+
+		Id = nil,
+	},
 
 	TransparencyTexture = {
 		RobloxId = 96978989117558,
@@ -43,7 +53,7 @@ local CustomImageManagerAssets = {
 		Id = nil,
 	},
 
-	MainWindow = {
+	MainWindowIcon = {
 		RobloxId = 112910337033330,
 		Path = nil,
 		URL = nil,
@@ -51,7 +61,7 @@ local CustomImageManagerAssets = {
 		Id = nil,
 	},
 
-	ESPPreview = {
+	ESPPreviewIcon = {
 		RobloxId = 136005970583820,
 		Path = nil,
 		URL = nil,
@@ -69,7 +79,12 @@ function CustomImageManager.AddAsset(AssetName: string, RobloxAssetId: number, U
 
 	CustomImageManagerAssets[AssetName] = {
 		RobloxId = RobloxAssetId,
-		Path = string.format("Starlight Interface Suite/custom_assets/%s", AssetName),
+		Path = string.format(
+			"%s/custom_assets/%s.%s",
+			CustomImageManager.Library.FileSystem.Folder,
+			AssetName,
+			CustomImageManager.Library.FileSystem.FileExtension
+		),
 		URL = URL,
 
 		Id = nil,
@@ -90,7 +105,7 @@ function CustomImageManager.GetAsset(AssetName: string)
 
 	local AssetID = string.format("rbxassetid://%s", AssetData.RobloxId)
 
-	if getcustomasset then
+	if getcustomasset and AssetData.Path ~= nil then
 		local Success, NewID = pcall(getcustomasset, AssetData.Path)
 
 		if Success and NewID then

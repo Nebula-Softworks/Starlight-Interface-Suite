@@ -1,0 +1,2 @@
+-- display should use the KeybindMaps
+-- but check if a key doesnt exist in there first. if it doesnt, then js use tostring of the keycode. else, use the mapping
