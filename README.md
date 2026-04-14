@@ -60,7 +60,7 @@ If you are contributing to our ecosystem, you can either create a pull request i
   
 ### How To Compile Your Changes?
 > [!note]
-> You Will Need Performant Node Package Manager (pnpm) and Python
+> You Will Need Performant Node Package Manager (pnpm)  
 
 Open the repo in your VSC Workspace OR Open the repo in Powershell/Command Prompt.  
 Install the node_modules by running `pnpm install` if you have not.  
@@ -68,6 +68,8 @@ Now, run `pnpm build`. Your changes will be bundled into the result at `dist/Sta
 View the `build` folder to see and edit how the code is generated, including the header paragraph etc.  
   
 #### Using The Dev-Server Method
+> You will need Python for this  
+
 After completing the first 3 steps, run `pnpm dev-server` instead of building. Whenever you save changes, the `dist/main.luau` file will automatically update.  
 In addition, the code will be generated with much more readable content, allowing for easier debugging.  
 Replace your URL for HttpGet with `http://localhost:8642/dist/main.luau` - if you have changed the port, change it here as well.  
@@ -95,7 +97,7 @@ If you'd like to help fund and support the project, consider donating via any of
   
 ## Credits
 Nebula Softworks - Design And Programming  
-cyclic@luau.software - Helping With Some Project Setup  
+<!--cyclic@luau.software - Helping With Some Project Setup  >
 Rojo - RBXM Model Builder, Luau LSP System, Development Helper.  
 seaofvoices & Lune - Compiler  
 JohnyMorganz - Language Server Used In Development   
