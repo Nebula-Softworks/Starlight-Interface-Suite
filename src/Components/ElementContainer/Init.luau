@@ -1,0 +1,2 @@
+-- add functions of adding elements here so no repeat
+-- metatable those inheriting from this
