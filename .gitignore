@@ -16,3 +16,6 @@ src/wally.lock
 # project generated folders
 node_modules
 dist
+
+#backups
+.git - Copy/
