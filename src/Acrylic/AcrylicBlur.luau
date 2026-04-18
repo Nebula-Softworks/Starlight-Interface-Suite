@@ -2,12 +2,12 @@ local Creator = require("./Creator")
 local createAcrylic = require("./CreateAcrylic")
 local viewportPointToWorld, getOffset = unpack(require("./Utils"))
 
-local BlurFolder = game:GetService("Workspace").CurrentCamera:FindFirstChild("Starlight Blur Elements") and game:GetService("Workspace").CurrentCamera["Starlight Blur Elements"] or Instance.new("Folder", game:GetService("Workspace").CurrentCamera)
+local BlurFolder = game:GetService("Workspace").CurrentCamera:FindFirstChild("Starlight Blur Elements")
+		and game:GetService("Workspace").CurrentCamera["Starlight Blur Elements"]
+	or Instance.new("Folder", game:GetService("Workspace").CurrentCamera)
 BlurFolder.Name = "Starlight Blur Elements"
 
 local function createAcrylicBlur(distance)
-	
-
 	local flag = false
 	if getgenv then
 		if getgenv().NoAnticheat == nil or getgenv().NoAnticheat == true then
@@ -18,9 +18,11 @@ local function createAcrylicBlur(distance)
 		end
 	end
 	if game:GetService("RunService"):IsStudio() then
-			flag = true
+		flag = true
 	end
-	if not flag then return end
+	if not flag then
+		return
+	end
 	local cleanups = {}
 
 	distance = distance or 0.001
@@ -55,8 +57,12 @@ local function createAcrylicBlur(distance)
 		local width = (topRight3D - topLeft3D).Magnitude
 		local height = (topRight3D - bottomRight3D).Magnitude
 
-		model.CFrame =
-			CFrame.fromMatrix((topLeft3D + bottomRight3D) / 2, cameraTransform.XVector, cameraTransform.YVector, cameraTransform.ZVector)
+		model.CFrame = CFrame.fromMatrix(
+			(topLeft3D + bottomRight3D) / 2,
+			cameraTransform.XVector,
+			cameraTransform.YVector,
+			cameraTransform.ZVector
+		)
 
 		if mesh then
 			mesh.Scale = Vector3.new(width, height, 0)
@@ -104,11 +110,7 @@ return function(distance)
 	local comp = Creator.New("Frame", {
 		BackgroundTransparency = 1,
 		Size = UDim2.fromScale(1, 1),
-	})
-	local y = Creator.New("Frame", {
-		BackgroundTransparency = 1,
-		Size = UDim2.fromScale(0, 0),
-	})
+	}) :: Frame
 
 	Creator.AddSignal(comp:GetPropertyChangedSignal("AbsolutePosition"), function()
 		pcall(onChange, comp)
@@ -128,7 +130,7 @@ return function(distance)
 				Blur.SetVisibility(false)
 			end
 		end)
- 
+
 		pcall(function()
 			model.Color = Parent.BackgroundColor3
 			Creator.AddSignal(Parent:GetPropertyChangedSignal("BackgroundColor3"), function()
@@ -136,7 +138,6 @@ return function(distance)
 			end)
 		end)
 	end
-
 
 	Blur.SetVisibility = function(Value)
 		pcall(function()

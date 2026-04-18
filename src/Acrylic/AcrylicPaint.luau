@@ -20,11 +20,11 @@ return function()
 			SliceCenter = Rect.new(Vector2.new(99, 99), Vector2.new(99, 99)),
 			AnchorPoint = Vector2.new(0.5, 0.5),
 			Size = UDim2.new(1, 120, 1, 116),
-			Position = UDim2.new(0.5, 0, 0.5, 0),
+			Position = UDim2.fromScale(0.5, 0.5),
 			BackgroundTransparency = 1,
 			ImageColor3 = Color3.fromRGB(0, 0, 0),
 			ImageTransparency = 0.7,
-			Name = "shadow"
+			Name = "shadow",
 		}),
 
 		New("UICorner", {
@@ -35,10 +35,10 @@ return function()
 			Image = "rbxassetid://9968344105",
 			ImageTransparency = 0.98,
 			ScaleType = Enum.ScaleType.Tile,
-			TileSize = UDim2.new(0, 128, 0, 128),
+			TileSize = UDim2.fromOffset(128, 128),
 			Size = UDim2.fromScale(1, 1),
 			BackgroundTransparency = 1,
-			Name = "tint"
+			Name = "tint",
 		}, {
 			New("UICorner", {
 				CornerRadius = UDim.new(0, 8),
@@ -49,10 +49,10 @@ return function()
 			Image = "rbxassetid://9968344227",
 			ImageTransparency = 0.9,
 			ScaleType = Enum.ScaleType.Tile,
-			TileSize = UDim2.new(0, 128, 0, 128),
+			TileSize = UDim2.fromOffset(128, 128),
 			Size = UDim2.fromScale(1, 1),
 			BackgroundTransparency = 1,
-			Name = "Noise"
+			Name = "Noise",
 		}, {
 			New("UICorner", {
 				CornerRadius = UDim.new(0, 8),

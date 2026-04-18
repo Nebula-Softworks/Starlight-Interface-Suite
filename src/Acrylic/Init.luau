@@ -21,7 +21,7 @@ local function init()
 	end
 
 	local universalDof
-	for i, v in pairs(Lighting:GetChildren()) do
+	for _, v in pairs(Lighting:GetChildren()) do
 		if v:IsA("DepthOfFieldEffect") and v.Name ~= "starlightBlur" then
 			universalDof = v
 		end
@@ -38,10 +38,6 @@ local function init()
 
 	local partRoot = Camera:FindFirstChild("Starlight Blur Elements") or Instance.new("Folder", Camera)
 	partRoot.Name = "Starlight Blur Elements"
-
-	local blurSize = Vector2.new(5, 2)
-	local partSize = 0.01
-	local partTransparency = 0.99
 
 	local blurObject = Lighting:FindFirstChild("starlightBlur") ~= nil and Lighting:FindFirstChild("starlightBlur")
 		or universalDof:Clone()
@@ -76,16 +72,12 @@ local function init()
 	local function enable()
 		blurObject.NearIntensity = 1
 	end
-
-	local function disable()
-		blurObject.NearIntensity = 0
-	end
 	enable()
 end
 
 local function FullBlur()
 	local universalBlur
-	for i, v in pairs(Lighting:GetChildren()) do
+	for _, v in pairs(Lighting:GetChildren()) do
 		if v:IsA("BlurEffect") and v.Name ~= "starlightBlur" then
 			universalBlur = v
 		end

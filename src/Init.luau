@@ -4,15 +4,13 @@
 -- only selected window will have rotating gradient
 -- add a modal button on app creation so mouse unlock
 
-local services = require("@self/Utilities/Services")
+local _services = require("@self/Utilities/Services")
 local utilities = require("@self/Utilities")
 local imageparser = require("@self/Utilities/ImageParser")
-local Root = script
 local Creator = require("@self/Utilities/Creator")
 local Components = require("@self/Components")
-local Acrylic = require("@self/Acrylic")
 local Themes = require("@self/Themes")
-local Elements = require("@self/Elements")
+local _Elements = require("@self/Elements")
 
 local GUI = Creator:New("ScreenGui", {
 	Name = "Starlight Interface Suite",

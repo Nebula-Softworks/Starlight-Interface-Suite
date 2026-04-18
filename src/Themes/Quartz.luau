@@ -1,0 +1,18 @@
+return {
+	WindowBackground = Color3.fromRGB(25, 28, 42),
+	GroupboxBackground = Color3.fromRGB(31, 34, 51),
+	ElementBackground = Color3.fromRGB(37, 42, 62),
+	Stroke = Color3.fromRGB(56, 64, 96),
+	FooterStroke = Color3.fromRGB(35, 38, 56),
+	TooltipIcon = Color3.fromRGB(62, 80, 104),
+	PrimaryText = Color3.fromRGB(150, 168, 200),
+	SecondaryText = Color3.fromRGB(78, 96, 122),
+	Header = Color3.fromRGB(208, 216, 240),
+	Accent = Color3.fromRGB(66, 110, 135),
+	Black = Color3.fromRGB(10, 13, 22),
+	White = Color3.fromRGB(208, 216, 240),
+	Shadow = Color3.fromRGB(18, 21, 30),
+	Bad = Color3.fromRGB(196, 90, 106),
+	Mid = Color3.fromRGB(196, 168, 74),
+	Good = Color3.fromRGB(90, 158, 122),
+}
