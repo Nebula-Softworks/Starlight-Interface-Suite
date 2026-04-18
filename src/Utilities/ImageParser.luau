@@ -75,8 +75,6 @@ function CustomImageManager.AddAsset(AssetName: string, RobloxAssetId: number, U
 		error(string.format("Asset %q already exists", AssetName))
 	end
 
-	assert(typeof(RobloxAssetId) == "number", "RobloxAssetId must be a number")
-
 	CustomImageManagerAssets[AssetName] = {
 		RobloxId = RobloxAssetId,
 		Path = string.format(
@@ -103,7 +101,7 @@ function CustomImageManager.GetAsset(AssetName: string)
 		return AssetData.Id
 	end
 
-	local AssetID = string.format("rbxassetid://%s", AssetData.RobloxId)
+	local AssetID = string.format("rbxassetid://%s", AssetData.RobloxId or "")
 
 	if getcustomasset and AssetData.Path ~= nil then
 		local Success, NewID = pcall(getcustomasset, AssetData.Path)

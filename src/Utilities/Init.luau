@@ -136,7 +136,7 @@ function module:ParentUI(GUI: ScreenGui)
 		GUI.Parent = CoreGui
 	elseif not isStudio and CoreGui:FindFirstChild("RobloxGui") then
 		GUI.Parent = CoreGui:FindFirstChild("RobloxGui")
-	elseif not isStudio then
+	else
 		GUI.Parent = CoreGui
 	end
 end

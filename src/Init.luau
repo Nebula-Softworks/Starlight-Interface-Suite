@@ -20,8 +20,10 @@ local GUI = Creator:New("ScreenGui", {
 utilities:ParentUI(GUI)
 
 local Library = {
-
 	Version = "Gen2 v1.0",
+
+	WatermarkTitle = "Starlight Gen2",
+	Icon = 92936499827985,
 
 	IsMinimized = false,
 	SecureMode = false,
@@ -57,7 +59,23 @@ do -- Initialise
 	local Backgrounds = Components.Backgrounds(GUI, Library)
 	Library.Backgrounds = Backgrounds
 
-	-- to add watermark and keybind list init
+	Creator:New("UIScale", {
+		Parent = GUI,
+		Name = "DPIScale",
+		Scale = Library.DPIScale,
+	}, nil, Library)
+
+	Components.Notification.Init(Library)
+	Components.Watermark(Library)
+
+	-- to add keybind list
+end
+function Library:UpdateWatermarkIcon()
+	GUI.Watermark.Icon.Image = imageparser.AddAsset(
+		Library.Icon,
+		typeof(Library.Icon) == "number" and Library.Icon or nil,
+		typeof(Library.Icon) ~= "number" and Library.Icon or nil
+	)
 end
 
 function Library:CreateMainWindow() end
@@ -66,10 +84,14 @@ function Library:CreateWindow() end
 
 function Library:AddKeySystem() end
 
+function Library:Notify(...)
+	return Components.Notification:Notify(...)
+end
+
 function Library:SetTheme(Value)
 	if typeof(Value) == "string" then
 		if Themes[Value] ~= nil then
-			Library.CurrentTheme = Themes[Value]
+			self.CurrentTheme = Themes[Value]
 			Creator:UpdateTheme()
 		end
 	elseif typeof(Value) == "table" then
@@ -78,8 +100,13 @@ function Library:SetTheme(Value)
 				Value[i] = v
 			end
 		end
-		Library.CurrentTheme = Value
+		self.CurrentTheme = Value
 	end
+end
+
+function Library:SetDPIScale(Value: number)
+	self.DPIScale = Value
+	GUI["DPIScale"].Scale = self.DPIScale
 end
 
 function Library:Toggle(toBlur, toDarken, toSnow)

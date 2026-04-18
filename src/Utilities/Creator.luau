@@ -27,6 +27,8 @@ local Creator = {
 			TextSize = 12,
 			TextXAlignment = Enum.TextXAlignment.Left,
 			Text = "",
+			TextWrapped = true,
+			RichText = true,
 		},
 		TextButton = {
 			BackgroundTransparency = 1,
@@ -35,6 +37,7 @@ local Creator = {
 			Text = "",
 			AutoButtonColor = false,
 			TextTransparency = 1,
+			RichText = true,
 		},
 		TextBox = {
 			BackgroundTransparency = 1,
@@ -45,6 +48,7 @@ local Creator = {
 			TextColor3 = Color3.fromRGB(185, 184, 193),
 			PlaceholderColor3 = Color3.fromRGB(102, 101, 108),
 			TextSize = 12,
+			RichText = true,
 		},
 		ImageLabel = {
 			BackgroundTransparency = 1,
@@ -59,6 +63,9 @@ local Creator = {
 		ViewportFrame = {
 			BackgroundTransparency = 1,
 			BorderSizePixel = 0,
+		},
+		UIStroke = {
+			ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
 		},
 	},
 }
@@ -80,6 +87,68 @@ function Creator:Disconnect()
 end
 
 function Creator:New(Class, Properties, Children, Root)
+	if Class == "AntumbraShadow" then
+		local Object = Instance.new("ImageLabel")
+
+		Object.Name = "antumbraShadow"
+		Object.AnchorPoint = Vector2.new(0.5, 0.5)
+		Object.Position = UDim2.fromScale(0.5, 0.5)
+		Object.Image = "rbxassetid://5587865193"
+		Object.ImageTransparency = 0.94
+		Object.ScaleType = Enum.ScaleType.Slice
+		Object.SliceCenter = Rect.new(80, 78, 189, 318)
+
+		for Name, Value in next, Properties or {} do
+			if Name ~= "ThemeData" then
+				Object[Name] = Value
+			else
+				Creator:AddThemeObject(Object, Value, Root)
+			end
+		end
+
+		return Object
+	elseif Class == "PenumbraShadow" then
+		local Object = Instance.new("ImageLabel")
+
+		Object.Name = "penumbraShadow"
+		Object.AnchorPoint = Vector2.new(0.5, 0.5)
+		Object.Position = UDim2.fromScale(0.5, 0.5)
+		Object.Image = "rbxassetid://8992230677"
+		Object.ImageTransparency = 0.55
+		Object.ScaleType = Enum.ScaleType.Slice
+		Object.SliceCenter = Rect.new(99, 99, 99, 99)
+
+		for Name, Value in next, Properties or {} do
+			if Name ~= "ThemeData" then
+				Object[Name] = Value
+			else
+				Creator:AddThemeObject(Object, Value, Root)
+			end
+		end
+
+		return Object
+	elseif Class == "UmbraShadow" then
+		local Object = Instance.new("ImageLabel")
+
+		Object.Name = "umbraShadow"
+		Object.AnchorPoint = Vector2.new(0.5, 0.5)
+		Object.Position = UDim2.fromScale(0.5, 0.5)
+		Object.Image = "rbxassetid://76200300325831"
+		Object.ImageTransparency = 0
+		Object.ScaleType = Enum.ScaleType.Slice
+		Object.SliceCenter = Rect.new(46, 43, 351, 355)
+
+		for Name, Value in next, Properties or {} do
+			if Name ~= "ThemeData" then
+				Object[Name] = Value
+			else
+				Creator:AddThemeObject(Object, Value, Root)
+			end
+		end
+
+		return Object
+	end
+
 	local Object = Instance.new(Class)
 
 	for Name, Value in next, Creator.DefaultProperties[Class] or {} do
