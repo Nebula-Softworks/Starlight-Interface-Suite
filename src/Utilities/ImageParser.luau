@@ -139,4 +139,4 @@ for AssetName, _ in CustomImageManagerAssets do
 	CustomImageManager.DownloadAsset(AssetName)
 end
 
-return CustomImageManager, CustomImageManagerAssets
+return CustomImageManager

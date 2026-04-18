@@ -10,7 +10,7 @@ local Header = fs.readFile("./build/header.luau")
 local function bundle()
 	process.exec(
 		"darklua",
-		{ "process", "src/init.luau", TempFile, "--config", "./build/darklua.development.config.json" }
+		{ "process", "src/Init.luau", TempFile, "--config", "./build/darklua.development.config.json" }
 	)
 	local value = fs.readFile(TempFile)
 	fs.removeFile(TempFile)

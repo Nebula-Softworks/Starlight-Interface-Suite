@@ -14,7 +14,7 @@ Header = Header:gsub("{{LICENSE}}", "CC-BY-NC 4.0")
 --\\---------------------------------------------------------------------------------------//--
 
 local function bundle()
-	process.exec("darklua", { "process", "src/init.luau", TempFile, "--config", "./build/darklua.config.json" })
+	process.exec("darklua", { "process", "src/Init.luau", TempFile, "--config", "./build/darklua.config.json" })
 	local value = fs.readFile(TempFile)
 	fs.removeFile(TempFile)
 	return value
