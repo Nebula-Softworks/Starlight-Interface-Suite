@@ -3,13 +3,13 @@ local Creator = require("../Utilities/Creator")
 local Acrylic = require("../Acrylic")
 local imageparser = require("../Utilities/ImageParser")
 
-return function(GUI: ScreenGui, IsSecureMode: boolean)
-	local Holder = Creator.New("Folder", {
+return function(GUI: ScreenGui, Library)
+	local Holder = Creator:New("Folder", {
 		Name = "BackgroundFX",
 		Parent = GUI,
-	})
+	}, nil, Library)
 
-	local Darkener = Creator.New("Frame", {
+	local Darkener = Creator:New("Frame", {
 		Name = "Background",
 		Visible = true,
 		BackgroundTransparency = 0.2,
@@ -19,8 +19,8 @@ return function(GUI: ScreenGui, IsSecureMode: boolean)
 		ThemeData = {
 			BackgroundColor3 = "WindowBackground",
 		},
-	})
-	local Snowfall = Creator.New("ImageLabel", {
+	}, nil, Library)
+	local Snowfall = Creator:New("ImageLabel", {
 		Name = "Snowfall",
 		Visible = true,
 		Position = UDim2.fromScale(-1, -1),
@@ -33,7 +33,7 @@ return function(GUI: ScreenGui, IsSecureMode: boolean)
 		ThemeData = {
 			ImageColor3 = "White",
 		},
-	})
+	}, nil, Library)
 
 	services.TweenService
 		:Create(
@@ -44,7 +44,7 @@ return function(GUI: ScreenGui, IsSecureMode: boolean)
 		:Play()
 
 	local Blur = Acrylic.CreateBlur()
-	Blur.Object.Parent = (not IsSecureMode) and services.Lighting or nil
+	Blur.Object.Parent = (not Library.SecureMode) and services.Lighting or nil
 
 	return {
 		Darkener = Darkener,

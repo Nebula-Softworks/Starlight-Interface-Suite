@@ -1,4 +1,3 @@
-local Root = require("../")
 local functions = require("./")
 
 local Creator = {
@@ -80,7 +79,7 @@ function Creator:Disconnect()
 	end
 end
 
-function Creator:New(Class, Properties, Children)
+function Creator:New(Class, Properties, Children, Root)
 	local Object = Instance.new(Class)
 
 	for Name, Value in next, Creator.DefaultProperties[Class] or {} do
@@ -91,7 +90,7 @@ function Creator:New(Class, Properties, Children)
 		if Name ~= "ThemeData" then
 			Object[Name] = Value
 		else
-			Creator:AddThemeObject(Object, Value)
+			Creator:AddThemeObject(Object, Value, Root)
 		end
 	end
 
@@ -102,16 +101,16 @@ function Creator:New(Class, Properties, Children)
 	return Object
 end
 
-function Creator:AddThemeObject(Object: GuiObject, ThemeProperties)
+function Creator:AddThemeObject(Object: GuiObject, ThemeProperties, Root)
 	Creator.ThemeRegistry[Object] = {
 		Object = Object,
 		Properties = ThemeProperties,
 	}
-	Creator:UpdateTheme()
+	Creator:UpdateTheme(Root)
 	return Object
 end
 
-function Creator:UpdateTheme()
+function Creator:UpdateTheme(Root)
 	for Object, Data in pairs(Creator.ThemeRegistry) do
 		if Object:IsA("UIGradient") then
 			local numColors = #Data.Properties

@@ -53,8 +53,8 @@ local Library = {
 }
 imageparser.Library = Library
 
-function Library:Initialise()
-	local Backgrounds = Components.Backgrounds(GUI, Library.SecureMode)
+do -- Initialise
+	local Backgrounds = Components.Backgrounds(GUI, Library)
 	Library.Backgrounds = Backgrounds
 
 	-- to add watermark and keybind list init
