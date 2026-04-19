@@ -22,7 +22,7 @@ local Creator = {
 		TextLabel = {
 			BackgroundTransparency = 1,
 			BorderSizePixel = 0,
-			Font = Font.new("rbxasset://fonts/families/Inter.json", Enum.FontWeight.SemiBold),
+			FontFace = Font.new("rbxasset://fonts/families/Inter.json", Enum.FontWeight.SemiBold),
 			TextColor3 = Color3.fromRGB(185, 184, 193),
 			TextSize = 12,
 			TextXAlignment = Enum.TextXAlignment.Left,
@@ -43,7 +43,7 @@ local Creator = {
 			BackgroundTransparency = 1,
 			BorderSizePixel = 0,
 			ClearTextOnFocus = false,
-			Font = Font.new("rbxasset://fonts/families/Inter.json", Enum.FontWeight.SemiBold),
+			FontFace = Font.new("rbxasset://fonts/families/Inter.json", Enum.FontWeight.SemiBold),
 			Text = "",
 			TextColor3 = Color3.fromRGB(185, 184, 193),
 			PlaceholderColor3 = Color3.fromRGB(102, 101, 108),
@@ -67,6 +67,15 @@ local Creator = {
 		UIStroke = {
 			ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
 		},
+		UIListLayout = {
+			SortOrder = Enum.SortOrder.LayoutOrder,
+		},
+		UIPageLayout = {
+			GamepadInputEnabled = false,
+			ScrollWheelInputEnabled = false,
+			TouchInputEnabled = false,
+			SortOrder = Enum.SortOrder.LayoutOrder,
+		},
 	},
 }
 
@@ -86,7 +95,14 @@ function Creator:Disconnect()
 	end
 end
 
-function Creator:New(Class, Properties, Children, Root)
+function Creator:New(
+	Class: string,
+	Properties: {
+		[string]: any,
+	},
+	Children: { [any]: GuiObject },
+	Root
+)
 	if Class == "AntumbraShadow" then
 		local Object = Instance.new("ImageLabel")
 

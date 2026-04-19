@@ -1,6 +1,6 @@
 --[[
 
-	Starlight Interface Suite V2
+	Starlight Interface Suite Gen2
 	Simply Better Than Others.
 
 	by Nebula Softworks

@@ -4,7 +4,7 @@
 -- only selected window will have rotating gradient
 -- add a modal button on app creation so mouse unlock
 
-local _services = require("@self/Utilities/Services")
+local services = require("@self/Utilities/Services")
 local utilities = require("@self/Utilities")
 local imageparser = require("@self/Utilities/ImageParser")
 local Creator = require("@self/Utilities/Creator")
@@ -31,6 +31,7 @@ local Library = {
 	HasKeySystem = false,
 	IsKeyDone = true,
 
+	ActiveWindow = nil,
 	WatermarkActive = false,
 	KeybindListActive = false,
 
@@ -76,9 +77,103 @@ function Library:UpdateWatermarkIcon()
 	)
 end
 
-function Library:CreateMainWindow() end
+function Library:CreateWindow(Config: {
+	Title: string,
+	Subtitle: string,
+	Tags: {
+		[any]: {
+			Title: string,
+			Color: Color3,
+		},
+	},
+	Footer: string,
 
-function Library:CreateWindow() end
+	MinimizeKey: Enum.KeyCode,
+	InitialDPIScale: number,
+
+	Discord: {
+		Enabled: boolean,
+		Invite: string,
+		RememberJoins: boolean,
+	},
+
+	Theme: string | {
+		[any]: Color3,
+	},
+})
+	if Library.HasKeySystem then
+		while not Library.IsKeyDone do
+			task.wait()
+		end
+	end
+
+	assert(Config.Title, "Missing Title")
+	if Library.Windows.MainWindow then
+		task.spawn(error, "Cannot Create More than One Main Window.\nConsider using Library:CreateSubWindow instead")
+		return
+	end
+
+	local Window = Components.MainWindow(Config, Library)
+
+	Library.Windows.MainWindow = Window
+	Library:SetTheme(Config.Theme)
+	Library:SetDPIScale(Config.InitialDPIScale or 1)
+
+	if Config.Discord and Config.Discord.Enabled then
+		utilities:RecursiveCreatePath(`{Library.FileSystem.Folder}/Discord Invites/`, false)
+
+		if
+			not isfile(
+				`{Library.FileSystem.Folder}/Discord Invites/{Config.Discord.Invite}.{Library.FileSystem.FileExtension}`
+			)
+		then
+			pcall(function()
+				utilities:Request({
+					Url = "http://127.0.0.1:6463/rpc?v=1",
+					Method = "POST",
+					Headers = {
+						["Content-Type"] = "application/json",
+						Origin = "https://discord.com",
+					},
+					Body = services.HttpService:JSONEncode({
+						cmd = "INVITE_BROWSER",
+						nonce = services.HttpService:GenerateGUID(false),
+						args = { code = Config.Discord.Invite },
+					}),
+				})
+			end)
+
+			if Config.Discord.RememberJoins then
+				writefile(
+					`{Library.FileSystem.Folder}/Discord Invites/{Config.Discord.Invite}.{Library.FileSystem.FileExtension}`,
+					"Starlight RememberJoins is true for this invite, this invite will not ask you to join again"
+				)
+			end
+		end
+	end
+
+	return Window
+end
+
+function Library:CreateSubWindow(_Config: {
+	Title: string,
+	Tags: {
+		[any]: {
+			Title: string,
+			Color: Color3,
+		},
+	}?,
+	Template: "ESPPreview" | "GridPicker" | "CreditsWindow",
+	TemplateOptions: {
+		[any]: any,
+	},
+})
+	if Library.HasKeySystem then
+		while not Library.IsKeyDone do
+			task.wait()
+		end
+	end
+end
 
 function Library:AddKeySystem() end
 
@@ -129,6 +224,12 @@ function Library:ToggleKeybindList() end
 function Library:GetIcon(Name, Value)
 	imageparser.AddAsset(Name, 1, Value)
 	return imageparser.GetAsset(Name)
+end
+
+function Library:Destroy()
+	Library.OnDestroy()
+	GUI:Destroy()
+	Creator:Disconnect()
 end
 
 if getgenv then
