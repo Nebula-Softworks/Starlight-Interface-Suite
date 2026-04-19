@@ -3,7 +3,6 @@ local Creator = require("../Utilities/Creator")
 local utilities = require("../Utilities")
 local imageparser = require("../Utilities/ImageParser")
 local Components = require("./")
-local Window = require("./Window")
 
 return function(
 	Config: {
