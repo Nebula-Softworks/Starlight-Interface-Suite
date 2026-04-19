@@ -5,12 +5,13 @@ Requires environment to have getgenv() library.
   
 ### Usage
 Boot the Addon Library after loading Starlight:  
-```lua
+```luau
 local StarlightAddons = loadstring(game:HttpGet("https://raw.nebulasoftworks.xyz/starlight-gen2/addon-module"))()
 ```  
 Great! Now we can load any addon we'd like using:  
-```lua
-StarlightAddons:LoadAddon("@creator/addon_name_here")
+```luau
+-- Variable is optional
+local myAddon = StarlightAddons:LoadAddon("@creator/addon_name_here")
 ```
   
 To browse available addons, a list is available in the documentation, as well as a copy of this README.  
@@ -20,11 +21,14 @@ To create your own addons to add to our **Starlight Ecosystem**, you must first 
 Then, if it is your *first time* creating an addon, create a new sub-folder in `addons` with your **Github username**.  
 For example, if I'm creating an addon, I'd make a new folder called `@mrkillinghunt3r`.  If you have done this before, you can skip this step.  
 Now, you can simply write your addon in a `.luau` file within that sub-folder. The format should be as follows:  
-```lua
+```luau
 return function(Starlight)
     -- you can write anything you wish in this addon
     -- the Starlight variable is the Library of the user.  
     -- you must have this return function format for it to work.
+
+    -- optional return if you have like a user library
+    return module
 end
 ```  
 Now, create a pull request on [the same Github repo](https://github.com/Nebula-Softworks/Starlight-Interface-Suite/) with your changes commited.  

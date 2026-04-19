@@ -11,7 +11,7 @@ local module = {
 }
 
 function module:LoadAddon(addonName: string)
-	self.addons_list[addonName](getgenv().Starlight)
+	return self.addons_list[addonName](getgenv().Starlight)
 end
 
 return module
