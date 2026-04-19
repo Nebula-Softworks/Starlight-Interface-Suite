@@ -233,13 +233,13 @@ local TransparencyValues = setmetatable({
 		return
 	end,
 })
-function module:Hide(Interface, JustHide: boolean?, Notify: boolean?, Bind: string?)
+function module:Hide(Interface, JustHide: boolean?)
 	JustHide = JustHide or false
 
 	TransparencyValues[Interface] = TransparencyValues[Interface] or {}
 	table.clear(TransparencyValues[Interface])
 
-	for i, v in pairs(Interface:GetDescendants()) do
+	for _, v in pairs(Interface:GetDescendants()) do
 		if
 			v.ClassName ~= "Folder"
 			and v.ClassName ~= "UICorner"
@@ -363,7 +363,7 @@ function module:Unhide(Interface)
 		Interface.Visible = true
 	end
 
-	for i, v in pairs(Interface:GetDescendants()) do
+	for _, v in pairs(Interface:GetDescendants()) do
 		if
 			v.ClassName ~= "Folder"
 			and v.ClassName ~= "UICorner"
