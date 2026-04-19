@@ -35,4 +35,8 @@ Now, create a pull request on [the same Github repo](https://github.com/Nebula-S
 For the pull request to be accepted, no other modifications must be made and the plugin must work!  
 Desirably, attach a Markdown file in your pull request for us to upload onto the Documentation's addon browser.  
 > This will help users who find your addon to understand what it does. It acts like a README for your addon.  
-
+  
+> [!IMPORTANT]
+> Please commit only when you have made significant changes, are ready to push and pull request, and ensure that everything is working 100% fine.  
+> This will help us manage commits and pulls better as well as prevent the Commit Count from skyrocketing. If we see that you have too many commits for the amount of change you've done, we will ask you to change. You can create a separate branch with no commits except for one every update and use that to pull request.  
+> You are limited to one pull request/update every fortnight, each having a maximum of one commit to be merged in. We thank you in advance for your understanding and cooperation.  
