@@ -34,5 +34,5 @@ end
 Now, create a pull request on [the same Github repo](https://github.com/Nebula-Softworks/Starlight-Interface-Suite/) with your changes commited.  
 For the pull request to be accepted, no other modifications must be made and the plugin must work!  
 Desirably, attach a Markdown file in your pull request for us to upload onto the Documentation's addon browser.  
-> This will users who find your addon to understand what it does. It acts like a README for your addon.  
+> This will help users who find your addon to understand what it does. It acts like a README for your addon.  
 
