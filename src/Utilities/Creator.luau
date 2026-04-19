@@ -18,6 +18,7 @@ local Creator = {
 			CanvasSize = UDim2.fromScale(0, 0),
 			ScrollBarThickness = 0,
 			ScrollingDirection = Enum.ScrollingDirection.Y,
+			ClipsDescendants = true,
 		},
 		TextLabel = {
 			BackgroundTransparency = 1,
@@ -197,6 +198,9 @@ end
 
 function Creator:UpdateTheme(Root)
 	for Object, Data in pairs(Creator.ThemeRegistry) do
+		if Data == nil then
+			continue
+		end
 		if Object:IsA("UIGradient") then
 			local numColors = #Data.Properties
 			local keypoints = {}

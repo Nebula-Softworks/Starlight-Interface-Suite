@@ -1,7 +1,6 @@
 local services = require("../Utilities/Services")
 local Creator = require("../Utilities/Creator")
 local utilities = require("../Utilities")
-local imageparser = require("../Utilities/ImageParser")
 local Components = require("./")
 
 return function(
@@ -35,7 +34,6 @@ return function(
 	local Window = {
 		Instance = nil,
 		Tabs = {},
-		CurrentTab = nil,
 		CurrentSize = Size,
 		CurrentPosition = UDim2.fromOffset(
 			services.Camera.ViewportSize.X / 2 - Size.X.Offset / 2,
@@ -351,7 +349,16 @@ return function(
 		end
 	end
 
-	function Window:CreateTab() end
+	Window.TabModule = Components.Tab.Init(Window, Library)
+	function Window:CreateTab(Title: string | { [any]: string })
+		if typeof(Title) ~= "string" then
+			Title = Title[1]
+		end
+
+		local tab = Components.Tab:New(Title)
+		table.insert(Window.Tabs, tab)
+		return tab
+	end
 
 	Creator:AddSignal(WindowInstance:GetPropertyChangedSignal("ZIndex"), function()
 		-- updating ZIndex cus fuck you roblox Shadows don't work on Sibling ZIndex. fuck u fuck u fuck u roblox

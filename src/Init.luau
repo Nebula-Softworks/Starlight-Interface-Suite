@@ -209,12 +209,22 @@ function Library:Toggle(toBlur, toDarken, toSnow)
 		if toBlur then
 			Library.Backgrounds.Blur.Enable()
 		end
-		-- toggle windows and menu here
+		--tba: menu toggle
+		for _, Window in pairs(Library.Windows) do
+			if not Window.IsMinimized then
+				Window.Instance.Visible = true
+			end
+		end
+		Library.IsMinimized = false
 	else
 		Library.Backgrounds.Snowfall.Visible = false
 		Library.Backgrounds.Darkener.Visible = false
 		Library.Backgrounds.Blur.Disable()
-		-- toggle windows and menu here
+		--tba: menu toggle
+		for _, Window in pairs(Library.Windows) do
+			Window.Instance.Visible = false
+		end
+		Library.IsMinimized = true
 	end
 end
 
