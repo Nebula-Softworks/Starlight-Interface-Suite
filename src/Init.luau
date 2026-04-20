@@ -107,9 +107,12 @@ function Library:CreateWindow(Config: {
 		end
 	end
 
-	assert(Config.Title, "Missing Title")
+	assert(Config.Title, "Starlight Interface Suite | Missing Title")
 	if Library.Windows.MainWindow then
-		task.spawn(error, "Cannot Create More than One Main Window.\nConsider using Library:CreateSubWindow instead")
+		task.spawn(
+			error,
+			"Starlight Interface Suite | Cannot Create More than One Main Window.\nStarlight Interface Suite | Consider using Library:CreateSubWindow instead"
+		)
 		return
 	end
 

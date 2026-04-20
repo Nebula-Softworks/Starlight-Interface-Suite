@@ -1,0 +1,3 @@
+-- im gonna put this reminder to copy syde color picker features because i am not original
+-- and to remind myself that stuff like rainbow shld be in the color picker itself and automatically sync with the rest of the rainbow in the lib
+-- yes I have dementia if ur reading this

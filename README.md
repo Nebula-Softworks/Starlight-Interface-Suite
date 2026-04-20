@@ -97,7 +97,7 @@ If you'd like to help fund and support the project, consider donating via any of
   
 ## Credits
 Nebula Softworks - Design And Programming  
-<!--cyclic@luau.software - Helping With Some Project Setup  >
+<!--cyclic@luau.software - Helping With Some Project Setup-->
 Rojo - RBXM Model Builder, Luau LSP System, Development Helper.  
 seaofvoices & Lune - Compiler  
 JohnyMorganz - Language Server Used In Development   

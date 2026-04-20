@@ -1,5 +1,6 @@
 local services = require("../Utilities/Services")
 local Creator = require("../Utilities/Creator")
+local Components = require("../Components")
 
 local TabModule = {
 	Window = nil,
@@ -186,7 +187,7 @@ function TabModule:New(Title: string)
 		TabModule:SelectTab(Tab)
 	end)
 
-	function Tab:SetTitle(newTitle: string)
+	function Tab:Set(newTitle: string)
 		Tab.Instances.Navigator.TextLabel.Text = newTitle
 		Tab.Instances.Navigator.Grey.Text = newTitle
 		Tab.Instances.Navigator.Name = "Tab_" .. newTitle
@@ -200,13 +201,18 @@ function TabModule:New(Title: string)
 				{ BackgroundColor3 = "GroupboxBackground" },
 				TabModule.Library
 			)
-			Creator:AddThemeObject(Tab.Instances.Page.HeaderBox.UIStroke, { Color = "Stroke" }, TabModule.Library)
+			Creator:AddThemeObject(
+				Tab.Instances.Page.HeaderBox.UIStroke,
+				{ Color = "ElementBackground" },
+				TabModule.Library
+			)
 			Creator:AddThemeObject(Tab.Instances.Page.HeaderBox.Header, { TextColor3 = "Header" }, TabModule.Library)
 			Creator:AddThemeObject(
 				Tab.Instances.Page.HeaderBox.Paragraph,
 				{ TextColor3 = "PrimaryText" },
 				TabModule.Library
 			)
+			Tab.Instances.Page.HeaderBox.UIStroke.Transparency = 0
 		else
 			Creator.ThemeRegistry[Tab.Instances.Page.HeaderBox] = nil
 			Creator.ThemeRegistry[Tab.Instances.Page.HeaderBox.UIStroke] = nil
@@ -217,6 +223,7 @@ function TabModule:New(Title: string)
 			Tab.Instances.Page.HeaderBox.UIStroke.Color = Color
 			Tab.Instances.Page.HeaderBox.Header.TextColor3 = Color
 			Tab.Instances.Page.HeaderBox.Paragraph.TextColor3 = Color
+			Tab.Instances.Page.HeaderBox.UIStroke.Transparency = 0.5
 		end
 
 		Tab.Instances.Page.HeaderBox.Header.Text = Header
@@ -229,7 +236,31 @@ function TabModule:New(Title: string)
 		Tab.Instances.Page.HeaderBoxSpacing.PaddingTop = UDim.new(0, -(bounds + 47))
 	end
 
-	function Tab:CreateGroupbox() end
+	Creator:AddSignal(TabModule.Window.Instance:GetPropertyChangedSignal("ZIndex"), function()
+		-- updating ZIndex cus fuck you roblox Shadows don't work on Sibling ZIndex. fuck u fuck u fuck u roblox
+		Tab.Instances.Navigator.ZIndex = TabModule.Window.Instance.ZIndex + 1
+		Tab.Instances.Navigator.TextLabel.ZIndex = TabModule.Window.Instance.ZIndex + 2
+		Tab.Instances.Navigator.Grey.ZIndex = TabModule.Window.Instance.ZIndex + 2
+
+		Tab.Instances.Page.ZIndex = TabModule.Window.Instance.ZIndex + 2
+		Tab.Instances.Page.HeaderBox.ZIndex = TabModule.Window.Instance.ZIndex + 2
+		Tab.Instances.Page.HeaderBox.Header.ZIndex = TabModule.Window.Instance.ZIndex + 3
+		Tab.Instances.Page.HeaderBox.Paragraph.ZIndex = TabModule.Window.Instance.ZIndex + 3
+		Tab.Instances.Page.Columns.Left.ZIndex = TabModule.Window.Instance.ZIndex + 2
+		Tab.Instances.Page.Columns.Right.ZIndex = TabModule.Window.Instance.ZIndex + 2
+	end)
+
+	function Tab:CreateGroupbox(GroupboxConfig: {
+		Title: string,
+		Icon: string | number,
+		Column: number,
+	})
+		local parent = (GroupboxConfig.Column == 1) and Tab.Instances.Page.Columns.Left
+			or Tab.Instances.Page.Columns.Right
+		local box = Components.Groupbox(GroupboxConfig, Tab, parent, TabModule.Library)
+		table.insert(Tab.Boxes, box)
+		return box
+	end
 
 	function Tab:CreateTabbox() end
 
