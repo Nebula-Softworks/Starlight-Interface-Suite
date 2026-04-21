@@ -12,6 +12,7 @@ return function(Title: string, Tabbox, Library)
 		Config = { Title = Title },
 		ElementContainer = nil,
 		Elements = {},
+		Library = Library,
 	}, Components.ElementContainer)
 
 	Tab.Instances.Navigator = New("TextButton", {

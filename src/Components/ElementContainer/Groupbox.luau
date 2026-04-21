@@ -23,6 +23,7 @@ return function(
 		Config = GroupboxConfig,
 		ElementContainer = nil,
 		Elements = {},
+		Library = Library,
 	}, Components.ElementContainer)
 
 	if not imageparser.GetAsset(GroupboxConfig.Icon) then
