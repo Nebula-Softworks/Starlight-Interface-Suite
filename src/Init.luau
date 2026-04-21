@@ -11,6 +11,7 @@ local Creator = require("@self/Utilities/Creator")
 local Components = require("@self/Components")
 local Themes = require("@self/Themes")
 local _Elements = require("@self/Elements")
+local Enums = require("@self/Utilities/Enums")
 
 local GUI = Creator:New("ScreenGui", {
 	Name = "Starlight Interface Suite",
@@ -166,7 +167,7 @@ function Library:CreateSubWindow(_Config: {
 			Color: Color3,
 		},
 	}?,
-	Template: "ESPPreview" | "GridPicker" | "CreditsWindow",
+	Template: Enums.SubWindowType,
 	TemplateOptions: {
 		[any]: any,
 	},

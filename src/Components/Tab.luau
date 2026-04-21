@@ -1,6 +1,7 @@
 local services = require("../Utilities/Services")
 local Creator = require("../Utilities/Creator")
 local Components = require("../Components")
+local Enums = require("../Utilities/Enums")
 
 local TabModule = {
 	Window = nil,
@@ -253,16 +254,28 @@ function TabModule:New(Title: string)
 	function Tab:CreateGroupbox(GroupboxConfig: {
 		Title: string,
 		Icon: string | number,
-		Column: number,
+		Column: Enums.GroupboxColumn,
 	})
-		local parent = (GroupboxConfig.Column == 1) and Tab.Instances.Page.Columns.Left
+		local parent = (GroupboxConfig.Column == Enums.GroupboxColumns.Left) and Tab.Instances.Page.Columns.Left
 			or Tab.Instances.Page.Columns.Right
 		local box = Components.Groupbox(GroupboxConfig, Tab, parent, TabModule.Library)
 		table.insert(Tab.Boxes, box)
 		return box
 	end
 
-	function Tab:CreateTabbox() end
+	function Tab:CreateTabbox(TabboxConfig: {
+		Tabs: {
+			[any]: string,
+		},
+		SelectedTab: number | string,
+		Column: Enums.GroupboxColumn,
+	})
+		local parent = (TabboxConfig.Column == Enums.GroupboxColumns.Left) and Tab.Instances.Page.Columns.Left
+			or Tab.Instances.Page.Columns.Right
+		local box = Components.Tabbox(TabboxConfig, Tab, parent, TabModule.Library)
+		table.insert(Tab.Boxes, box)
+		return box
+	end
 
 	return Tab
 end

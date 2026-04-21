@@ -1,12 +1,13 @@
 local Components = require("../../Components")
 local Creator = require("../../Utilities/Creator")
 local imageparser = require("../../Utilities/ImageParser")
+local Enums = require("../../Utilities/Enums")
 
 return function(
 	GroupboxConfig: {
 		Title: string,
 		Icon: string? | number?,
-		Column: number,
+		Column: Enums.GroupboxColumn,
 	},
 	_Tab,
 	Parent,
