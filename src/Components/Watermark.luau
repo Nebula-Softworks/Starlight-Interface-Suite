@@ -1,5 +1,6 @@
 local services = require("../Utilities/Services")
 local Creator = require("../Utilities/Creator")
+local utilities = require("../Utilities")
 local imageparser = require("../Utilities/ImageParser")
 
 return function(Library)
@@ -13,6 +14,7 @@ return function(Library)
 
 	local WatermarkObject = Creator:New("Frame", {
 		Name = "Watermark",
+		Parent = Library.Instance,
 		Position = UDim2.fromOffset(12, 12),
 		Size = UDim2.fromOffset(0, 32),
 		ZIndex = 2147483639,
@@ -118,12 +120,19 @@ return function(Library)
 			TimeFunction() - Start >= 1 and #FrameUpdateTable or #FrameUpdateTable / (TimeFunction() - Start)
 		)
 		local ping = getPing()
-		good = `{Library.CurrentTheme.Good.R * 255}, {Library.CurrentTheme.Good.G * 255}, {Library.CurrentTheme.Good.B * 255}`
-		mid = `{Library.CurrentTheme.Mid.R * 255}, {Library.CurrentTheme.Mid.G * 255}, {Library.CurrentTheme.Mid.B * 255}`
-		bad = `{Library.CurrentTheme.Bad.R * 255}, {Library.CurrentTheme.Bad.G * 255}, {Library.CurrentTheme.Bad.B * 255}`
+		good =
+			`{Library.CurrentTheme.Good.R * 255}, {Library.CurrentTheme.Good.G * 255}, {Library.CurrentTheme.Good.B * 255}`
+		mid =
+			`{Library.CurrentTheme.Mid.R * 255}, {Library.CurrentTheme.Mid.G * 255}, {Library.CurrentTheme.Mid.B * 255}`
+		bad =
+			`{Library.CurrentTheme.Bad.R * 255}, {Library.CurrentTheme.Bad.G * 255}, {Library.CurrentTheme.Bad.B * 255}`
 
 		FrameUpdateTable[1] = LastIteration
 		WatermarkObject.TextLabel.Text =
 			`{Library.WatermarkTitle}}   |   {services.LocalPlayer.Name}   |   <font color="rgb({fps >= 60 and good or (fps >= 20 and mid or bad)})">{fps} FPS</font>  |   <font color="rgb({ping <= 60 and good or (fps <= 120 and mid or bad)})">{ping}}ms</font>`
 	end)
+
+	utilities:MakeDraggable(WatermarkObject, WatermarkObject)
+
+	return WatermarkObject
 end

@@ -37,7 +37,7 @@ local Library = {
 	KeybindListActive = false,
 
 	Keybind = Enum.KeyCode.Insert,
-	KeybindMaps = require("@self/Utilities/KeybindMaps"),
+	DPIScale = 1,
 
 	Themes = Themes,
 	CurrentTheme = Themes["Dark (Default)"],
@@ -49,9 +49,11 @@ local Library = {
 		FileExtension = ".starlight",
 	},
 
-	DPIScale = 1,
+	KeybindMaps = require("@self/Utilities/KeybindMaps"),
 	Creator = Creator,
 	ImageManager = imageparser,
+	Enums = Enums,
+	ComponentLibrary = Components,
 }
 imageparser.Library = Library
 
@@ -67,6 +69,9 @@ do -- Initialise
 
 	Components.Notification.Init(Library)
 	Components.Watermark(Library)
+	Library:ToggleWatermark(Library.WatermarkActive)
+
+	Components.Menu.Init(Library)
 
 	-- to add keybind list
 end
@@ -88,6 +93,8 @@ function Library:CreateWindow(Config: {
 		},
 	},
 	Footer: string,
+
+	Icon: string | number,
 
 	MinimizeKey: Enum.KeyCode,
 	InitialDPIScale: number,
@@ -156,6 +163,8 @@ function Library:CreateWindow(Config: {
 		end
 	end
 
+	Components.Menu.Update(Window)
+
 	return Window
 end
 
@@ -215,7 +224,7 @@ function Library:Toggle(toBlur, toDarken, toSnow)
 		end
 		--tba: menu toggle
 		for _, Window in pairs(Library.Windows) do
-			if not Window.IsMinimized then
+			if not Window.Minimized then
 				Window.Instance.Visible = true
 			end
 		end
@@ -232,7 +241,14 @@ function Library:Toggle(toBlur, toDarken, toSnow)
 	end
 end
 
-function Library:ToggleWatermark() end
+function Library:ToggleWatermark(b: boolean?)
+	Library.WatermarkActive = b == nil and not Library.WatermarkActive or b
+	if Library.WatermarkActive then
+		pcall(utilities.Unhide, utilities, GUI["Watermark"])
+	else
+		utilities:Hide(GUI["Watermark"])
+	end
+end
 function Library:ToggleKeybindList() end
 
 function Library:GetIcon(Name, Value)
@@ -244,6 +260,9 @@ function Library:Destroy()
 	Library.OnDestroy()
 	GUI:Destroy()
 	Creator:Disconnect()
+end
+function Library:Unload()
+	self:Destroy()
 end
 
 if getgenv then

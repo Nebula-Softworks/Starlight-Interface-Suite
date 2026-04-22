@@ -6,7 +6,7 @@ local module = {}
 
 function module.Init(Library)
 	Creator:New("Frame", {
-		Parent = Library.GUI,
+		Parent = Library.Instance,
 		Name = "NotificationHolder",
 		AnchorPoint = Vector2.new(1, 0),
 		BackgroundTransparency = 1,
@@ -27,6 +27,9 @@ function module:Notify(data: {
 	Icon: string,
 	Duration: number,
 })
+	if data.Icon == nil then
+		data.Icon = 110935784457491
+	end
 	if not imageparser.GetAsset(data.Icon) then
 		imageparser.AddAsset(
 			data.Icon,

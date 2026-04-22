@@ -15,6 +15,8 @@ return function(
 		},
 		Footer: string,
 
+		Icon: string | number,
+
 		MinimizeKey: Enum.KeyCode,
 		InitialDPIScale: number?,
 
@@ -30,6 +32,9 @@ return function(
 	},
 	Library
 )
+	if Config.Icon == nil then
+		Config.Icon = 112910337033330
+	end
 	local Size = UDim2.fromOffset(560, 750)
 	local Window = {
 		Instance = nil,
@@ -52,7 +57,7 @@ return function(
 
 	local WindowInstance = New("Frame", {
 		Name = "MainWindow",
-		Parent = Library.GUI,
+		Parent = Library.Instance,
 		Size = Size,
 		Position = Window.CurrentPosition,
 		ZIndex = 0,

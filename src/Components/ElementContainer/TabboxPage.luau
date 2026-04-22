@@ -67,7 +67,7 @@ return function(Title: string, Tabbox, Library)
 	function Tab:Select()
 		Tabbox.Instance.PART_Content.UIPageLayout:JumpTo(Tab.Instances.Page)
 		Tabbox.SelectedTab = Tab
-		Creator:AddThemeObject(Tab.Instances.Navigator, { TextColor3 = "Accent" }, Library)
+		Creator:AddThemeObject(Tab.Instances.Navigator, { BackgroundColor3 = "Accent", TextColor3 = "Accent" }, Library)
 		services.TweenService:Create(
 			Tab.Instances.Navigator,
 			TweenInfo.new(0.4, Enum.EasingStyle.Exponential),
@@ -77,7 +77,11 @@ return function(Title: string, Tabbox, Library)
 			if OtherTab == Tab then
 				continue
 			end
-			Creator:AddThemeObject(OtherTab.Instances.Navigator, { TextColor3 = "PrimaryText" }, Library)
+			Creator:AddThemeObject(
+				OtherTab.Instances.Navigator,
+				{ BackgroundColor3 = "Accent", TextColor3 = "PrimaryText" },
+				Library
+			)
 			services.TweenService:Create(
 				Tab.Instances.Navigator,
 				TweenInfo.new(0.4, Enum.EasingStyle.Exponential),
