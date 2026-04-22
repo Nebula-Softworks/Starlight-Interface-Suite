@@ -146,7 +146,7 @@ function MenuModule.Update(Window)
 				TweenInfo.new(0.4, Enum.EasingStyle.Exponential),
 				{ BackgroundTransparency = 1 }
 			)
-			utilities:Hide(Window)
+			utilities:Hide(Window.Instance)
 		else
 			Creator:AddThemeObject(Tab.Instance.Icon, { TextColor3 = "Accent" }, MenuModule.Library)
 			services.TweenService:Create(
@@ -154,7 +154,7 @@ function MenuModule.Update(Window)
 				TweenInfo.new(0.4, Enum.EasingStyle.Exponential),
 				{ BackgroundTransparency = 0.8 }
 			)
-			utilities:Unhide(Window)
+			utilities:Unhide(Window.Instance)
 		end
 	end)
 

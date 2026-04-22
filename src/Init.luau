@@ -37,6 +37,15 @@ local Library = {
 	KeybindListActive = false,
 
 	Keybind = Enum.KeyCode.Insert,
+	RegisteredKeybinds = {
+		--[[ EXAMPLE
+		["titan ripper"] = {
+			Keybind = Enum.KeyCode.Ampersand,
+			Mode = Enums.KeybindTypes.Toggle,
+			Active = false,
+		}
+		]]
+	},
 	DPIScale = 1,
 
 	Themes = Themes,
