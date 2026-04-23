@@ -66,7 +66,13 @@ local Library = {
 }
 imageparser.Library = Library
 
-do -- Initialise
+-- order to create your script
+-- :AddKeySystem
+-- Initialise
+-- windows
+-- blablabla
+
+function Library:Initialise()
 	local Backgrounds = Components.Backgrounds(GUI, Library)
 	Library.Backgrounds = Backgrounds
 
@@ -197,7 +203,42 @@ function Library:CreateSubWindow(_Config: {
 	end
 end
 
-function Library:AddKeySystem() end
+function Library:AddKeySystem(
+	Config: {
+		Title: string,
+		Subtitle: string,
+		SaveKey: boolean,
+
+		GetKey: {
+			Mode: Enums.GetKeyType,
+			Parameter: string, -- if Discord, then put invite code (no link, just like in creating mainwindow). Else if Link, put the full url - attempts to call OpenBrowserWindow and setclipboard.
+		},
+
+		ServiceProvider: Enums.KeyService,
+		ServiceParameters: {
+			--Platoboost
+			ServiceId: number | string,
+			Secret: string,
+		} | {
+			-- Pelican
+			ServiceId: string,
+		} | {
+			--Luarmor
+			ServiceId: string,
+		} | {
+			-- Junkie
+			ServiceId: string,
+			Identifier: string,
+			Provider: string,
+		},
+	}
+)
+	Library.IsKeyDone = false
+	Library.HasKeySystem = true
+
+	local KeySys = Components.KeySystem(Config, Library)
+	return KeySys
+end
 
 function Library:Notify(...)
 	return Components.Notification:Notify(...)

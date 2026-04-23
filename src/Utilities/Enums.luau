@@ -2,6 +2,7 @@ export type SubWindowType = number
 export type GroupboxColumn = number
 export type KeyService = number
 export type KeybindType = number
+export type GetKeyType = number
 
 export type SubWindowTypes = {
 	Custom: SubWindowType,
@@ -28,6 +29,11 @@ export type KeybindTypes = {
 	Hold: KeybindType,
 	Never: KeybindType,
 	Sync: KeybindType,
+}
+
+export type GetKeyTypes = {
+	Discord: GetKeyType,
+	Link: GetKeyType,
 }
 
 return {
@@ -57,5 +63,10 @@ return {
 		Hold = 2,
 		Never = 3,
 		Sync = 4,
+	},
+
+	GetKeyTypes = {
+		Discord = 0,
+		Link = 1,
 	},
 }
