@@ -61,6 +61,7 @@ return function(
 		Parent = Library.Instance,
 		Size = Size,
 		Position = Window.CurrentPosition,
+		LayoutOrder = #Library.Windows,
 		ZIndex = 0,
 		ThemeData = {
 			BackgroundColor3 = "WindowBackground",
@@ -415,7 +416,7 @@ return function(
 				end
 			else
 				strokeRotation:Pause()
-				WindowInstance.ZIndex = 0
+				WindowInstance.ZIndex = WindowInstance.LayoutOrder * 6
 			end
 		end
 	end)

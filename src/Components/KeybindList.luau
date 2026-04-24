@@ -19,6 +19,7 @@ function module:Init(Library)
 		Parent = Library.Instance,
 		Position = UDim2.fromOffset(12, 51),
 		Size = UDim2.fromOffset(160, 55),
+		LayoutOrder = #Library.Windows,
 		ThemeData = {
 			BackgroundColor3 = "WindowBackground",
 		},
@@ -156,7 +157,7 @@ function module:Init(Library)
 					end
 				end
 			else
-				module.Instance.ZIndex = 0
+				module.Instance.ZIndex = module.Instance.LayoutOrder * 6
 			end
 		end
 	end)

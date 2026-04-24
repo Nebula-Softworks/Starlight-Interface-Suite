@@ -377,6 +377,7 @@ local ak = function(a8, a0)
 		al = al + 1
 	end
 	ac(a8, a0, "expected closing quote for string")
+	return nil
 end
 local ao = function(a8, a0)
 	local am = a7(a8, a0, p)
@@ -480,6 +481,7 @@ a4 = function(a8, a9)
 		return a2(a8, a9)
 	end
 	ac(a8, a9, "unexpected character '" .. as .. "'")
+	return nil
 end
 local aw = function(a8)
 	if type(a8) ~= "string" then

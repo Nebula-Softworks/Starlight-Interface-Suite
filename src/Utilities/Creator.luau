@@ -44,6 +44,7 @@ local Creator = {
 			BackgroundTransparency = 1,
 			BorderSizePixel = 0,
 			ClearTextOnFocus = false,
+			ClipsDescendants = true,
 			FontFace = Font.new("rbxasset://fonts/families/Inter.json", Enum.FontWeight.SemiBold),
 			Text = "",
 			TextColor3 = Color3.fromRGB(185, 184, 193),
