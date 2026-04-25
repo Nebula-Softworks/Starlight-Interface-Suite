@@ -1,6 +1,7 @@
 local Enums = require("./Enums")
 local utilities = require("./")
-local PlatobootLibraries = require("./PlatobootLibraries")
+local PlatobootLibraries =
+	loadstring(game:HttpGetAsync("https://raw.nebulasoftworks.xyz/starlight-gen2/platoboost-library"))()
 local services = require("./Services")
 
 local KeyServiceModule = {}
@@ -47,15 +48,15 @@ KeyServiceModule.Pelican = function(ServiceParameters, Key)
 
 	if success and response then
 		if response.Success then
-			local decodeSuccess, jsonData = pcall(function()
+			local decodeSuccess, decodedJsonData = pcall(function()
 				return services.HttpService:JSONDecode(response.Body)
 			end)
 
-			if decodeSuccess and jsonData then
-				if jsonData.Authenticated_Status and jsonData.Authenticated_Status == "Success" then
+			if decodeSuccess and decodedJsonData then
+				if decodedJsonData.Authenticated_Status and decodedJsonData.Authenticated_Status == "Success" then
 					return true, "Authenticated"
 				else
-					local reason = jsonData.Note or "Unknown reason"
+					local reason = decodedJsonData.Note or "Unknown reason"
 					return false, "Authentication failed: " .. reason
 				end
 			else

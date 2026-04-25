@@ -240,7 +240,7 @@ return function(
 							Name = "Underline",
 							AnchorPoint = Vector2.new(0, 1),
 							Position = UDim2.new(0, -8, 1, -6),
-							Size = UDim2.new(0, 0, 0, 2),
+							Size = UDim2.fromOffset(0, 2),
 							ZIndex = 21,
 							ThemeData = {
 								BackgroundColor3 = "Accent",
@@ -305,7 +305,7 @@ return function(
 							Name = "Underline",
 							AnchorPoint = Vector2.new(0, 1),
 							Position = UDim2.new(0, -8, 1, -6),
-							Size = UDim2.new(0, 0, 0, 2),
+							Size = UDim2.fromOffset(0, 2),
 							ZIndex = 21,
 							ThemeData = {
 								BackgroundColor3 = "Accent",
