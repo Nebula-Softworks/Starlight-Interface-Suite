@@ -97,10 +97,11 @@ If you'd like to help fund and support the project, consider donating via any of
   
 ## Credits
 Nebula Softworks - Design And Programming  
+biggaboy212 - Binder Module used for updating tables
 <!--cyclic@luau.software - Helping With Some Project Setup-->
-Rojo - RBXM Model Builder, Luau LSP System, Development Helper.  
 seaofvoices & Lune - Compiler  
-JohnyMorganz - Language Server Used In Development   
   
+  
+## Start Now, Use the Greater Library
   
 > Copyright © 2025-2026 Nebula Softworks. All rights reserved.

@@ -67,6 +67,7 @@ function module:IsDragInput(Input: InputObject, IncludeM2: boolean?)
 		and (Input.UserInputState == Enum.UserInputState.Begin or Input.UserInputState == Enum.UserInputState.Change)
 end
 
+@[deprecated {use="#array", reason="i was fucking high or sm when i made this :sob:"}]
 function module:GetTableSize(Table: { [any]: any })
 	local Size = 0
 
@@ -76,6 +77,7 @@ function module:GetTableSize(Table: { [any]: any })
 
 	return Size
 end
+
 function module:deepCopy(tbl)
 	if type(tbl) ~= "table" then
 		return tbl

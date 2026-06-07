@@ -88,8 +88,6 @@ function MenuModule.Init(Library)
 			}),
 		}),
 	})
-
-	utilities:MakeDraggable(MenuModule.Instance, MenuModule.Instance)
 end
 
 function MenuModule.Update(Window)
@@ -138,7 +136,7 @@ function MenuModule.Update(Window)
 	})
 
 	Creator:AddSignal(Tab.Instance.Icon.MouseButton1Click, function()
-		Window.Minimized = not Window.Minimized
+		Window:Toggle()
 		if Window.Minimized then
 			Creator:AddThemeObject(Tab.Instance.Icon, { TextColor3 = "PrimaryText" }, MenuModule.Library)
 			services.TweenService:Create(
@@ -146,7 +144,6 @@ function MenuModule.Update(Window)
 				TweenInfo.new(0.4, Enum.EasingStyle.Exponential),
 				{ BackgroundTransparency = 1 }
 			)
-			utilities:Hide(Window.Instance)
 		else
 			Creator:AddThemeObject(Tab.Instance.Icon, { TextColor3 = "Accent" }, MenuModule.Library)
 			services.TweenService:Create(
@@ -154,7 +151,6 @@ function MenuModule.Update(Window)
 				TweenInfo.new(0.4, Enum.EasingStyle.Exponential),
 				{ BackgroundTransparency = 0.8 }
 			)
-			utilities:Unhide(Window.Instance)
 		end
 	end)
 

@@ -13,6 +13,8 @@ local Themes = require("@self/Themes")
 local _Elements = require("@self/Elements")
 local Enums = require("@self/Utilities/Enums")
 
+local binder = require("@self/Packages/binder")
+
 local GUI = Creator:New("ScreenGui", {
 	Name = "Starlight Interface Suite",
 })
@@ -37,14 +39,12 @@ local Library = {
 	KeybindListActive = false,
 
 	Keybind = Enum.KeyCode.Insert,
-	RegisteredKeybinds = {
-		--[[ EXAMPLE
-		["titan ripper"] = {
-			Keybind = Enum.KeyCode.Ampersand,
-			Mode = Enums.KeybindTypes.Toggle,
-			Active = false,
-		}
-		]]
+	RegisteredKeybinds = {} :: {
+		[string]: {
+			Keybind: Enum.KeyCode,
+			Mode: Enums.KeybindType,
+			Active: boolean,
+		},
 	},
 	DPIScale = 1,
 
@@ -62,8 +62,51 @@ local Library = {
 	Creator = Creator,
 	ImageManager = imageparser,
 	Enums = Enums,
+	Services = services,
+	UtilityLibrary = utilities,
 	ComponentLibrary = Components,
 }
+Library = binder.Wrap(Library, {
+	CurrentTheme = function(Value)
+		if typeof(Value) == "string" then
+			if Themes[Value] ~= nil then
+				Creator:UpdateTheme()
+			end
+		elseif typeof(Value) == "table" then
+			for i, v in pairs(Value) do
+				if Value[i] == nil then
+					Value[i] = v
+				end
+			end
+		end
+	end,
+	DPIScale = function(Value)
+		GUI["DPIScale"].Scale = Value
+	end,
+	IsMinimized = function(Value)
+		if not Value then
+			Library.Backgrounds.Snowfall.Visible = true
+			Library.Backgrounds.Darkener.Visible = true
+			Library.Backgrounds.Blur.Enable()
+			Components.Menu.Instance.Visible = true
+			for _, Window in pairs(Library.Windows) do
+				if not Window.Minimized then
+					Window.Instance.Visible = true
+				end
+			end
+		else
+			Library.Backgrounds.Snowfall.Visible = false
+			Library.Backgrounds.Darkener.Visible = false
+			Library.Backgrounds.Blur.Disable()
+			Components.Menu.Instance.Visible = false
+			for _, Window in pairs(Library.Windows) do
+				if Window.IsBypassLibraryMinimized then continue end
+				Window.Instance.Visible = false
+			end
+		end
+	end,
+})
+
 imageparser.Library = Library
 
 -- order to create your script
@@ -112,16 +155,11 @@ function Library:CreateWindow(Config: {
 	Icon: string | number,
 
 	MinimizeKey: Enum.KeyCode,
-	InitialDPIScale: number,
 
 	Discord: {
 		Enabled: boolean,
 		Invite: string,
 		RememberJoins: boolean,
-	},
-
-	Theme: string | {
-		[any]: Color3,
 	},
 })
 	if Library.HasKeySystem then
@@ -142,8 +180,18 @@ function Library:CreateWindow(Config: {
 	local Window = Components.MainWindow(Config, Library)
 
 	Library.Windows.MainWindow = Window
-	Library:SetTheme(Config.Theme)
-	Library:SetDPIScale(Config.InitialDPIScale or 1)
+	if Config.Theme then
+		warn(
+			"Starlight Interface Suite | Deprecated Arguments\nIncluding the Theme argument in your window, while works, is superseded by directly setting the CurrentTheme property of the Starlight Module. Consider Switching to that."
+		)
+		Library.CurrentTheme = Config.Theme
+	end
+	if Config.InitialDPIScale then
+		warn(
+			"Starlight Interface Suite | Deprecated Arguments\nIncluding the DPI Scale argument in your window, while works, is superseded by directly setting the DPIScale property of the Starlight Module. Consider Switching to that."
+		)
+		Library.DPIScale = Config.InitialDPIScale
+	end
 
 	if Config.Discord and Config.Discord.Enabled then
 		utilities:RecursiveCreatePath(`{Library.FileSystem.Folder}/Discord Invites/`, false)
@@ -183,24 +231,66 @@ function Library:CreateWindow(Config: {
 	return Window
 end
 
-function Library:CreateSubWindow(_Config: {
-	Title: string,
-	Tags: {
-		[any]: {
-			Title: string,
-			Color: Color3,
-		},
-	}?,
-	Template: Enums.SubWindowType,
-	TemplateOptions: {
-		[any]: any,
-	},
-})
+function Library:CreateSubWindow(
+	Config: {
+		Title: string,
+		Icon: number | string,
+
+		Template: Enums.SubWindowType,
+		TemplateOptions: {
+			-- CREDITS
+			Subtitle: string,
+			Cards: {
+				[any]: {
+					Name: string,
+					Description: string,
+					Tag: {
+						Title: string,
+						Color: Color3,
+					},
+				},
+			},
+		} | {
+			-- ESP Preview
+			Type: EspItemType?,
+			ID: number?,
+			Position: Vector3?,
+		} | {
+			-- GridPicker
+			Items: {
+				[any]: {
+					ID: any,
+					Image: number | string, -- will support viewports etc in the future
+				},
+			},
+			Callback: (ID: any) -> nil,
+			AllowResize: boolean?,
+			Size: UDim2?,
+		} | {
+			-- Custom
+			AllowResize: boolean?,
+			Size: UDim2?,
+			StayOpenWhenDisabled: boolean?,
+		}?,
+	}
+)
+	if Config.Template == nil then
+		Config.Template = Enums.SubWindowTypes.Custom
+	end
+
 	if Library.HasKeySystem then
 		while not Library.IsKeyDone do
 			task.wait()
 		end
 	end
+
+	local Window = Components.Window(Config, Library)
+
+	table.insert(Library.Windows, Window)
+
+	Components.Menu.Update(Window)
+
+	return Window
 end
 
 function Library:AddKeySystem(
@@ -244,51 +334,9 @@ function Library:Notify(...)
 	return Components.Notification:Notify(...)
 end
 
-function Library:SetTheme(Value)
-	if typeof(Value) == "string" then
-		if Themes[Value] ~= nil then
-			self.CurrentTheme = Themes[Value]
-			Creator:UpdateTheme()
-		end
-	elseif typeof(Value) == "table" then
-		for i, v in pairs(Library.CurrentTheme) do
-			if Value[i] == nil then
-				Value[i] = v
-			end
-		end
-		self.CurrentTheme = Value
-	end
-end
-
-function Library:SetDPIScale(Value: number)
-	self.DPIScale = Value
-	GUI["DPIScale"].Scale = self.DPIScale
-end
-
-function Library:Toggle(toBlur, toDarken, toSnow)
-	if Library.IsMinimized then
-		Library.Backgrounds.Snowfall.Visible = toSnow
-		Library.Backgrounds.Darkener.Visible = toDarken
-		if toBlur then
-			Library.Backgrounds.Blur.Enable()
-		end
-		--tba: menu toggle
-		for _, Window in pairs(Library.Windows) do
-			if not Window.Minimized then
-				Window.Instance.Visible = true
-			end
-		end
-		Library.IsMinimized = false
-	else
-		Library.Backgrounds.Snowfall.Visible = false
-		Library.Backgrounds.Darkener.Visible = false
-		Library.Backgrounds.Blur.Disable()
-		--tba: menu toggle
-		for _, Window in pairs(Library.Windows) do
-			Window.Instance.Visible = false
-		end
-		Library.IsMinimized = true
-	end
+@[deprecated { use="= to set the state directly" }]
+function Library:Toggle()
+	Library.IsMinimized = not Library.IsMinimized
 end
 
 function Library:ToggleWatermark(b: boolean?)
@@ -315,6 +363,12 @@ function Library:Unload()
 	self:Destroy()
 end
 
+if Library.SecureMode then
+	getrenv().error = function() end
+	getrenv().warn = function() end
+	getrenv().print = function() end
+	-- future protection calls tba
+end
 if getgenv then
 	getgenv().Starlight = Library
 end

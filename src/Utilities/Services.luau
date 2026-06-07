@@ -1,4 +1,8 @@
 local function cast(service: string): any
+	-- no clue how vim gets detected BUT this apparently fixes it
+	if service == "VirtualInputManager" then
+		return Instance.new("VirtualInputManager")
+	end
 	return (cloneref and cloneref(game:GetService(service))) or game:GetService(service)
 end
 

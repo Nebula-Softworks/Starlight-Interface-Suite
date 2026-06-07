@@ -206,7 +206,7 @@ return function(
 					ThemeData = {
 						BackgroundColor3 = "ElementBackground",
 					},
-					Position = UDim2.fromOffset(0, 47),
+					Position = UDim2.fromOffset(0, 0),
 					Size = UDim2.new(0.492, 0, 0, 28),
 					ZIndex = 21,
 				}, {
@@ -271,7 +271,7 @@ return function(
 					ThemeData = {
 						BackgroundColor3 = "ElementBackground",
 					},
-					Position = UDim2.fromOffset(1, 47),
+					Position = UDim2.fromOffset(1, 0),
 					Size = UDim2.new(0.492, 0, 0, 28),
 					ZIndex = 21,
 				}, {

@@ -46,6 +46,7 @@ return function(
 		),
 
 		Minimized = false,
+		IsBypassLibraryMinimized = false,
 
 		Config = Config,
 	}

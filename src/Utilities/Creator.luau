@@ -14,6 +14,7 @@ local Creator = {
 			BorderSizePixel = 0,
 		},
 		ScrollingFrame = {
+			BorderSizePixel = 0,
 			AutomaticCanvasSize = Enum.AutomaticSize.Y,
 			CanvasSize = UDim2.fromScale(0, 0),
 			ScrollBarThickness = 0,
@@ -72,6 +73,9 @@ local Creator = {
 		UIListLayout = {
 			SortOrder = Enum.SortOrder.LayoutOrder,
 		},
+		UIGridLayout = {
+			SortOrder = Enum.SortOrder.LayoutOrder,
+		}
 		UIPageLayout = {
 			GamepadInputEnabled = false,
 			ScrollWheelInputEnabled = false,
@@ -85,7 +89,7 @@ function Creator:AddSignal(Signal, Function)
 	return functions:GiveSignal(Creator, Signal:Connect(Function))
 end
 
-function Creator:RemoveSignal(Connection: Connection)
+function Creator:RemoveSignal(Connection: RBXScriptConnection)
 	table.remove(Creator.Signals, table.find(Creator.Signals, Connection))
 	Connection:Disconnect()
 end

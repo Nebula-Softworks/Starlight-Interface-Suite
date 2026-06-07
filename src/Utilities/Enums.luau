@@ -3,6 +3,7 @@ export type GroupboxColumn = number
 export type KeyService = number
 export type KeybindType = number
 export type GetKeyType = number
+export type EspItemType = number
 
 export type SubWindowTypes = {
 	Custom: SubWindowType,
@@ -36,13 +37,19 @@ export type GetKeyTypes = {
 	Link: GetKeyType,
 }
 
+export type EspItemTypes = {
+	Player: EspItemType,
+	Fixed: EspItemType,
+	Custom: EspItemType,
+}
+
 return {
 
 	SubWindowTypes = {
-		Custom = 1,
+		Custom = 0,
+		Credits = 1,
 		GridPicker = 2,
 		ESPPreview = 3,
-		Credits = 0,
 	},
 
 	GroupboxColumns = {
@@ -68,5 +75,11 @@ return {
 	GetKeyTypes = {
 		Discord = 0,
 		Link = 1,
+	},
+
+	EspItemTypes = {
+		Player = 0,
+		Fixed = 1,
+		Custom = 2,
 	},
 }
