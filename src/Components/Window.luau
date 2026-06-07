@@ -2,13 +2,7 @@ local binder = require("../Packages/binder")
 local services = require("../Utilities/Services")
 local Creator = require("../Utilities/Creator")
 local utilities = require("../Utilities")
-local Components = require("./")
 local Enums = require("../Utilities/Enums")
-
--- elements to have GetPropertyChangedSignal on Zindex and follow suit when the window changes
-
--- return the window table in esp preview. in twilight upd, add a starlight component for compatability. itll be like player esp (self), but instead of world to viewport point, itll js take the viewport frame abspos
--- meanwhile here, get the model by doing workspace:FindFirstChild(services.LocalPlayer.Name)
 
 return function(
 	Config: {
@@ -31,7 +25,7 @@ return function(
 			},
 		} | {
 			-- ESP Preview
-			Type: EspItemType?,
+			Type: Enums.EspItemType?,
 			ID: number?,
 			Position: Vector3?,
 		} | {

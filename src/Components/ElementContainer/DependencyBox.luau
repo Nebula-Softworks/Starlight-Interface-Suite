@@ -1,4 +1,5 @@
 local Components = require("../../Components")
+local binder = require("../../Packages/binder")
 local Creator = require("../../Utilities/Creator")
 
 return function(state: { [any]: boolean }, autoUpdate, Library)
@@ -32,13 +33,11 @@ return function(state: { [any]: boolean }, autoUpdate, Library)
 	DependencyBox:UpdateVisbility()
 
 	if autoUpdate then
-		-- not recommended
-		-- instead, you should honestly just call UpdateVisibility manually in like ur toggle callback or sm
-		task.spawn(function()
-			while task.wait(0.2) do
+		state = binder.Wrap(state, {
+			Value = function()
 				DependencyBox:UpdateVisbility()
-			end
-		end)
+			end,
+		})
 	end
 
 	return DependencyBox

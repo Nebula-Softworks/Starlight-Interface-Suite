@@ -75,7 +75,7 @@ local Creator = {
 		},
 		UIGridLayout = {
 			SortOrder = Enum.SortOrder.LayoutOrder,
-		}
+		},
 		UIPageLayout = {
 			GamepadInputEnabled = false,
 			ScrollWheelInputEnabled = false,

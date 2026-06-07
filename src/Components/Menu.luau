@@ -1,6 +1,5 @@
 local services = require("../Utilities/Services")
 local Creator = require("../Utilities/Creator")
-local utilities = require("../Utilities")
 local imageparser = require("../Utilities/ImageParser")
 
 local MenuModule = {

@@ -99,10 +99,5 @@ return function(Title: string, Tabbox, Library)
 		Tab.Instances.Navigator.Text = newTitle
 	end
 
-	-- user method
-	---- select change themetag instead of having grey label
-	---- update sizing method inside
-	-- bind click to select
-
 	return Tab
 end
