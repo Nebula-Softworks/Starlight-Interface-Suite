@@ -4,7 +4,7 @@ local utilities = require("../Utilities")
 local Components = require("./")
 
 local module = {
-	IsKeybindList = true,
+	IsBypassLibraryMinimized = true,
 	Icon = 72407002146102,
 }
 local New = function(Class, Properties, Children)
