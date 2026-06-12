@@ -11,8 +11,6 @@
 
 **Starlight, Simply Better than Others.**  
 
-</div>
-
 [stars]: https://github.com/Nebula-Softworks/Starlight-Interface-Suite/stargazers
 [lastrel]: https://github.com/Nebula-Softworks/Starlight-Interface-Suite/releases/latest
 [lastcom]: https://github.com/Nebula-Softworks/Starlight-Interface-Suite/commits
@@ -29,14 +27,20 @@
 ## The Pitch
 Starlight is an open-sourced, retained-mode, user-centric Full Interface Suite designed to be both easy for developers and beautiful for users. Its API is fully typed, so once you learn one component, you can use 99% of the rest without needing to reference the documentation. Being packed with accesible and useful libraries for developers, Starlight will contain almost every function you need for your scripting experience. When paired with Twilight, you will most likely never need another utility library present in your script.
 
-### Why Starlight?  
-- Sexy Design
-- Reliable
-- Production Ready
-- Open Sourced
-- Batteries Included
-- Actively Developed
-  
+### Why Starlight? 
+
+●  Sexy Design  
+
+●  Reliable  
+
+●  Production Ready  
+
+●  Open Sourced  
+
+●  Batteries Included  
+
+●  Actively Developed  
+
 ## Preview
 ![Image](./assets/Preview.png?raw=true)
   
@@ -59,7 +63,6 @@ Feel free to commit changes, and modify the code to your liking.
 If you are contributing to our ecosystem, you can either create a pull request including a commit(s) of your change **OR** you may create your changes in an addon/plugin. Commit and create a pull request with your addon in the `addons/` folder. The addon method is great for implementing a separate feature that may not be universally useful but will be in handy in certain
   
 ### How To Compile Your Changes?
-> [!note]
 > You Will Need Performant Node Package Manager (pnpm)  
 
 Open the repo in your VSC Workspace OR Open the repo in Powershell/Command Prompt.  
@@ -105,3 +108,4 @@ seaofvoices & Lune - Compiler
 ## Start Now, Use the Greater Library
   
 > Copyright © 2025-2026 Nebula Softworks. All rights reserved.
+</div>
