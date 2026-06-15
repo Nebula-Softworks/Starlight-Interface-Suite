@@ -1,0 +1,1 @@
+-- Global Chat using your script API Token

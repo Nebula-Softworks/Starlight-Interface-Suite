@@ -1,3 +1,4 @@
+local binder = require("@packages/binder")
 local Components = require("../Components")
 local Creator = require("../Utilities/Creator")
 local Enums = require("../Utilities/Enums")
@@ -23,6 +24,8 @@ return function(
 	end
 
 	local Tabbox = {
+		Type = "TABBOX",
+
 		Column = TabboxConfig.Column,
 		Instance = nil,
 		Config = TabboxConfig,
@@ -30,7 +33,7 @@ return function(
 		Tabs = {},
 	}
 
-	Groupbox.Instance = New("Frame", {
+	Tabbox.Instance = New("Frame", {
 		Name = "Tabbox",
 		AutomaticSize = Enum.AutomaticSize.Y,
 		BackgroundTransparency = 1,
@@ -110,6 +113,9 @@ return function(
 			}),
 		}),
 	})
+	Tabbox = binder.Wrap(Tabbox, {}, nil, {
+		"Type",
+	})
 
 	Creator:AddSignal(Library.Windows.MainWindow.Instance:GetPropertyChangedSignal("ZIndex"), function()
 		-- updating ZIndex cus fuck you roblox Shadows don't work on Sibling ZIndex. fuck u fuck u fuck u roblox
@@ -148,12 +154,6 @@ return function(
 	for _, Tab in ipairs(Tabbox.Tabs) do
 		Tabbox:CreateTab(Tab, true)
 	end
-
-	-- finish creation
-	-- do zindex
-	-- do tabs
-	-- do zindex
-	-- commit
 
 	return Tabbox
 end

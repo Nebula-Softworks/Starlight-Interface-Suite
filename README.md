@@ -40,6 +40,8 @@ Starlight is an open-sourced, retained-mode, user-centric Full Interface Suite d
 ●  Batteries Included  
 
 ●  Actively Developed  
+<!--
+>Includes Custom Premium Models, Automatic Translation, Developer Analytics, And Functions to help you develop your script.  -->
 
 ## Preview
 ![Image](./assets/Preview.png?raw=true)
@@ -100,7 +102,9 @@ If you'd like to help fund and support the project, consider donating via any of
   
 ## Credits
 Nebula Softworks - Design And Programming  
-biggaboy212 - Binder Module used for updating tables
+biggaboy212 - Binder Module used for updating tables  
+dawid-scripts - Project Layout   
+7kayoh - Acrylic Module  
 <!--cyclic@luau.software - Helping With Some Project Setup-->
 seaofvoices & Lune - Compiler  
   

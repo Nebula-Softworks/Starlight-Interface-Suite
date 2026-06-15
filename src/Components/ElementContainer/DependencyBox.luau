@@ -1,5 +1,5 @@
 local Components = require("../../Components")
-local binder = require("../../Packages/binder")
+local binder = require("@packages/binder")
 local Creator = require("../../Utilities/Creator")
 
 return function(state: { [any]: boolean }, autoUpdate, Library)

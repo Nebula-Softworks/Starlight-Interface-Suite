@@ -335,106 +335,130 @@ return function(
 		utilities:MakeDraggable(KeyWindow.Topbar, KeyWindow)
 
 		Creator:AddSignal((KeyWindow.Holder.GetKey :: Frame).MouseEnter, function()
-			services.TweenService:Create(
-				KeyWindow.Holder.GetKey.HoverFX.Brighten,
-				TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
-				{
-					BackgroundTransparency = 0.95,
-				}
-			)
-			services.TweenService:Create(
-				KeyWindow.Holder.GetKey.HoverFX.Underline,
-				TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
-				{
-					Size = UDim2.new(1, 0, 0, 2),
-				}
-			)
+			services.TweenService
+				:Create(
+					KeyWindow.Holder.GetKey.HoverFX.Brighten,
+					TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
+					{
+						BackgroundTransparency = 0.95,
+					}
+				)
+				:Play()
+			services.TweenService
+				:Create(
+					KeyWindow.Holder.GetKey.HoverFX.Underline,
+					TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
+					{
+						Size = UDim2.new(1, 0, 0, 2),
+					}
+				)
+				:Play()
 		end)
 		Creator:AddSignal((KeyWindow.Holder.GetKey :: Frame).MouseLeave, function()
-			services.TweenService:Create(
-				KeyWindow.Holder.GetKey.HoverFX.Brighten,
-				TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
-				{
-					BackgroundTransparency = 1,
-				}
-			)
-			services.TweenService:Create(
-				KeyWindow.Holder.GetKey.HoverFX.Underline,
-				TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
-				{
-					Size = UDim2.fromOffset(0, 2),
-				}
-			)
+			services.TweenService
+				:Create(
+					KeyWindow.Holder.GetKey.HoverFX.Brighten,
+					TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
+					{
+						BackgroundTransparency = 1,
+					}
+				)
+				:Play()
+			services.TweenService
+				:Create(
+					KeyWindow.Holder.GetKey.HoverFX.Underline,
+					TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
+					{
+						Size = UDim2.fromOffset(0, 2),
+					}
+				)
+				:Play()
 		end)
 
 		Creator:AddSignal((KeyWindow.Holder.VerifyKey :: Frame).MouseEnter, function()
-			services.TweenService:Create(
-				KeyWindow.Holder.VerifyKey.HoverFX.Brighten,
-				TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
-				{
-					BackgroundTransparency = 0.95,
-				}
-			)
-			services.TweenService:Create(
-				KeyWindow.Holder.VerifyKey.HoverFX.Underline,
-				TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
-				{
-					Size = UDim2.new(1, 0, 0, 2),
-				}
-			)
+			services.TweenService
+				:Create(
+					KeyWindow.Holder.VerifyKey.HoverFX.Brighten,
+					TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
+					{
+						BackgroundTransparency = 0.95,
+					}
+				)
+				:Play()
+			services.TweenService
+				:Create(
+					KeyWindow.Holder.VerifyKey.HoverFX.Underline,
+					TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
+					{
+						Size = UDim2.new(1, 0, 0, 2),
+					}
+				)
+				:Play()
 		end)
 		Creator:AddSignal((KeyWindow.Holder.VerifyKey :: Frame).MouseLeave, function()
-			services.TweenService:Create(
-				KeyWindow.Holder.VerifyKey.HoverFX.Brighten,
-				TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
-				{
-					BackgroundTransparency = 1,
-				}
-			)
-			services.TweenService:Create(
-				KeyWindow.Holder.VerifyKey.HoverFX.Underline,
-				TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
-				{
-					Size = UDim2.fromOffset(0, 2),
-				}
-			)
+			services.TweenService
+				:Create(
+					KeyWindow.Holder.VerifyKey.HoverFX.Brighten,
+					TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
+					{
+						BackgroundTransparency = 1,
+					}
+				)
+				:Play()
+			services.TweenService
+				:Create(
+					KeyWindow.Holder.VerifyKey.HoverFX.Underline,
+					TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
+					{
+						Size = UDim2.fromOffset(0, 2),
+					}
+				)
+				:Play()
 		end)
 
 		Creator:AddSignal((KeyWindow.Holder.Input :: Frame).MouseEnter, function()
-			services.TweenService:Create(
-				KeyWindow.Holder.Input.HoverFX.Brighten,
-				TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
-				{
-					BackgroundTransparency = 0.95,
-				}
-			)
+			services.TweenService
+				:Create(
+					KeyWindow.Holder.Input.HoverFX.Brighten,
+					TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
+					{
+						BackgroundTransparency = 0.95,
+					}
+				)
+				:Play()
 		end)
 		Creator:AddSignal((KeyWindow.Holder.Input :: Frame).MouseLeave, function()
-			services.TweenService:Create(
-				KeyWindow.Holder.Input.HoverFX.Brighten,
-				TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
-				{
-					BackgroundTransparency = 1,
-				}
-			)
+			services.TweenService
+				:Create(
+					KeyWindow.Holder.Input.HoverFX.Brighten,
+					TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
+					{
+						BackgroundTransparency = 1,
+					}
+				)
+				:Play()
 		end)
 		Creator:AddSignal((KeyWindow.Holder.Input :: Frame).Focused, function()
-			services.TweenService:Create(
-				KeyWindow.Holder.Input.HoverFX.Underline,
-				TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
-				{
-					Size = UDim2.new(1, 18, 0, 2),
-				}
-			)
+			services.TweenService
+				:Create(
+					KeyWindow.Holder.Input.HoverFX.Underline,
+					TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
+					{
+						Size = UDim2.new(1, 18, 0, 2),
+					}
+				)
+				:Play()
 		end)
 		Creator:AddSignal((KeyWindow.Holder.Input :: Frame).FocusLost, function()
-			services.TweenService:Create(
-				KeyWindow.Holder.Input.HoverFX.Underline,
-				TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
-				{
-					Size = UDim2.fromOffset(0, 2),
-				}
-			)
+			services.TweenService
+				:Create(
+					KeyWindow.Holder.Input.HoverFX.Underline,
+					TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
+					{
+						Size = UDim2.fromOffset(0, 2),
+					}
+				)
+				:Play()
 		end)
 
 		Creator:AddSignal(KeyWindow.Holder.GetKey.Interact.MouseButton1Click, function()

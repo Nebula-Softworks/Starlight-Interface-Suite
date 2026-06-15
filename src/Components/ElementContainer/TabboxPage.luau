@@ -68,11 +68,13 @@ return function(Title: string, Tabbox, Library)
 		Tabbox.Instance.PART_Content.UIPageLayout:JumpTo(Tab.Instances.Page)
 		Tabbox.SelectedTab = Tab
 		Creator:AddThemeObject(Tab.Instances.Navigator, { BackgroundColor3 = "Accent", TextColor3 = "Accent" }, Library)
-		services.TweenService:Create(
-			Tab.Instances.Navigator,
-			TweenInfo.new(0.4, Enum.EasingStyle.Exponential),
-			{ BackgroundTransparency = 0.8 }
-		)
+		services.TweenService
+			:Create(
+				Tab.Instances.Navigator,
+				TweenInfo.new(0.4, Enum.EasingStyle.Exponential),
+				{ BackgroundTransparency = 0.8 }
+			)
+			:Play()
 		for _, OtherTab in pairs(Tabbox.Tabs) do
 			if OtherTab == Tab then
 				continue
@@ -82,11 +84,13 @@ return function(Title: string, Tabbox, Library)
 				{ BackgroundColor3 = "Accent", TextColor3 = "PrimaryText" },
 				Library
 			)
-			services.TweenService:Create(
-				Tab.Instances.Navigator,
-				TweenInfo.new(0.4, Enum.EasingStyle.Exponential),
-				{ BackgroundTransparency = 1 }
-			)
+			services.TweenService
+				:Create(
+					Tab.Instances.Navigator,
+					TweenInfo.new(0.4, Enum.EasingStyle.Exponential),
+					{ BackgroundTransparency = 1 }
+				)
+				:Play()
 		end
 		Tabbox:UpdateSize()
 	end

@@ -1,7 +1,3 @@
--- function addtooltipinteraction()
-
--- end
-
--- function addtooltipinstance()
-
+-- function addtooltip(hoverobject)
+--
 -- end

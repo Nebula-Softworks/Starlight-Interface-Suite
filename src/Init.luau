@@ -1,4 +1,3 @@
-
 local services = require("@self/Utilities/Services")
 local utilities = require("@self/Utilities")
 local imageparser = require("@self/Utilities/ImageParser")
@@ -8,7 +7,7 @@ local Themes = require("@self/Themes")
 local _Elements = require("@self/Elements")
 local Enums = require("@self/Utilities/Enums")
 
-local binder = require("@self/Packages/binder")
+local binder = require("@packages/binder")
 
 local GUI = Creator:New("ScreenGui", {
 	Name = "Starlight Interface Suite",
@@ -54,6 +53,7 @@ local Library = {
 	},
 
 	KeybindMaps = require("@self/Utilities/KeybindMaps"),
+	Binder = binder,
 	Creator = Creator,
 	ImageManager = imageparser,
 	Enums = Enums,
@@ -95,7 +95,9 @@ Library = binder.Wrap(Library, {
 			Library.Backgrounds.Blur.Disable()
 			Components.Menu.Instance.Visible = false
 			for _, Window in pairs(Library.Windows) do
-				if Window.IsBypassLibraryMinimized then continue end
+				if Window.IsBypassLibraryMinimized then
+					continue
+				end
 				Window.Instance.Visible = false
 			end
 		end
@@ -322,14 +324,17 @@ function Library:AddKeySystem(
 	Library.HasKeySystem = true
 
 	local KeySys = Components.KeySystem(Config, Library)
-	return KeySys
+	return binder.Wrap({
+		Type = "KEY_SYSTEM",
+	}, {}, KeySys, { "Type" })
 end
 
 function Library:Notify(...)
-	return Components.Notification:Notify(...)
+	return binder.Wrap({
+		Type = "NOTIFICATION",
+	}, {}, Components.Notification:Notify(...), { "Type" })
 end
 
-@[deprecated { use="= to set the state directly" }]
 function Library:Toggle()
 	Library.IsMinimized = not Library.IsMinimized
 end

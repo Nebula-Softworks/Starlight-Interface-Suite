@@ -1,4 +1,4 @@
-local binder = require("../Packages/binder")
+local binder = require("@packages/binder")
 local services = require("../Utilities/Services")
 local Creator = require("../Utilities/Creator")
 local utilities = require("../Utilities")
@@ -75,6 +75,8 @@ return function(
 
 	if Config.Template == Enums.SubWindowTypes.Credits then
 		local Window = {
+			Type = "SUBWINDOW_CREDITS",
+
 			Minimized = false,
 			IsBypassLibraryMinimized = false,
 			Instance = nil,
@@ -219,6 +221,9 @@ return function(
 			Title = function(Value)
 				Window.Instance.Topbar.LeftSide.TextLabel.Text = Value
 			end,
+		})
+		Window = binder.Wrap(Window, {}, nil, {
+			"Type",
 		})
 
 		for _, card in ipairs(Config.TemplateOptions.Cards) do
@@ -458,6 +463,8 @@ return function(
 		end
 
 		local Window = {
+			Type = "SUBWINDOW_ESP",
+
 			Minimized = false,
 			IsBypassLibraryMinimized = false,
 
@@ -582,6 +589,9 @@ return function(
 				Window.Instance.Topbar.LeftSide.TextLabel.Text = Value
 			end,
 		})
+		Window = binder.Wrap(Window, {}, nil, {
+			"Type",
+		})
 
 		local oldwin = Window.Config.TemplateOptions
 		Window.Config.TemplateOptions = binder.Wrap(Window.Config.TemplateOptions, {
@@ -696,6 +706,8 @@ return function(
 		return Window
 	else
 		local Window = {
+			Type = "SUBWINDOW",
+
 			Minimized = false,
 			IsBypassLibraryMinimized = Config.TemplateOptions.IsBypassLibraryMinimized or false,
 
@@ -828,6 +840,9 @@ return function(
 			Size = function(Value)
 				Window.Instance.Size = Value or UDim2.fromOffset(500, 500)
 			end,
+		})
+		Window = binder.Wrap(Window, {}, nil, {
+			"Type",
 		})
 
 		utilities:MakeDraggable(Window.Instance.Topbar, Window.Instance)

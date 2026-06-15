@@ -1,5 +1,7 @@
 {
   "aliases": {
-    "lune": "~/.lune/.typedefs/0.10.4/"
+    "lune": "~/.lune/.typedefs/0.10.4/",
+    "packages": "./src/Packages",
+    "types": "./src/types.luau"
   }
 }

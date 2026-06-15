@@ -1,9 +1,9 @@
 std = "roblox"
 [lints]
 global_usage = "allow"
+parse_error = "allow"
 incorrect_standard_library_use = "allow" 
 undefined_variable = "allow"
 unscoped_variables = "allow"
 deprecated = "allow"
 shadowing = "allow"
-parse_error = "allow"

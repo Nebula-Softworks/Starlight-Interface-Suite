@@ -1,3 +1,4 @@
+local binder = require("@packages/binder")
 local services = require("../Utilities/Services")
 local Creator = require("../Utilities/Creator")
 local utilities = require("../Utilities")
@@ -37,6 +38,8 @@ return function(
 	end
 	local Size = UDim2.fromOffset(560, 750)
 	local Window = {
+		Type = "WINDOW",
+
 		Instance = nil,
 		Tabs = {},
 		CurrentSize = Size,
@@ -50,6 +53,9 @@ return function(
 
 		Config = Config,
 	}
+	Window = binder.Wrap(Window, {}, nil, {
+		"Type",
+	})
 
 	-- this exists cus I am so fucking tired of passing Library into the Creator function. Fuck you cyclic module dependency errors
 	local New = function(Class, Properties, Children)

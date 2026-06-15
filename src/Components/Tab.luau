@@ -1,3 +1,4 @@
+local binder = require("@packages/binder")
 local services = require("../Utilities/Services")
 local Creator = require("../Utilities/Creator")
 local Components = require("../Components")
@@ -27,6 +28,8 @@ end
 function TabModule:New(Title: string)
 	TabModule.TabCount += 1
 	local Tab = {
+		Type = "TAB",
+
 		Title = Title,
 		Instances = {
 			Navigator = nil,
@@ -35,6 +38,9 @@ function TabModule:New(Title: string)
 		Boxes = {},
 		TabIndex = TabModule.TabCount,
 	}
+	Tab = binder.Wrap(Tab, {}, nil, {
+		"Type",
+	})
 
 	Tab.Instances.Navigator = New("TextButton", {
 		Name = "Tab_" .. Title,
@@ -282,27 +288,33 @@ end
 
 function TabModule:SelectTab(Tab)
 	TabModule.CurrentTab = Tab
-	services.TweenService:Create(
-		Tab.Instances.Navigator.TextLabel,
-		TweenInfo.new(0.4, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut),
-		{ TextTransparency = 0 }
-	)
+	services.TweenService
+		:Create(
+			Tab.Instances.Navigator.TextLabel,
+			TweenInfo.new(0.4, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut),
+			{ TextTransparency = 0 }
+		)
+		:Play()
 	for _, OtherTab in pairs(TabModule.Window.Tabs) do
 		if OtherTab == Tab then
 			continue
 		end
 
-		services.TweenService:Create(
-			OtherTab.Instances.Navigator.TextLabel,
-			TweenInfo.new(0.4, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut),
-			{ TextTransparency = 1 }
-		)
+		services.TweenService
+			:Create(
+				OtherTab.Instances.Navigator.TextLabel,
+				TweenInfo.new(0.4, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut),
+				{ TextTransparency = 1 }
+			)
+			:Play()
 	end
-	services.TweenService:Create(
-		TabModule.Window.Instance.TabBar.ActiveIndicator,
-		TweenInfo.new(0.4, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut),
-		{ Position = UDim2.fromOffset(TabModule:GetCurrentTabXPos(), 1) }
-	)
+	services.TweenService
+		:Create(
+			TabModule.Window.Instance.TabBar.ActiveIndicator,
+			TweenInfo.new(0.4, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut),
+			{ Position = UDim2.fromOffset(TabModule:GetCurrentTabXPos(), 1) }
+		)
+		:Play()
 	TabModule.Window.Instance.Content.UIPageLayout:JumpTo(Tab.Instances.Page)
 end
 

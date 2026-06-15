@@ -67,7 +67,7 @@ function module:IsDragInput(Input: InputObject, IncludeM2: boolean?)
 		and (Input.UserInputState == Enum.UserInputState.Begin or Input.UserInputState == Enum.UserInputState.Change)
 end
 
-@[deprecated {use="#array", reason="i was fucking high or sm when i made this :sob:"}]
+-- deprecated {use="#array", reason="i was fucking high or sm when i made this :sob:"}]
 function module:GetTableSize(Table: { [any]: any })
 	local Size = 0
 
@@ -159,7 +159,7 @@ function module:SafeCallback(Func: (...any) -> ...any, ...: any)
 		task.spawn(error, "Starlight Interface Suite - Callback Error Occured")
 		warn("Function Errored: " .. tostring(Func))
 		print("Response: " .. Response)
-		return nil
+		return false
 	else
 		return Response
 	end

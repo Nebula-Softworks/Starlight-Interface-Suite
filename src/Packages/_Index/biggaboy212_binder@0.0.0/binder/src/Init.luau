@@ -18,7 +18,7 @@ function binder.Wrap(
 	object: { [string]: any },
 	bindings: { [string]: (any) -> () } | (any) -> (),
 	instance: Instance?,
-	excludeSets: { [number]: any }?
+	readOnlys: { [number]: any }?
 ): any
 	local proxy = {}
 
@@ -44,20 +44,19 @@ function binder.Wrap(
 
 			if handler then
 				handler(value)
-
-				if not (excludeSets and table.find(excludeSets, key)) then
-					object[key] = value
-				end
-			elseif instance then
+			end
+			if instance then
 				local ok, _ = pcall(function()
 					instance[key] = value
 				end)
 
-				if not ok then
+				if not ok and not (readOnlys and table.find(readOnlys, key)) then
 					object[key] = value
 				end
 			else
-				object[key] = value
+				if not (readOnlys and table.find(readOnlys, key)) then
+					object[key] = value
+				end
 			end
 		end,
 	})
