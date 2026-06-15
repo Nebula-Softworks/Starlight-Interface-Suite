@@ -53,8 +53,8 @@ Prior to the Generation 2 Revamp, Starlight was a singular source file.
   
   
 ## Installation and Usage
-Reference the [Starlight Documentation](https://docs.nebulasoftworks.xyz/starlight) for installation guides and the API Reference.  
-> Using Starlight Gen1 before the Revamp? Visit the [Legacy Documentation](https://docs-legacy.nebulasoftworks.xyz/starlight).
+Reference the [Starlight Documentation](https://starlight.best) for installation guides and the API Reference.  
+> Using Starlight Gen1 before the Revamp? Visit the [Legacy Documentation](https://docs.nebulasoftworks.xyz/starlight).
   
 
 ## Editing the project
