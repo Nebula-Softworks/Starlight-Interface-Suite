@@ -22,7 +22,7 @@ function MenuModule.Init(Library)
 		Modal = true,
 		Position = UDim2.new(0.5, 0, 0, 12),
 		Size = UDim2.fromOffset(12, 42),
-		ZIndex = 2147483645,
+		ZIndex = 999999999,
 		ThemeData = {
 			BackgroundColor3 = "WindowBackground",
 		},
@@ -51,21 +51,21 @@ function MenuModule.Init(Library)
 		}, {
 			New("AntumbraShadow", {
 				Size = UDim2.fromScale(1.34, 1.34),
-				ZIndex = 2147483644,
+				ZIndex = 999999998,
 				ThemeData = {
 					ImageColor3 = "Shadow",
 				},
 			}),
 			New("PenumbraShadow", {
 				Size = UDim2.fromScale(1.25, 1.25),
-				ZIndex = 2147483644,
+				ZIndex = 999999998,
 				ThemeData = {
 					ImageColor3 = "Shadow",
 				},
 			}),
 			New("UmbraShadow", {
 				Size = UDim2.new(1, 58, 1, 58),
-				ZIndex = 2147483644,
+				ZIndex = 999999998,
 				ThemeData = {
 					ImageColor3 = "Shadow",
 				},
@@ -106,7 +106,7 @@ function MenuModule.Update(Window)
 		BackgroundTransparency = 0.8,
 		LayoutOrder = (Window.Tabs ~= nil and -1 or (Window.IsKeybindList == true and 0 or MenuModule.TabCount)),
 		Size = UDim2.fromOffset(31, 30),
-		ZIndex = 2147483646,
+		ZIndex = 1000000000,
 		ThemeData = {
 			BackgroundColor3 = "Accent",
 		},
@@ -125,7 +125,7 @@ function MenuModule.Update(Window)
 			AnchorPoint = Vector2.new(0.5, 0.5),
 			Position = UDim2.fromScale(0.5, 0.5),
 			Size = UDim2.fromOffset(22, 22),
-			ZIndex = 2147483647,
+			ZIndex = 1000000001,
 			Image = imageparser.GetAsset(Window.Icon),
 			ScaleType = Enum.ScaleType.Crop,
 			ThemeData = {

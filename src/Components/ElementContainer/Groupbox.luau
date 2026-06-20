@@ -157,8 +157,8 @@ return function(
 	Creator:AddSignal(Library.Windows.MainWindow.Instance:GetPropertyChangedSignal("ZIndex"), function()
 		-- updating ZIndex cus fuck you roblox Shadows don't work on Sibling ZIndex. fuck u fuck u fuck u roblox
 		Groupbox.Instance.ZIndex = Library.Windows.MainWindow.Instance.ZIndex + 2
-		Groupbox.Instance.Header.ZIndex = Library.Windows.MainWindow.Instance.ZIndex + 4
-		Groupbox.Instance.Header.Icon.ZIndex = Library.Windows.MainWindow.Instance.ZIndex + 4
+		Groupbox.Instance.Header.ZIndex = Library.Windows.MainWindow.Instance.ZIndex + 3
+		Groupbox.Instance.Header.Icon.ZIndex = Library.Windows.MainWindow.Instance.ZIndex + 3
 		Groupbox.Instance.PART_Backdrop.ZIndex = Library.Windows.MainWindow.Instance.ZIndex + 2
 		Groupbox.Instance.PART_Backdrop.Inner.ZIndex = Library.Windows.MainWindow.Instance.ZIndex + 2
 	end)

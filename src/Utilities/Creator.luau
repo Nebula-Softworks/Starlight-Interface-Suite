@@ -169,6 +169,26 @@ function Creator:New(
 		end
 
 		return Object
+	elseif Class == "Glow" then
+		local Object = Instance.new("ImageLabel")
+
+		Object.Name = "DropShadow"
+		Object.AnchorPoint = Vector2.new(0.5, 0.5)
+		Object.Position = UDim2.fromScale(0.5, 0.5)
+		Object.Image = "rbxassetid://94680501858633"
+		Object.ImageTransparency = 0.5
+		Object.ScaleType = Enum.ScaleType.Slice
+		Object.SliceCenter = Rect.new(100, 140, 500, 448)
+
+		for Name, Value in next, Properties or {} do
+			if Name ~= "ThemeData" then
+				Object[Name] = Value
+			else
+				Creator:AddThemeObject(Object, Value, Root)
+			end
+		end
+
+		return Object
 	end
 
 	local Object = Instance.new(Class)
