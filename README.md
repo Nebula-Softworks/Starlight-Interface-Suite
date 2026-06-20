@@ -84,8 +84,8 @@ Replace your URL for HttpGet with `http://localhost:8642/dist/main.luau` - if yo
 
 ## Supporting the Project
 If you'd like to help fund and support the project, consider donating via any of the following methods:  
-- **[Discord Server Boosting (Most Preferred)](https://dsc.gg/nebulasoftworks)**  
-- **Github Repository Built-in**  
+- **[Nebula Softworks Donation Centre (Most Preferred)](https://hunt3r.mykomerza.com/)**  
+- **[Discord Server Boosting](https://dsc.gg/nebulasoftworks)**  
 - **[mrkillinghunt3r's Patreon](https://patreon.com/user?u=72586596)**
 > If you'd like to donate via Crypto, you may DM a Senior Manager in the discord server.  
   
