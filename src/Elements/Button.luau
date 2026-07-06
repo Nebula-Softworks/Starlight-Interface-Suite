@@ -343,9 +343,16 @@ return function(
 		Button.Instance.Primary.Interact.ZIndex = Library.Windows.MainWindow.Instance.ZIndex + 5
 	end)
 
+	local currentCallbackConnection = nil
 	Button.Config = binder.Wrap(Button.Config, {
 		Name = function(value)
 			Button.Instance.Primary.Text.Text = value
+		end,
+		Callback = function(value)
+			if currentCallbackConnection then
+				currentCallbackConnection:Disconnect()
+			end
+			Button.Clicked:Connect(value)
 		end,
 	})
 
@@ -666,9 +673,16 @@ return function(
 			Subbutton.Instance.Interact.ZIndex = Library.Windows.MainWindow.Instance.ZIndex + 5
 		end)
 
+		local currentCallbackConnection = nil
 		Subbutton.Config = binder.Wrap(Subbutton.Config, {
 			Name = function(value)
 				Subbutton.Instance.Text.Text = value
+			end,
+			Callback = function(value)
+				if currentCallbackConnection then
+					currentCallbackConnection:Disconnect()
+				end
+				Button.Clicked:Connect(value)
 			end,
 		})
 

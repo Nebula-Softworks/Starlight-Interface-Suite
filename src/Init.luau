@@ -45,6 +45,14 @@ local Library = {
 	Themes = Themes,
 	CurrentTheme = Themes["Dark (Default)"],
 
+	Backgrounds = {
+		Snowfall = { Enabled = false },
+		Darken = { Enabled = false },
+		Blur = { Enabled = false },
+	} :: {
+		[any]: { Enabled: boolean },
+	},
+
 	OnDestroy = function() end,
 
 	FileSystem = {
@@ -80,9 +88,11 @@ Library = binder.Wrap(Library, {
 	end,
 	IsMinimized = function(Value)
 		if not Value then
-			Library.Backgrounds.Snowfall.Visible = true
-			Library.Backgrounds.Darkener.Visible = true
-			Library.Backgrounds.Blur.Enable()
+			Library.BackgroundObjects.Snowfall.Visible = Library.Backgrounds.Snowfall
+			Library.BackgroundObjects.Darkener.Visible = Library.Backgrounds.Darken
+			if Library.Backgrounds.Blur.Enabled then
+				Library.BackgroundObjects.Blur.Enable()
+			end
 			Components.Menu.Instance.Visible = true
 			for _, Window in pairs(Library.Windows) do
 				if not Window.Minimized then
@@ -90,9 +100,9 @@ Library = binder.Wrap(Library, {
 				end
 			end
 		else
-			Library.Backgrounds.Snowfall.Visible = false
-			Library.Backgrounds.Darkener.Visible = false
-			Library.Backgrounds.Blur.Disable()
+			Library.BackgroundObjects.Snowfall.Visible = false
+			Library.BackgroundObjects.Darkener.Visible = false
+			Library.BackgroundObjects.Blur.Disable()
 			Components.Menu.Instance.Visible = false
 			for _, Window in pairs(Library.Windows) do
 				if Window.IsBypassLibraryMinimized then
@@ -114,7 +124,7 @@ imageparser.Library = Library
 
 function Library:Initialise()
 	local Backgrounds = Components.Backgrounds(GUI, Library)
-	Library.Backgrounds = Backgrounds
+	Library.BackgroundObjects = Backgrounds
 
 	Creator:New("UIScale", {
 		Parent = GUI,

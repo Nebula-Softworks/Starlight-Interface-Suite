@@ -9,7 +9,7 @@ return function(
 		Name: string,
 		CurrentValue: boolean?,
 		Tooltip: string?,
-		Disabled: boolean?,
+		Enabled: boolean?,
 		Callback: (value: boolean) -> any,
 
 		ConfigFlag: any?,
@@ -109,11 +109,44 @@ return function(
 		return hasError
 	end
 
+	local isHover = false
+
 	Toggle.OnChecked = binder.Wrap(Toggle.OnChecked, {}, nil, { "Connect", "Once", "Fire" })
 	Toggle = binder.Wrap(Toggle, {}, nil, { "Type" })
+	local currentCallbackConnection = nil
 	Toggle.Config = binder.Wrap(Toggle.Config, {
 		CurrentValue = function(value)
 			Toggle.OnChecked:Fire(value)
+			services.TweenService
+				:Create(
+					Toggle.Instance.Checkbox,
+					TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
+					{ BackgroundTransparency = 0 }
+				)
+				:Play()
+		end,
+		Enabled = function(value)
+			Toggle.Instance.Interactable = value
+			if not value then
+				Toggle.Instance.TextTransparency = 0.5
+				Toggle.Instance.Checkbox.UIStroke.Transparency = 0.75
+				Toggle.Instance.Checkbox.DropShadowHolder.DropShadow.ImageTransparency = 0.75
+				Toggle.Instance.Checkbox.BackgroundTransparency = 1
+			else
+				Toggle.Instance.TextTransparency = 0
+				Toggle.Instance.Checkbox.UIStroke.Transparency = 0.5
+				Toggle.Instance.Checkbox.DropShadowHolder.DropShadow.ImageTransparency = 0.5
+				Toggle.Instance.Checkbox.BackgroundTransparency = isHover and 0.8 or 0.9
+			end
+		end,
+		Name = function(value)
+			Toggle.Instance.Text = value
+		end,
+		Callback = function(value)
+			if currentCallbackConnection then
+				currentCallbackConnection:Disconnect()
+			end
+			Toggle.OnChecked:Connect(value)
 		end,
 	})
 	binder.Apply(Config, Toggle.Config)
@@ -126,6 +159,7 @@ return function(
 		ZIndex = Library.Windows.MainWindow.Instance.ZIndex + 3,
 		FontFace = Font.new("rbxasset://fonts/families/Inter.json", Enum.FontWeight.Bold),
 		ThemeData = {
+			BackgroundColor3 = "Bad", -- error handling
 			TextColor3 = "PrimaryText",
 		},
 		Text = Toggle.Config.Name,
@@ -141,7 +175,7 @@ return function(
 			ThemeData = {
 				BackgroundColor3 = "Accent",
 			},
-			BackgroundTransparency = 0.9, --default, 0 for enabled, 1 for locked/disabled
+			BackgroundTransparency = 0.9,
 			Position = UDim2.new(0, -24, 0.5, 0),
 			Size = UDim2.fromOffset(16, 16),
 			ZIndex = Library.Windows.MainWindow.Instance.ZIndex + 4,
@@ -176,6 +210,56 @@ return function(
 		}),
 	})
 
+	Creator:AddSignal(Toggle.Instance.MouseEnter, function()
+		isHover = true
+		if Toggle.CurrentValue then
+			return
+		end
+		Toggle.Instance.Checkbox.BackgroundTransparency = 0.8
+	end)
+	Creator:AddSignal(Toggle.Instance.MouseLeave, function()
+		isHover = false
+		if Toggle.CurrentValue then
+			return
+		end
+		Toggle.Instance.Checkbox.BackgroundTransparency = 0.9
+	end)
+
+	Creator:AddSignal((Toggle.Instance.Checkbox.Interact :: TextButton).MouseButton1Click, function()
+		local hasError = Toggle.OnChecked:Fire()
+		if hasError then
+			Toggle.Instance.Text = "Callback Error"
+			services.TweenService
+				:Create(
+					Toggle.Instance,
+					TweenInfo.new(0.2, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
+					{ BackgroundTransparency = 0.7 }
+				)
+				:Play()
+			task.delay(1.5, function()
+				Toggle.Instance.Text = Toggle.Config.Name
+				services.TweenService
+					:Create(
+						Toggle.Instance,
+						TweenInfo.new(0.2, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
+						{ BackgroundTransparency = 1 }
+					)
+					:Play()
+			end)
+		end
+	end)
+
+	-- tooltip
+
+	Creator:AddSignal(Library.Windows.MainWindow.Instance:GetPropertyChangedSignal("ZIndex"), function()
+		-- updating ZIndex cus fuck you roblox Shadows don't work on Sibling ZIndex. fuck u fuck u fuck u roblox
+		Toggle.Instance.ZIndex = Library.Windows.MainWindow.Instance.ZIndex + 3
+		Toggle.Instance.Checkbox.ZIndex = Library.Windows.MainWindow.Instance.ZIndex + 4
+		Toggle.Instance.Checkbox.DropShadowHolder.DropShadow.ZIndex = Library.Windows.MainWindow.Instance.ZIndex + 3
+		Toggle.Instance.Checkbox.Interact.ZIndex = Library.Windows.MainWindow.Instance.ZIndex + 4
+	end)
+
+	-- sub elements
 	function Toggle:CreateInputBind(...)
 		-- return Elements.Keybind(Toggle, ...)
 	end

@@ -101,111 +101,79 @@ function Creator:Disconnect()
 	end
 end
 
-function Creator:New(
-	Class: string,
-	Properties: {
-		[string]: any,
+local SpecialClasses = {
+	AntumbraShadow = {
+		ClassName = "ImageLabel",
+		Name = "antumbraShadow",
+		AnchorPoint = Vector2.new(0.5, 0.5),
+		Position = UDim2.fromScale(0.5, 0.5),
+		Image = "rbxassetid://5587865193",
+		ImageTransparency = 0.94,
+		ScaleType = Enum.ScaleType.Slice,
+		SliceCenter = Rect.new(80, 78, 189, 318),
 	},
-	Children: { [any]: GuiObject },
-	Root
-)
-	if Class == "AntumbraShadow" then
-		local Object = Instance.new("ImageLabel")
+	PenumbraShadow = {
+		ClassName = "ImageLabel",
+		Name = "penumbraShadow",
+		AnchorPoint = Vector2.new(0.5, 0.5),
+		Position = UDim2.fromScale(0.5, 0.5),
+		Image = "rbxassetid://8992230677",
+		ImageTransparency = 0.55,
+		ScaleType = Enum.ScaleType.Slice,
+		SliceCenter = Rect.new(99, 99, 99, 99),
+	},
+	UmbraShadow = {
+		ClassName = "ImageLabel",
+		Name = "umbraShadow",
+		AnchorPoint = Vector2.new(0.5, 0.5),
+		Position = UDim2.fromScale(0.5, 0.5),
+		Image = "rbxassetid://76200300325831",
+		ImageTransparency = 0,
+		ScaleType = Enum.ScaleType.Slice,
+		SliceCenter = Rect.new(46, 43, 351, 355),
+	},
+	Glow = {
+		ClassName = "ImageLabel",
+		Name = "DropShadow",
+		AnchorPoint = Vector2.new(0.5, 0.5),
+		Position = UDim2.fromScale(0.5, 0.5),
+		Image = "rbxassetid://94680501858633",
+		ImageTransparency = 0.5,
+		ScaleType = Enum.ScaleType.Slice,
+		SliceCenter = Rect.new(100, 140, 500, 448),
+	},
+}
 
-		Object.Name = "antumbraShadow"
-		Object.AnchorPoint = Vector2.new(0.5, 0.5)
-		Object.Position = UDim2.fromScale(0.5, 0.5)
-		Object.Image = "rbxassetid://5587865193"
-		Object.ImageTransparency = 0.94
-		Object.ScaleType = Enum.ScaleType.Slice
-		Object.SliceCenter = Rect.new(80, 78, 189, 318)
+function Creator:New(Class: string, Properties: { [string]: any }?, Children: { [any]: GuiObject }?, Root: any?)
+	local SpecialConfig = SpecialClasses[Class]
+	local Object: Instance
 
-		for Name, Value in next, Properties or {} do
-			if Name ~= "ThemeData" then
-				Object[Name] = Value
-			else
-				Creator:AddThemeObject(Object, Value, Root)
+	if SpecialConfig then
+		Object = Instance.new(SpecialConfig.ClassName)
+
+		for PropName, PropValue in pairs(SpecialConfig) do
+			if PropName ~= "ClassName" then
+				Object[PropName] = PropValue
 			end
 		end
+	else
+		Object = Instance.new(Class)
 
-		return Object
-	elseif Class == "PenumbraShadow" then
-		local Object = Instance.new("ImageLabel")
-
-		Object.Name = "penumbraShadow"
-		Object.AnchorPoint = Vector2.new(0.5, 0.5)
-		Object.Position = UDim2.fromScale(0.5, 0.5)
-		Object.Image = "rbxassetid://8992230677"
-		Object.ImageTransparency = 0.55
-		Object.ScaleType = Enum.ScaleType.Slice
-		Object.SliceCenter = Rect.new(99, 99, 99, 99)
-
-		for Name, Value in next, Properties or {} do
-			if Name ~= "ThemeData" then
-				Object[Name] = Value
-			else
-				Creator:AddThemeObject(Object, Value, Root)
-			end
+		local Defaults = Creator.DefaultProperties and Creator.DefaultProperties[Class]
+		for PropName, PropValue in pairs(Defaults or {}) do
+			Object[PropName] = PropValue
 		end
-
-		return Object
-	elseif Class == "UmbraShadow" then
-		local Object = Instance.new("ImageLabel")
-
-		Object.Name = "umbraShadow"
-		Object.AnchorPoint = Vector2.new(0.5, 0.5)
-		Object.Position = UDim2.fromScale(0.5, 0.5)
-		Object.Image = "rbxassetid://76200300325831"
-		Object.ImageTransparency = 0
-		Object.ScaleType = Enum.ScaleType.Slice
-		Object.SliceCenter = Rect.new(46, 43, 351, 355)
-
-		for Name, Value in next, Properties or {} do
-			if Name ~= "ThemeData" then
-				Object[Name] = Value
-			else
-				Creator:AddThemeObject(Object, Value, Root)
-			end
-		end
-
-		return Object
-	elseif Class == "Glow" then
-		local Object = Instance.new("ImageLabel")
-
-		Object.Name = "DropShadow"
-		Object.AnchorPoint = Vector2.new(0.5, 0.5)
-		Object.Position = UDim2.fromScale(0.5, 0.5)
-		Object.Image = "rbxassetid://94680501858633"
-		Object.ImageTransparency = 0.5
-		Object.ScaleType = Enum.ScaleType.Slice
-		Object.SliceCenter = Rect.new(100, 140, 500, 448)
-
-		for Name, Value in next, Properties or {} do
-			if Name ~= "ThemeData" then
-				Object[Name] = Value
-			else
-				Creator:AddThemeObject(Object, Value, Root)
-			end
-		end
-
-		return Object
 	end
 
-	local Object = Instance.new(Class)
-
-	for Name, Value in next, Creator.DefaultProperties[Class] or {} do
-		Object[Name] = Value
-	end
-
-	for Name, Value in next, Properties or {} do
-		if Name ~= "ThemeData" then
-			Object[Name] = Value
+	for Name, Value in pairs(Properties or {}) do
+		if Name == "ThemeData" then
+			self:AddThemeObject(Object, Value, Root)
 		else
-			Creator:AddThemeObject(Object, Value, Root)
+			Object[Name] = Value
 		end
 	end
 
-	for _, Child in next, Children or {} do
+	for _, Child in pairs(Children or {}) do
 		Child.Parent = Object
 	end
 
