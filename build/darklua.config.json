@@ -19,6 +19,7 @@
 	  "remove_comments",
 	  "group_local_assignment",
 	  "convert_local_function_to_assign",
+	  "convert_function_to_assignment",
 	  "convert_index_to_field",
 	  "filter_after_early_return",
 	  "remove_empty_do",
